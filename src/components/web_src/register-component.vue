@@ -1,6 +1,6 @@
 <template>
   <div class="card flex justify-center">
-    <form class="flex flex-column gap-4">
+    <form class="flex flex-column gap-5">
       <FloatLabel>
         <InputText id="name" v-model="form.name" :class="{ 'p-invalid': errors.name }" />
         <label for="name">Nombre Completo</label>
@@ -24,6 +24,8 @@
         <label for="password_confirmation">Confirmar Contraseña</label>
       </FloatLabel>
 
+      <div ref="recaptcha"></div>
+
       <Button :label="loading ? 'Registrando...' : 'Registrarse'" 
               :disabled="loading" 
               @click.prevent="registrar" />
@@ -41,7 +43,7 @@ import Button from 'primevue/button'
 import Message from 'primevue/message'
 
 export default {
-  name: 'RegistroComponent',
+  name: 'RegisterComponent',
   components: { FloatLabel, InputText, Password, Button, Message },
 
   data() {
@@ -58,12 +60,34 @@ export default {
     }
   },
 
+  mounted() {
+    if (window.grecaptcha) {
+      window.grecaptcha.render(this.$refs.recaptcha, {
+        sitekey: '6LcA8mIsAAAAAL1hrZC4H9GamA3rqF_PFZQbjaME'
+      });
+    }
+  },
+
   methods: {
     async registrar() {
       this.loading = true;
       this.errors = {};
       this.success = false;
 
+
+      const token = window.grecaptcha.getResponse();
+
+      if (!token) {
+        this.errors = { captcha: ['Completa el captcha'] };
+        this.loading = false;
+        return;
+      }
+
+      this.form.captcha = token;
+      console.log(this.form);
+      
+      
+      
       try {
         const response = await fetch('http://127.0.0.1:8000/api/v1/users', {
           method: 'POST',
@@ -88,6 +112,7 @@ export default {
         console.error("Error de conexión:", error);
       } finally {
         this.loading = false;
+        grecaptcha.reset();
       }
     }
   }
@@ -100,5 +125,13 @@ export default {
   font-size: 0.8rem;
   margin-top: -1rem;
   margin-bottom: 0.5rem;
+}
+
+form {
+  padding-top: 1.5rem;
+}
+
+:deep(.p-float-label) {
+  margin-top: 1rem;
 }
 </style>
