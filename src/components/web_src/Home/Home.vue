@@ -1,14 +1,12 @@
 <script setup>
+import HomeNavComponent from '../Home/home-nav-component.vue';
+import HeroComponent from '../Home/hero-component.vue';
 </script>
 
 <template>
-  <h1>HOLAAA</h1>
 <header>
-    <nav>
-      <router-link :to="{ name: 'admin.home' }" class="btn btn-primary">
-        Ir al Panel de Administración
-      </router-link>
-    </nav>
+    <home-nav-component></home-nav-component>
+    <hero-component></hero-component>
   </header>
 </template>
 
@@ -22,4 +20,5 @@
   background-color: #007bff;
   color: white;
 }
+
 </style>

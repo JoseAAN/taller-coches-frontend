@@ -1,12 +1,12 @@
 <template>
   <router-view></router-view>
-   <link rel="stylesheet"
+  <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Icons">
 </template>
 
 
 <script>
-import Home from './components/web_src/Home.vue';
+import Home from './components/web_src/Home/Home.vue';
 
 export default {
   components: {
@@ -15,6 +15,5 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
 </style>
