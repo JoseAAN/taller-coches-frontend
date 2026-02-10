@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>HOLA, este es el Home</h1>
+        <h1>HOLA, este es el Home Admin</h1>
         <sidenav></sidenav>
     </div>
 </template>
