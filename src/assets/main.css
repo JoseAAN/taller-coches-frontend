@@ -1,3 +1,18 @@
+:root {
+    --nav-bg: #ffffff;
+    --nav-text: #003366;
+    --nav-border: #eeeeee;
+    --nav-toggler-filter: none;
+}
+
+.p-dark,
+[data-theme='dark'] {
+    --nav-bg: #051221;
+    --nav-text: #f8f9fa;
+    --nav-border: #1a2e44;
+    --nav-toggler-filter: invert(1);
+}
+
 body {
     background-color: rgb(112, 112, 112);
     margin: 0;
