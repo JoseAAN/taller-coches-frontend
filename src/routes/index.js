@@ -3,7 +3,6 @@ import AdminHome from '../components/admin_src/home.vue';
 import Home from '../components/web_src/Home/Home.vue';
 import Register from '../components/web_src/register-component.vue';
 import Login from '../components/web_src/login-component.vue';
-import ServiceHomeEditComponent from '../components/admin_src/service-home-edit-component.vue';
 
 const routes = [
   {
@@ -13,8 +12,20 @@ const routes = [
   },
   {
     path: '/admin',
-    name: 'admin.home',
-    component: AdminHome
+    component: () => import('../components/admin_src/AdminLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'admin.home',
+        component: () => import('../components/admin_src/home.vue')
+      },
+      {
+        path: 'service-home-edit',
+        name: 'admin.services-home-edit',
+        component: () => import('../components/admin_src/service-home-edit-component.vue')
+      },
+    
+    ]
   },
   {
     path: '/register',
@@ -26,11 +37,6 @@ const routes = [
     name: 'login',
     component: Login
   },
-  {
-    path: '/admin/service-home-edit',
-    name: 'admin.service-home-edit',
-    component: ServiceHomeEditComponent
-  }
 ];
 
 const router = createRouter({

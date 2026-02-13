@@ -67,26 +67,40 @@ export default {
                 .then(res => res.json())
                 .then(res => {
                     this.services = res.data;
-                    console.info('Servicios obtenidos:', this.services);
                 })
                 .catch(err => console.error(err));
-                console.log(this.services);
         },
         toggleHomeStatus(service) {
-            //IMPORTANTE: Reemplazar el token hardcodeado por una gestión de autenticación real
-            let token ;
             const newStatus = !service.show_on_home;
+
+            //IMPORTANTE: Reemplazar el token hardcodeado por una gestión de autenticación real
+            let token;
+            console.log(this.$toast);
 
             fetch(`http://127.0.0.1:8000/api/v1/services/${service.id}/toggle-home`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({ show_on_home: newStatus })
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    return res.json();
+                })
                 .then(() => {
                     service.show_on_home = newStatus;
                 })
-                .catch(err => console.error("Error al actualizar:", err));
+                .catch(err => {
+                    console.error("Could not change visibility:", err);
+                    this.$toast.error("Failed to connect to the server", {
+                        timeout: 5000
+                    });
+                    
+                });
         }
     },
     mounted() {

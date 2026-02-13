@@ -65,6 +65,8 @@ const navigate = (route) => {
   if (route) {
     router.push(route)
     if (window.innerWidth < 1024) closeSidebar();
+    open.value = false; 
+    openGroups.value = {}
   }
 }
 
@@ -73,7 +75,6 @@ const fetchSidebarItems = () => {
     .then(res => res.json())
     .then(res => {
       menu.value = res.data
-      console.log(res.data);
       
     })
     .catch(err => console.error('Error:', err))
@@ -89,7 +90,6 @@ onMounted(fetchSidebarItems)
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
   z-index: 999;
 }
 
