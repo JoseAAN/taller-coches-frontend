@@ -24,6 +24,11 @@ const routes = [
         name: 'admin.services-home-edit',
         component: () => import('../components/admin_src/service-home-edit-component.vue')
       },
+      {
+        path: '/admin/admin-sidebar-configuration',
+        name: 'admin.sidebar-configuration',
+        component: () => import('../components/admin_src/sidebar-configuration.vue')
+      }
     
     ]
   },
