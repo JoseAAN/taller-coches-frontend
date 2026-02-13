@@ -21,8 +21,8 @@ import sidenav from "./sidenav.vue";
 
 .main-content {
     flex: 1;
-    margin-left: 70px;
-    padding: 2rem;
+    margin-left: 38px;
+    padding-left: 2rem;
     transition: margin-left 0.3s ease;
 }
 
