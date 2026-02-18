@@ -128,7 +128,7 @@ export default {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    //'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ show_on_home: newStatus })
             })
