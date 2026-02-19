@@ -78,7 +78,8 @@ export default {
     },
     methods: {
         saveChanges() {
-            console.log('dentro de comp hijo ' + this.serviceSelected);
+            console.log('dentro de comp hijo ');
+            console.log(this.serviceSelected);
             
             this.$emit('save', this.serviceSelected);
             this.closeModal();

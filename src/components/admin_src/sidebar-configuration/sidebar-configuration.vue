@@ -8,10 +8,10 @@
                     Nuevo Módulo
                 </button>
             </div>
-            <span class="badge-status">
+            <!-- <span class="badge-status">
                 <span class="pulse-dot"></span>
                 {{ services.length }} Módulos totales
-            </span>
+            </span> -->
         </div>
 
         <div class="section-wrapper">
@@ -24,7 +24,7 @@
                             <th>Ruta de Acceso</th>
                             <th class="text-center">Orden</th>
                             <th class="text-center">Estado</th>
-                            <th class="text-end pe-4">Editar</th>
+                            <th class="text-end pe-4">Acciones</th>
                         </tr>
                     </thead>
                     <template v-for="parent in services" :key="parent.id">
@@ -145,23 +145,20 @@ export default {
                 })
                 .then(res => {
                     this.services = res.data;
-                    console.log(this.services);
                 })
                 .catch(err => {
                     console.error("Ocurrió un problema, inténtalo de nuevo:");
                     this.errorMessage = "No se pudo conectar con el servidor.";
                 });
         },
-        saveChanges() {
+        saveChanges(serviceSelected) {
+            this.serviceSelected = serviceSelected;
             // Si tiene ID es EDITAR, si no tiene es CREAR
-            console.log(JSON.stringify(this.serviceSelected));
-
             const id = this.serviceSelected.id;
             const method = id ? 'PUT' : 'POST';
             const url = id
                 ? `http://127.0.0.1:8000/api/v1/admin-navigation/${id}`
                 : `http://127.0.0.1:8000/api/v1/admin-navigation`;
-            console.log(this.serviceSelected, url, method);
             
             fetch(url, {
                 method: method,
@@ -177,7 +174,6 @@ export default {
                     return res.json();
                 })
                 .then(data => {
-                    console.log("Éxito:", data);
                     this.getServices();
                     this.isModalOpen = false;
                 })
@@ -199,16 +195,13 @@ export default {
                     return res.json();
                 })
                 .then(data => {
-                    console.log("Éxito:", data);
                     this.getServices();
                 })
                 .catch(err => alert("No se pudo eliminar el módulo"));
         },
     },
     mounted() {
-
         this.getServices();
-        console.log(this.services);
         
     }
 }
