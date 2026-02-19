@@ -123,12 +123,12 @@ export default {
         },
         toggleHomeStatus(service) {
             const newStatus = !service.show_on_home;
-            let token; 
+            let token = localStorage.getItem('token'); 
             fetch(`http://127.0.0.1:8000/api/v1/services/${service.id}/toggle-home`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    //'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ show_on_home: newStatus })
             })
@@ -149,7 +149,6 @@ export default {
 </script>
 
 <style scoped>
-/* ESTILOS BASE (PC) - SE MANTIENEN IGUAL */
 .admin-container {
     background-color: #0f172a;
     min-height: 100vh;
@@ -260,10 +259,9 @@ export default {
     padding: 1rem;
 }
 
-/* SOLO CAMBIOS PARA MOVIL */
 @media (max-width: 768px) {
     .table thead {
-        display: none; /* Oculta cabecera en móvil */
+        display: none; 
     }
 
     .table tbody tr {
@@ -302,7 +300,7 @@ export default {
     }
 
     .btn-action {
-        width: 100%; /* Botones a ancho completo en móvil */
+        width: 100%;
         padding: 0.8rem;
     }
 }

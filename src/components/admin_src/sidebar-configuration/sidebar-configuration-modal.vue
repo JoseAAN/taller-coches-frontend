@@ -25,7 +25,6 @@ import { onMounted } from 'vue';
                             </option>
                         </select>
                     </div>
-
                     <div class="col-md-6">
                         <label class="form-label-custom">Icono (Material)</label>
                         <input v-model="serviceSelected.icon" type="text" class="form-input-custom"
@@ -38,7 +37,8 @@ import { onMounted } from 'vue';
                     <div class="col-12">
                         <label class="form-label-custom">Ruta (URL)</label>
                         <input v-model="serviceSelected.route" type="text" class="form-input-custom"
-                            placeholder="/admin/dashboard">
+                            placeholder="/admin/dashboard"
+                            :disabled="!serviceSelected.parent_id">
                     </div>
                     <div class="col-12 mt-4">
                         <div class="form-check-custom">
@@ -72,7 +72,7 @@ export default {
                 icon: '',
                 order: 0,
                 route: '',
-                is_active: true
+                is_active: false
             };
         }
     },

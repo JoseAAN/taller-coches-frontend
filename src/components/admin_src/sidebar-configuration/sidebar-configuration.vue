@@ -1,9 +1,9 @@
 <template>
     <div class="admin-container p-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-5 ml-5">
             <div>
-                <h2 class="text-white fw-bold h4 m-0">Gestionar Navegación</h2>
-                <button @click="openModal()" class="btn-action btn-create-neon mt-2">
+                <h2 class="text-white fw-bold h4 ">Sidebar Configuración</h2>
+                <button @click="openModal()" class="btn-action btn-create-neon mt-3 w-100">
                     <span class="material-icons">add_circle</span>
                     Nuevo Módulo
                 </button>
@@ -15,16 +15,15 @@
         </div>
 
         <div class="section-wrapper">
-            <h5 class="section-title">Estructura de Menú</h5>
             <div class="table-responsive shadow-lg rounded-3 overflow-hidden border border-secondary border-opacity-10">
                 <table class="table table-dark align-middle m-0">
                     <thead>
                         <tr>
-                            <th class="ps-4">Módulo / Submenú</th>
-                            <th>Ruta de Acceso</th>
+                            <th class="text-center">Módulo / Submenú</th>
+                            <th class="text-center">Ruta de Acceso</th>
                             <th class="text-center">Orden</th>
                             <th class="text-center">Estado</th>
-                            <th class="text-end pe-4">Acciones</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <template v-for="parent in services" :key="parent.id">
@@ -75,11 +74,14 @@
                                 </div>
                             </td>
                             <td><span class="route-badge child-route-color">{{ child.route || '---' }}</span></td>
-                            <td class="text-center"><span class="badge-order-highlight sub-order">{{ child.order
-                            }}</span></td>
+                            <td class="text-center"><span class="badge-order-highlight sub-order">{{ child.order}}</span></td>
                             <td class="text-center">
-                                <span class="dot-status small"
-                                    :class="child.is_active ? 'bg-success' : 'bg-danger'"></span>
+                                <div class="status-container justify-content-center">
+                                    <span class="dot-status"
+                                        :class="child.is_active ? 'bg-success' : 'bg-danger'"></span>
+                                    <span :class="child.is_active ? 'text-success' : 'text-danger'"
+                                        class="small fw-bold">{{ child.is_active ? 'Activo' : 'Inactivo' }}</span>
+                                </div>
                             </td>
                             <td class="text-end pe-4">
                                 <div class="action-buttons">
@@ -125,7 +127,7 @@ export default {
                 route: '',
                 order: 0,
                 parent_id: null,
-                is_active: true
+                is_active: false
             },
 
         }
