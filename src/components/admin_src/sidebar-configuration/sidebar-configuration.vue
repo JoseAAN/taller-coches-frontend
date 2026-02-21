@@ -98,7 +98,7 @@
                     <sidebar-configuration-modal
                         v-if="isModalOpen"
                         :key="serviceSelected.id || 'new'"
-                        :service="serviceSelected" 
+                        :service="serviceSelected"
                         :services="services"
                         :isOpen="isModalOpen"
                         @close="isModalOpen = false"

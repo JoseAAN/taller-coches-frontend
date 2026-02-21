@@ -1,19 +1,18 @@
 <template>
-    <div class="ba-container" ref="container" @mousedown="startDrag" @touchstart="startDrag">
-        <img :src="before" class="ba-img" />
+    <div class="ba-wrapper">
+        <div class="ba-container" ref="container" @mousedown="startDrag" @touchstart="startDrag">
+            <img :src="before" class="ba-img" />
 
-        <div class="ba-overlay" :style="{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }">
-            <img :src="after" class="ba-img" />
+            <div class="ba-overlay" :style="{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }">
+                <img :src="after" class="ba-img" />
+            </div>
+
+            <div class="ba-divider" :style="{ left: sliderPosition + '%' }">
+                <div class="ba-handle d-flex align-items-center justify-content-center">
+                    <div class="ba-dot"></div>
+                </div>
+            </div>
         </div>
-
-        <div
-    class="ba-divider"
-    :style="{ left: sliderPosition + '%' }"
->
-    <div class="ba-handle d-flex align-items-center justify-content-center">
-        <span class="material-icons">compare_arrows</span>
-    </div>
-</div>
     </div>
 </template>
 
@@ -67,17 +66,28 @@ export default {
 </script>
 
 <style scoped>
+.ba-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
 .ba-container {
     position: relative;
     width: 100%;
     max-width: 700px;
     cursor: ew-resize;
     overflow: hidden;
-    border-radius: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
 }
 
 .ba-img {
     width: 100%;
+    height: auto;
     display: block;
     user-select: none;
     pointer-events: none;
@@ -92,49 +102,39 @@ export default {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 8px;
-    background: linear-gradient(180deg,
-            #00CCCC,
-            #05c2c2);
-    transform: translateX(-4px);
-
+    width: 6px;
+    background: #888;
+    transform: translateX(-3px);
     display: flex;
     align-items: center;
     justify-content: center;
-
-    box-shadow:
-        0 0 12px rgba(0, 0, 0, 0.45),
-        0 0 24px #686868;
-
-    border-radius: 4px;
+    border-radius: 3px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.3);
 }
 
 .ba-handle {
-    width: 60px;
-    height: 60px;
-    background: white;
+    width: 36px;
+    height: 36px;
+    background: transparent;
     border-radius: 50%;
     cursor: ew-resize;
-
-    border: 4px solid #00CCCC;
-
-    box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.35),
-        0 0 18px #707070;
-
-    transition: transform 0.15s ease,
-        box-shadow 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.material-icons {
-    font-size: 28px;
-    color: #00CCCC;
+.ba-dot {
+    width: 16px;
+    height: 16px;
+    background: #555;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
 
-.ba-handle:hover {
-    transform: scale(1.1);
-    box-shadow:
-        0 8px 22px rgba(0, 0, 0, 0.45),
-        0 0 28px #00CCCC;
+.ba-handle:hover .ba-dot {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 </style>
