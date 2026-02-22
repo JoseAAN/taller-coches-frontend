@@ -63,10 +63,11 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
+import {loaderState} from '@/loaderState';
 
 export default {
   name: 'RegisterComponent',
-  components: { FloatLabel, InputText, Password, Button, Message },
+  components: { FloatLabel, InputText, Password, Button, Message},
   data() {
     return {
       form: { name: '', email: '', password: '', password_confirmation: '' },
@@ -110,6 +111,7 @@ export default {
       return checkErrors;
     },
     registrar() {
+      loaderState.show();
       this.errors = {};
       this.success = false;
 
@@ -123,6 +125,7 @@ export default {
       // buscamos si existen errores para no llamar al back
       if (Object.keys(checkErrors).length > 0) {
         this.errors = checkErrors;
+        loaderState.hide();
         return;
       }
 
@@ -159,6 +162,7 @@ export default {
       })
       .finally(() => {
         this.loading = false;
+        loaderState.hide();
       });
     }
   }
