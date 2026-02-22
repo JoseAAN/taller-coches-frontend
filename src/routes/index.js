@@ -3,8 +3,24 @@ import { createRouter, createWebHistory } from 'vue-router';
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: () => import('../components/web_src/Home/Home.vue')
+    component: () => import('../components/web_src/layouts/homepage-layout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: () => import('../components/web_src/Home/Home.vue')
+      },
+      {
+        path: 'services',
+        name: 'services',
+        component: () => import('../components/web_src/sections/home-sections/services-components/service-component.vue')
+      },
+      {
+        path: 'products',
+        name: 'products',
+        component: () => import('../components/web_src/sections/products/index.vue')
+      }
+    ]
   },
   {
     path: '/admin',
@@ -31,12 +47,12 @@ const routes = [
   {
     path: '/register',
     name: 'register',
-    component: () => import('../components/web_src/register-component.vue')
+    component: () => import('../components/web_src/auth/register-component.vue')
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('../components/web_src/login-component.vue')
+    component: () => import('../components/web_src/auth/login-component.vue')
   },
 ];
 

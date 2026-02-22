@@ -168,14 +168,14 @@ export default {
 
 <style scoped>
 .split-container {
-  display: flex;
+  display: flex; 
   min-height: 100vh;
   width: 100%;
 }
 
 .image-section {
   flex: 1.2;
-  background-image: url('../../assets/limpiezaregister2.jpg');
+  background-image: url('../../../assets/limpiezaregister2.jpg');
   background-size: cover;
   background-position: center;
 }

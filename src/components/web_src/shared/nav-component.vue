@@ -29,6 +29,9 @@
           <li class="nav-item">
             <router-link class="custom-link" to="/empresas">Empresas</router-link>
           </li>
+          <li class="nav-item">
+            <router-link class="custom-link" to="/products">Productos</router-link>
+          </li>
         </ul>
 
         <div class="d-flex align-items-center justify-content-center ms-lg-auto gap-3">
