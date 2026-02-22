@@ -6,11 +6,9 @@
 
 
 <script>
-import Home from './components/web_src/Home/Home.vue';
 
 export default {
   components: {
-    Home
   }
 }
 </script>

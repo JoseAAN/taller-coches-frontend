@@ -155,6 +155,10 @@ export default {
         },
         saveChanges(serviceSelected) {
             this.serviceSelected = serviceSelected;
+            if (this.serviceSelected.parent_id == null) {
+                this.serviceSelected.route = "";
+            }
+            
             // Si tiene ID es EDITAR, si no tiene es CREAR
             const id = this.serviceSelected.id;
             const method = id ? 'PUT' : 'POST';

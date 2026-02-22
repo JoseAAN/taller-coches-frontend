@@ -38,7 +38,7 @@ import { onMounted } from 'vue';
                         <label class="form-label-custom">Ruta (URL)</label>
                         <input v-model="serviceSelected.route" type="text" class="form-input-custom"
                             placeholder="/admin/dashboard"
-                            :disabled="!serviceSelected.parent_id">
+                            >
                     </div>
                     <div class="col-12 mt-4">
                         <div class="form-check-custom">
@@ -78,9 +78,6 @@ export default {
     },
     methods: {
         saveChanges() {
-            console.log('dentro de comp hijo ');
-            console.log(this.serviceSelected);
-            
             this.$emit('save', this.serviceSelected);
             this.closeModal();
         },

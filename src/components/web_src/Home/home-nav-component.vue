@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import ThemeSwitcher from '../theme-switcher.vue';
+import ThemeSwitcher from '../UI/theme-switcher.vue';
 </script>
 
 <style scoped>
