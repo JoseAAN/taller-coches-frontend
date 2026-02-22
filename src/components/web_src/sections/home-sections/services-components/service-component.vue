@@ -55,8 +55,6 @@ export default {
                     console.error('Error fetching services:', error);
                 }
                 );
-            console.log(this.services);
-
         }
     },
     mounted() {

@@ -142,7 +142,6 @@ export default {
           if (response.status === 422) {
             this.errors = data.errors;
           } else if (response.ok) {
-            console.log(data);
             
             this.success = true;
             this.form = { name: '', email: '', password: '', password_confirmation: '' };

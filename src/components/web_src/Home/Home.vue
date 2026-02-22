@@ -41,7 +41,6 @@
           .then(response => {
             if (response.ok) {
               alert('Usuario verificado');
-              console.log(response++);
               
               this.user_verfied = true;
             } else {
