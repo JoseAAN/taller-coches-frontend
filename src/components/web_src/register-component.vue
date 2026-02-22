@@ -142,9 +142,13 @@ export default {
           if (response.status === 422) {
             this.errors = data.errors;
           } else if (response.ok) {
+            console.log(data);
+            
             this.success = true;
             this.form = { name: '', email: '', password: '', password_confirmation: '' };
+            
             window.grecaptcha.reset();
+            localStorage.setItem('user_token', data.token);
           } else {
             throw new Error('Error de servidor');
           }

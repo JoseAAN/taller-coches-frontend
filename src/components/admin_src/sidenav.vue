@@ -7,36 +7,49 @@
         <span class="material-icons">menu</span>
       </button>
     </div>
-    
-    <nav class="menu-container">
-      <ul class="nav-list">
-        <li v-for="parent in menu" :key="parent.id" class="nav-item">
-          <div class="nav-link parent-link"
-            @click="parent.children.length ? toggleGroup(parent.id) : navigate(parent.route)">
-            <span class="material-icons icon">{{ parent.icon }}</span>
-            <span class="label" v-show="open">{{ parent.label }}</span>
-            <span v-if="open && parent.children.length" class="material-icons arrow"
-              :class="{ 'rotate': openGroups[parent.id] }"> expand_more </span>
-          </div>
 
-          <transition name="slide">
-            <ul v-show="openGroups[parent.id]" class="submenu">
-              <li v-for="child in parent.children" :key="child.id" class="submenu-item"
-                @click.stop="navigate(child.route)">
-                <span class="material-icons sub-icon">{{ child.icon }}</span>
-                <span class="label" v-show="open">{{ child.label }}</span>
-              </li>
-            </ul>
-          </transition>
+    <nav class="menu-container">
+      
+      <ul v-if="loading" class="nav-list">
+        <li v-for="i in 6" :key="i" class="skeleton-item">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-label" v-show="open"></div>
         </li>
       </ul>
+
+      <ul v-else class="nav-list">
+        <li v-for="parent in menu" :key="parent.id" class="nav-item">
+          <div v-if="parent.is_active">
+            <div class="nav-link parent-link"
+              @click="parent.children.length ? toggleGroup(parent.id) : navigate(parent.route)">
+              <span class="material-icons icon">{{ parent.icon }}</span>
+              <span class="label" v-show="open">{{ parent.label }}</span>
+              <span v-if="open && parent.children.length" class="material-icons arrow"
+                :class="{ 'rotate': openGroups[parent.id] }"> expand_more </span>
+            </div>
+  
+            <transition name="slide">
+              <ul v-show="openGroups[parent.id]" class="submenu">
+                <li v-for="child in parent.children" :key="child.id" class="submenu-item"
+                  @click.stop="navigate(child.route)">
+                  <span class="material-icons sub-icon">{{ child.icon }}</span>
+                  <span class="label" v-show="open">{{ child.label }}</span>
+                </li>
+              </ul>
+            </transition>
+          </div>
+        </li>
+      </ul>
+
     </nav>
   </aside>
 </template>
+
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
+const loading = ref(true)
 const router = useRouter()
 const open = ref(false)
 const menu = ref([])
@@ -65,7 +78,7 @@ const navigate = (route) => {
   if (route) {
     router.push(route)
     if (window.innerWidth < 1024) closeSidebar();
-    open.value = false; 
+    open.value = false;
     openGroups.value = {}
   }
 }
@@ -75,9 +88,12 @@ const fetchSidebarItems = () => {
     .then(res => res.json())
     .then(res => {
       menu.value = res.data
-      
+
     })
     .catch(err => console.error('Error:', err))
+    .finally(() => {
+      setTimeout(() => { loading.value = false }, 300);
+    })
 }
 
 onMounted(fetchSidebarItems)
@@ -194,9 +210,9 @@ onMounted(fetchSidebarItems)
 
 .nav-list,
 .submenu {
-    list-style: none !important;
-    padding: 0;
-    margin: 0;
+  list-style: none !important;
+  padding: 0;
+  margin: 0;
 }
 
 .submenu {
@@ -279,5 +295,60 @@ onMounted(fetchSidebarItems)
 .arrow.rotate {
   transform: rotate(180deg);
   color: #a3e635;
+}
+
+.skeleton-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.skeleton-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-label {
+  height: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  margin-left: 1.2rem;
+  border-radius: 4px;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-icon::after,
+.skeleton-label::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.03) 20%,
+    rgba(255, 255, 255, 0.06) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* Alineación cuando el sidebar está cerrado */
+.sidenav:not(.is-open) .skeleton-item {
+  justify-content: center;
+  padding: 0.75rem 0;
 }
 </style>

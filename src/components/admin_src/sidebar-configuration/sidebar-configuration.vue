@@ -74,7 +74,8 @@
                                 </div>
                             </td>
                             <td><span class="route-badge child-route-color">{{ child.route || '---' }}</span></td>
-                            <td class="text-center"><span class="badge-order-highlight sub-order">{{ child.order}}</span></td>
+                            <td class="text-center"><span class="badge-order-highlight sub-order">{{
+                                    child.order}}</span></td>
                             <td class="text-center">
                                 <div class="status-container justify-content-center">
                                     <span class="dot-status"
@@ -95,14 +96,9 @@
                             </td>
                         </tr>
                     </template>
-                    <sidebar-configuration-modal
-                        v-if="isModalOpen"
-                        :key="serviceSelected.id || 'new'"
-                        :service="serviceSelected"
-                        :services="services"
-                        :isOpen="isModalOpen"
-                        @close="isModalOpen = false"
-                        @save="saveChanges">
+                    <sidebar-configuration-modal v-if="isModalOpen" :key="serviceSelected.id || 'new'"
+                        :service="serviceSelected" :services="services" :isOpen="isModalOpen"
+                        @close="isModalOpen = false" @save="saveChanges">
                     </sidebar-configuration-modal>
                 </table>
             </div>
@@ -158,14 +154,14 @@ export default {
             if (this.serviceSelected.parent_id == null) {
                 this.serviceSelected.route = "";
             }
-            
+
             // Si tiene ID es EDITAR, si no tiene es CREAR
             const id = this.serviceSelected.id;
             const method = id ? 'PUT' : 'POST';
             const url = id
                 ? `http://127.0.0.1:8000/api/v1/admin-navigation/${id}`
                 : `http://127.0.0.1:8000/api/v1/admin-navigation`;
-            
+
             fetch(url, {
                 method: method,
                 headers: {
@@ -182,6 +178,7 @@ export default {
                 .then(data => {
                     this.getServices();
                     this.isModalOpen = false;
+                    window.location.reload()
                 })
                 .catch(err => alert("No se pudo procesar la solicitud"));
         },
@@ -202,13 +199,14 @@ export default {
                 })
                 .then(data => {
                     this.getServices();
+                    window.location.reload()
                 })
                 .catch(err => alert("No se pudo eliminar el módulo"));
         },
     },
     mounted() {
         this.getServices();
-        
+
     }
 }
 </script>
@@ -462,6 +460,4 @@ export default {
     justify-content: flex-end;
     gap: 10px;
 }
-
-
 </style>
