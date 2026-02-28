@@ -131,7 +131,6 @@ import ThemeSwitcher from '../UI/theme-switcher.vue';
     padding-top: 1rem;
   }
   
-  /* En móvil, la línea se expande igual pero centrada */
   .custom-link {
     display: inline-block;
     margin: 5px 0;
