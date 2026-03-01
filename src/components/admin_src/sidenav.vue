@@ -4,7 +4,7 @@
   <aside :class="['sidenav', { 'is-open': open }]">
     <div class="toggle-container">
       <button class="toggle-btn" @click="toggleSidebar">
-        <span class="material-icons">menu</span>
+        <span class="material-symbols-outlined">menu</span>
       </button>
     </div>
 
@@ -22,9 +22,9 @@
           <div v-if="parent.is_active">
             <div class="nav-link parent-link"
               @click="parent.children.length ? toggleGroup(parent.id) : navigate(parent.route)">
-              <span class="material-icons icon">{{ parent.icon }}</span>
+              <span class="material-symbols-outlined icon">{{ parent.icon }}</span>
               <span class="label" v-show="open">{{ parent.label }}</span>
-              <span v-if="open && parent.children.length" class="material-icons arrow"
+              <span v-if="open && parent.children.length" class="material-symbols-outlined arrow"
                 :class="{ 'rotate': openGroups[parent.id] }"> expand_more </span>
             </div>
   
@@ -32,7 +32,7 @@
               <ul v-show="openGroups[parent.id]" class="submenu">
                 <li v-for="child in parent.children" :key="child.id" class="submenu-item"
                   @click.stop="navigate(child.route)">
-                  <span class="material-icons sub-icon">{{ child.icon }}</span>
+                  <span class="material-symbols-outlined sub-icon">{{ child.icon }}</span>
                   <span class="label" v-show="open">{{ child.label }}</span>
                 </li>
               </ul>

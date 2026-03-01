@@ -1,8 +1,7 @@
 <template>
   <Loader />
   <router-view></router-view>
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Icons">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 </template>
 
 

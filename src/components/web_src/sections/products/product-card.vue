@@ -1,11 +1,11 @@
 <template>
     <div class="product-card" @click="goToDetails(product.id)">
-        <img :src="product.image" :alt="product.name" class="product-image" />
+        <img :src="product.image || defaultImage" :alt="product.name" class="product-image" />
 
         <h3 class="product-name">{{ product.name }}</h3>
         <BasePrice :amount="product.price" :locale="locale" :currency="currency" size="md" />
 
-        <button @click.stop="addToCart" class="btn material-icons">
+        <button @click.stop="addToCart" class="btn material-symbols-outlined">
             shopping_cart
         </button>
     </div>
@@ -30,6 +30,10 @@ export default {
         currency: {
             type: String,
             default: 'EUR'
+        },
+        defaultImage: {
+            type: String,
+            default: 'https://placehold.co/600x700'
         }
     },
 

@@ -4,7 +4,7 @@
             <div>
                 <h2 class="text-white fw-bold h4 ">Sidebar Configuración</h2>
                 <button @click="openModal()" class="btn-action btn-create-neon mt-3 w-100">
-                    <span class="material-icons">add_circle</span>
+                    <span class="material-symbols-outlined">add_circle</span>
                     Nuevo Módulo
                 </button>
             </div>
@@ -31,7 +31,7 @@
                             <td class="td-service ps-4">
                                 <div class="d-flex align-items-center">
                                     <div class="icon-box active-icon me-3">
-                                        <span class="material-icons">{{ parent.icon }}</span>
+                                        <span class="material-symbols-outlined">{{ parent.icon }}</span>
                                     </div>
                                     <div>
                                         <div class="fw-bold text-white">{{ parent.label }}</div>
@@ -52,10 +52,10 @@
                             <td class="text-end pe-4">
                                 <div class="action-buttons">
                                     <button @click="openModal(parent)" class="btn-action btn-edit-neon">
-                                        <span class="material-icons">edit</span>
+                                        <span class="material-symbols-outlined">edit</span>
                                     </button>
                                     <button @click="deleteService(parent.id)" class="btn-action btn-delete-neon">
-                                        <span class="material-icons">delete</span>
+                                        <span class="material-symbols-outlined">delete</span>
                                     </button>
                                 </div>
                             </td>
@@ -65,7 +65,7 @@
                                 <div class="d-flex align-items-center">
                                     <div class="child-indicator me-3"></div>
                                     <div class="icon-box active-icon me-3 icon-sm">
-                                        <span class="material-icons">{{ child.icon }}</span>
+                                        <span class="material-symbols-outlined">{{ child.icon }}</span>
                                     </div>
                                     <div>
                                         <div class="fw-bold text-white small">{{ child.label }}</div>
@@ -87,10 +87,10 @@
                             <td class="text-end pe-4">
                                 <div class="action-buttons">
                                     <button @click="openModal(child)" class="btn-action btn-edit-neon">
-                                        <span class="material-icons">edit</span>
+                                        <span class="material-symbols-outlined">edit</span>
                                     </button>
                                     <button @click="deleteService(child.id)" class="btn-action btn-delete-neon">
-                                        <span class="material-icons">delete</span>
+                                        <span class="material-symbols-outlined">delete</span>
                                     </button>
                                 </div>
                             </td>
