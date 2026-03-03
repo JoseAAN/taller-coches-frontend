@@ -179,4 +179,62 @@ export default {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+@media (max-width: 992px) {
+    .product-details {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .productImage {
+        width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+    }
+
+    .product-right {
+        flex: 1;
+    }
+
+    .quantityInput {
+        width: 80px;
+    }
+
+    .btn-cart {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-details {
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+
+    .product-name {
+        font-size: 1.4rem;
+    }
+
+    .product-price {
+        font-size: 1.6rem;
+    }
+
+    .category {
+        font-size: 0.75rem;
+        padding: 1px 4px;
+    }
+
+    .quantityInput {
+        width: 90px;
+    }
+
+    .btn-cart {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+}
 </style>

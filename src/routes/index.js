@@ -43,7 +43,7 @@ const routes = [
         component: () => import('../components/admin_src/service-home-edit-component.vue')
       },
       {
-        path: 'admin/admin-sidebar-configuration',
+        path: 'admin-sidebar-configuration',
         name: 'admin.sidebar-configuration',
         component: () => import('../components/admin_src/sidebar-configuration/sidebar-configuration.vue')
       }

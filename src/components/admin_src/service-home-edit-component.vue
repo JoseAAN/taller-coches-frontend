@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="text-white fw-bold h4 m-0">Gestionar Servicios en Home</h2>
             <span class="badge-status">
-                {{ selectedCount }} / 3 seleccionados
+                {{ servicesSelected }} / 3 seleccionados
             </span>
         </div>
 
@@ -23,10 +23,9 @@
                         <tr v-for="service in activeServices" :key="service.id" class="row-active">
                             <td class="td-service">
                                 <div class="d-flex align-items-center">
-                                    <div class="icon-box active-icon me-3">{{ service.name.charAt(0) }}</div>
+                                    <div class="icon-box active-icon me-3 material-symbols-outlined">local_car_wash</div>
                                     <div>
                                         <div class="fw-bold text-white">{{ service.name }}</div>
-                                        <small class="description-text">{{ service.description.substring(0, 40) }}...</small>
                                     </div>
                                 </div>
                             </td>
@@ -64,10 +63,9 @@
                         <tr v-for="service in inactiveServices" :key="service.id">
                             <td class="td-service">
                                 <div class="d-flex align-items-center">
-                                    <div class="icon-box me-3">{{ service.name.charAt(0) }}</div>
+                                    <div class="icon-box me-3 material-symbols-outlined">local_car_wash</div>
                                     <div>
                                         <div class="fw-bold text-light">{{ service.name }}</div>
-                                        <small class="description-text">{{ service.description.substring(0, 40) }}...</small>
                                     </div>
                                 </div>
                             </td>
@@ -80,7 +78,7 @@
                             </td>
                             <td class="td-action text-end">
                                 <button @click="toggleHomeStatus(service)" 
-                                    :disabled="selectedCount >= 3"
+                                    :disabled="servicesSelected >= 3"
                                     class="btn btn-action btn-add">
                                     Mostrar en Home
                                 </button>
@@ -105,10 +103,12 @@ export default {
         activeServices() {
             return this.services.filter(s => s.show_on_home);
         },
+
         inactiveServices() {
             return this.services.filter(s => !s.show_on_home);
         },
-        selectedCount() {
+
+        servicesSelected() {
             return this.activeServices.length;
         }
     },
@@ -122,7 +122,7 @@ export default {
                 .catch(err => console.error(err));
         },
         toggleHomeStatus(service) {
-            const newStatus = !service.show_on_home;
+            const activeShowOnHome = !service.show_on_home;
             let token = localStorage.getItem('token'); 
             fetch(`http://127.0.0.1:8000/api/v1/services/${service.id}/toggle-home`, {
                 method: 'POST',
@@ -130,14 +130,14 @@ export default {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ show_on_home: newStatus })
+                body: JSON.stringify({ show_on_home: activeShowOnHome })
             })
             .then(res => {
                 if (!res.ok) throw new Error('Error');
                 return res.json();
             })
             .then(() => {
-                service.show_on_home = newStatus;
+                service.show_on_home = activeShowOnHome;
             })
             .catch(err => console.error(err));
         }
@@ -202,12 +202,11 @@ export default {
     align-items: center;
     justify-content: center;
     color: #cbd5e1;
-    font-weight: bold;
 }
 
 .active-icon {
     background: rgba(163, 230, 53, 0.2);
-    color: #a3e635;
+    color: #9bfc00;
     border: 1px solid rgba(163, 230, 53, 0.2);
 }
 
