@@ -14,7 +14,7 @@ const routes = [
       {
         path: 'services',
         name: 'services',
-        component: () => import('../components/web_src/sections/home-sections/services-components/service-component.vue')
+        component: () => import('../components/web_src/sections/services/index.vue')
       },
       {
         path: 'products',
@@ -25,6 +25,11 @@ const routes = [
         path: 'product/:id',
         name: 'ProductDetails',
         component: () => import('../components/web_src/sections/products/details/product-details.vue')
+      },
+      {
+        path: 'services/:id',
+        name: 'ServiceDetails',
+        component: () => import('../components/web_src/sections/services/details/service-details.vue')
       }
     ]
   },

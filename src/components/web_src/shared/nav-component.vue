@@ -17,7 +17,7 @@
       <div class="collapse navbar-collapse" id="navbarTaller">
         <ul class="navbar-nav mx-auto gap-lg-4 my-3 my-lg-0">
           <li class="nav-item">
-            <router-link class="custom-link d-flex flex-column align-items-center" to="/servicios">
+            <router-link class="custom-link d-flex flex-column align-items-center" to="/services">
               <span class="material-symbols-outlined">local_car_wash</span>
               <span>Servicios</span>
             </router-link>
