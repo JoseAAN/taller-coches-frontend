@@ -136,7 +136,7 @@ export default {
         checkErrors.email = ['El formato del email no es válido'];
       }
 
-      if (this.form.password.length < 8) {
+      if (this.form.password.length < 4) {
         checkErrors.password = ['La contraseña debe tener al menos 8 caracteres'];
       }
 
