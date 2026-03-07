@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { loaderState } from '../loaderState.js';
 
 const routes = [
   {
@@ -21,7 +22,7 @@ const routes = [
         component: () => import('../components/web_src/sections/products/index.vue')
       },
       {
-        path: '/product/:id',
+        path: 'product/:id',
         name: 'ProductDetails',
         component: () => import('../components/web_src/sections/products/details/product-details.vue')
       }
@@ -42,7 +43,7 @@ const routes = [
         component: () => import('../components/admin_src/service-home-edit-component.vue')
       },
       {
-        path: '/admin/admin-sidebar-configuration',
+        path: 'admin-sidebar-configuration',
         name: 'admin.sidebar-configuration',
         component: () => import('../components/admin_src/sidebar-configuration/sidebar-configuration.vue')
       }
@@ -64,6 +65,22 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+});
+
+router.beforeEach(async (to, from, next) => {
+  loaderState.show();
+  await new Promise(resolve => setTimeout(resolve, 400));
+
+  next();
+});
+
+router.afterEach(() => {
+  console.log('after');
+  loaderState.hide();
+});
+
+router.onError(() => {
+  loaderState.hide();
 });
 
 export default router;

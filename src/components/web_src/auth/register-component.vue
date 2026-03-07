@@ -51,6 +51,8 @@
             class="btn-register w-100 fw-bold py-3 mt-2" @click.prevent="registrar" />
 
           <Message v-if="success" severity="success">Usuario creado correctamente</Message>
+
+          <a href="/login" @click.prevent="this.$router.push('/login')">Ya tengo cuenta</a>
         </form>
       </div>
     </div>

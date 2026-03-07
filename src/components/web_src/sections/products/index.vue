@@ -75,7 +75,7 @@ export default {
 <style scoped>
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(6, 1fr);
     gap: 1rem;
     padding: 1rem;
 }
@@ -108,5 +108,29 @@ export default {
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .product-card {
+        max-width: 100%;
+    }
 }
 </style>

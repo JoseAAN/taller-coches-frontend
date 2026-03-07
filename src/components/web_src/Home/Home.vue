@@ -2,6 +2,7 @@
 <template>
   <header>
     <hero-component></hero-component>
+    <h1>Servicios Recomendados para tí</h1>
     <service-component class="mt-5"></service-component>
     <slider-comparator :before="cochesucio" :after="cochelimpio" />
   </header>

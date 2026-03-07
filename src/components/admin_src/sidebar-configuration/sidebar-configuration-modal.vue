@@ -26,7 +26,7 @@ import { onMounted } from 'vue';
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label-custom">Icono (Material)</label>
+                        <label class="form-label-custom">Icono (Material Icons)</label>
                         <input v-model="serviceSelected.icon" type="text" class="form-input-custom"
                             placeholder="settings">
                     </div>

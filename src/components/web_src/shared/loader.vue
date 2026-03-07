@@ -8,7 +8,7 @@
                     </div>
                     
                     <div class="water-waves"></div>
-                    <span class="material-icons car-icon">directions_car</span>
+                    <span class="material-symbols-outlined car-icon">directions_car</span>
                 </div>
 
                 <div class="progress-wrapper">

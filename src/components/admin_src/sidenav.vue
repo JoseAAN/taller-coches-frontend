@@ -1,102 +1,116 @@
 <template>
+
   <div v-if="open" class="sidebar-overlay" @click="closeSidebar"></div>
 
-  <aside :class="['sidenav', { 'is-open': open }]">
+  <aside class="sidenav" :class="{ 'is-open': open }">
+
     <div class="toggle-container">
       <button class="toggle-btn" @click="toggleSidebar">
-        <span class="material-icons">menu</span>
+        <span class="material-symbols-outlined">menu</span>
       </button>
     </div>
 
-    <nav class="menu-container">
-      
+    <div class="menu-container">
       <ul v-if="loading" class="nav-list">
-        <li v-for="i in 6" :key="i" class="skeleton-item">
+        <li v-for="i in 5" :key="i" class="skeleton-item">
           <div class="skeleton-icon"></div>
-          <div class="skeleton-label" v-show="open"></div>
+          <div class="skeleton-label"></div>
         </li>
       </ul>
 
       <ul v-else class="nav-list">
-        <li v-for="parent in menu" :key="parent.id" class="nav-item">
-          <div v-if="parent.is_active">
-            <div class="nav-link parent-link"
-              @click="parent.children.length ? toggleGroup(parent.id) : navigate(parent.route)">
-              <span class="material-icons icon">{{ parent.icon }}</span>
-              <span class="label" v-show="open">{{ parent.label }}</span>
-              <span v-if="open && parent.children.length" class="material-icons arrow"
-                :class="{ 'rotate': openGroups[parent.id] }"> expand_more </span>
-            </div>
-  
-            <transition name="slide">
-              <ul v-show="openGroups[parent.id]" class="submenu">
-                <li v-for="child in parent.children" :key="child.id" class="submenu-item"
-                  @click.stop="navigate(child.route)">
-                  <span class="material-icons sub-icon">{{ child.icon }}</span>
-                  <span class="label" v-show="open">{{ child.label }}</span>
+
+        <li v-for="parent in menu" :key="parent.id">
+
+          <a v-if="!parent.children.length" href="#" class="nav-link" @click.prevent="goTo(parent.route)">
+            <span class="material-symbols-outlined icon">
+              {{ parent.icon }}
+            </span>
+
+            <span v-if="open" class="label">
+              {{ parent.label }}
+            </span>
+          </a>
+
+          <div v-else>
+            <a class="nav-link" data-bs-toggle="collapse" :href="'#menu-' + parent.id">
+              <span class="material-symbols-outlined icon">
+                {{ parent.icon }}
+              </span>
+
+              <span v-if="open" class="label">
+                {{ parent.label }}
+              </span>
+            </a>
+
+            <div class="collapse" :id="'menu-' + parent.id">
+              <ul class="submenu" v-if="open">
+                <li v-for="child in parent.children" :key="child.id" class="submenu-item">
+                  <a href="#" @click.prevent="goTo(child.route)">
+                    <span class="material-symbols-outlined sub-icon">
+                      {{ child.icon }}
+                    </span>
+                    {{ child.label }}
+                  </a>
                 </li>
               </ul>
-            </transition>
+            </div>
           </div>
         </li>
       </ul>
-
-    </nav>
+    </div>
   </aside>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+<script>
+export default {
 
-const loading = ref(true)
-const router = useRouter()
-const open = ref(false)
-const menu = ref([])
-const openGroups = ref({})
+  data() {
+    return {
+      open: false,
+      loading: true,
+      menu: []
+    }
+  },
 
-const toggleSidebar = () => {
-  open.value = !open.value
-  if (!open.value) {
-    openGroups.value = {}
+  methods: {
+
+    toggleSidebar() {
+      this.open = !this.open
+    },
+
+    closeSidebar() {
+      this.open = false
+    },
+
+    fetchSidebarItems() {
+      console.log('dentro fetch');
+
+      fetch('http://127.0.0.1:8000/api/v1/admin-navigation')
+        .then(res => res.json())
+        .then(res => {
+          this.menu = res.data
+          console.log(this.menu);
+
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    goTo(route) {
+    if (route) {
+      this.$router.push(route)
+      this.closeSidebar()
+    }
   }
-}
 
-const closeSidebar = () => {
-  open.value = false
-  openGroups.value = {}
-}
+  },
 
-const toggleGroup = (id) => {
-  if (!open.value) {
-    open.value = true;
+  mounted() {
+    this.fetchSidebarItems()
   }
-  openGroups.value[id] = !openGroups.value[id]
+
 }
-
-const navigate = (route) => {
-  if (route) {
-    router.push(route)
-    if (window.innerWidth < 1024) closeSidebar();
-    open.value = false;
-    openGroups.value = {}
-  }
-}
-
-const fetchSidebarItems = () => {
-  fetch('http://127.0.0.1:8000/api/v1/admin-navigation')
-    .then(res => res.json())
-    .then(res => {
-      menu.value = res.data
-
-    })
-    .catch(err => console.error('Error:', err))
-    .finally(() => {
-      setTimeout(() => { loading.value = false }, 300);
-    })
-}
-
-onMounted(fetchSidebarItems)
 </script>
 
 <style scoped>
@@ -332,18 +346,18 @@ onMounted(fetchSidebarItems)
   bottom: 0;
   left: 0;
   transform: translateX(-100%);
-  background-image: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0,
-    rgba(255, 255, 255, 0.03) 20%,
-    rgba(255, 255, 255, 0.06) 60%,
-    rgba(255, 255, 255, 0)
-  );
+  background-image: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0.03) 20%,
+      rgba(255, 255, 255, 0.06) 60%,
+      rgba(255, 255, 255, 0));
   animation: shimmer 2s infinite;
 }
 
 @keyframes shimmer {
-  100% { transform: translateX(100%); }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* Alineación cuando el sidebar está cerrado */

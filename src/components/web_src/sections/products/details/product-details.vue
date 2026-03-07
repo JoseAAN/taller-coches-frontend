@@ -1,69 +1,69 @@
 <template>
     <div v-if="product" class="product-details">
-        <h2 class="product-name">{{ product.name }}</h2>
 
-        <div class="product-price">
-            {{ product.price }} €
+        <div class="product-left">
+            <img :src="product.image || defaultImage" :alt="product.name" class="productImage">
         </div>
 
-        <div class="product-stock" :class="{ 'out-of-stock': product.stock === 0 }">
-            {{ product.stock > 0 ? `En stock: ${product.stock}` : 'Agotado' }}
+        <div class="product-right">
+            <h2 class="product-name">{{ product.name }}</h2>
+
+            <div class="product-price">
+                {{ product.price }} €
+            </div>
+
+            <div class="product-stock" :class="{ 'out-of-stock': product.stock === 0 }">
+                {{ product.stock > 0 ? `En stock: ${product.stock}` : 'Agotado' }}
+            </div>
+
+            <div class="product-categories">
+                <span v-for="category in product.categories" :key="category" class="category">
+                    {{ category }}
+                </span>
+            </div>
+
+            <p class="product-description">{{ product.description }}</p>
+
+            <div class="quantity-selector">
+                <label for="minmax-buttons">Cantidad:</label>
+                <InputNumber v-model="value" inputId="minmax-buttons" mode="decimal" showButtons :min="1" :max="100"
+                    fluid class="quantityInput" />
+            </div>
+
+            <div class="product-actions">
+                <button :disabled="product.stock === 0" class="btn-cart material-symbols-outlined">
+                    shopping_cart
+                </button>
+            </div>
         </div>
 
-        <div class="product-categories">
-            <span v-for="category in product.categories" :key="category" class="category">
-                {{ category }}
-            </span>
-        </div>
-
-        <p class="product-description">{{ product.description }}</p>
-
-        <div class="product-actions">
-            <button :disabled="product.stock === 0" class="btn btn-primary">
-                Añadir al carrito
-            </button>
-            <button class="btn btn-secondary">
-                Volver a productos
-            </button>
-        </div>
     </div>
 </template>
 
 <script>
+import InputNumber from 'primevue/inputnumber';
 export default {
     name: "ProductDetails",
+    components: { InputNumber },
     data() {
         return {
             productId: null,
-            product: null
+            product: null,
+            value: 1,
+            defaultImage: 'https://placehold.co/600x700'
         }
     },
-
     methods: {
         getProduct() {
-            console.log('dentro');
-            
-            fetch(`http://127.0.0.1:8000/api/v1/products/${this.productId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
+            fetch(`http://127.0.0.1:8000/api/v1/products/${this.productId}`)
                 .then(res => {
-                    if (!res.ok) {
-                        throw new Error("Error al recoger los productos")
-                    }
-                    return res.json()
+                    if (!res.ok) throw new Error("Error al recoger los productos");
+                    return res.json();
                 })
-                .then(data => {
-                    this.product = data.data
-                })
-                .catch(err => console.error('Error al cargar productos:', err))
+                .then(data => this.product = data.data)
+                .catch(err => console.error('Error al cargar productos:', err));
         },
     },
-
-
     mounted() {
         this.productId = this.$route.params.id;
         this.getProduct();
@@ -73,12 +73,30 @@ export default {
 
 <style scoped>
 .product-details {
-    max-width: 600px;
+    max-width: 1000px;
     margin: 2rem auto;
-    padding: 1rem 2rem;
+    padding: 2rem;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background: var(--bg-color);;
+    background: var(--bg-color);
+    display: flex;
+    gap: 2rem;
+}
+
+.product-left {
+    flex: 1;
+}
+
+.productImage {
+    width: 500px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.product-right {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-name {
@@ -121,21 +139,102 @@ export default {
     line-height: 1.4;
 }
 
-.product-actions button {
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    margin-right: 0.5rem;
+.quantity-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
 }
 
-.btn-primary {
+.quantity-selector label {
+    font-weight: 500;
+}
+
+.quantityInput {
+    width: 100px;
+}
+
+.product-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-cart {
     background-color: #1d4ed8;
     color: #fff;
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
-.btn-secondary {
-    background-color: #eee;
-    color: #333;
+.btn-cart:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 992px) {
+    .product-details {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .productImage {
+        width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+    }
+
+    .product-right {
+        flex: 1;
+    }
+
+    .quantityInput {
+        width: 80px;
+    }
+
+    .btn-cart {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-details {
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+
+    .product-name {
+        font-size: 1.4rem;
+    }
+
+    .product-price {
+        font-size: 1.6rem;
+    }
+
+    .category {
+        font-size: 0.75rem;
+        padding: 1px 4px;
+    }
+
+    .quantityInput {
+        width: 90px;
+    }
+
+    .btn-cart {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
 }
 </style>

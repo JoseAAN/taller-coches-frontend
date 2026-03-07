@@ -8,12 +8,8 @@
 
       <div class="d-flex align-items-center gap-2">
         <ThemeSwitcher class="d-lg-none" />
-        <button 
-          class="navbar-toggler custom-toggler" 
-          type="button" 
-          data-bs-toggle="collapse" 
-          data-bs-target="#navbarTaller"
-        >
+        <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarTaller">
           <span class="navbar-toggler-icon"></span>
         </button>
       </div>
@@ -21,16 +17,31 @@
       <div class="collapse navbar-collapse" id="navbarTaller">
         <ul class="navbar-nav mx-auto gap-lg-4 my-3 my-lg-0">
           <li class="nav-item">
-            <router-link class="custom-link" to="/servicios">Servicios</router-link>
+            <router-link class="custom-link d-flex flex-column align-items-center" to="/servicios">
+              <span class="material-symbols-outlined">local_car_wash</span>
+              <span>Servicios</span>
+            </router-link>
           </li>
+
           <li class="nav-item">
-            <router-link class="custom-link" to="/nosotros">Nosotros</router-link>
+            <router-link class="custom-link d-flex flex-column align-items-center" to="/nosotros">
+              <span class="material-symbols-outlined">groups</span>
+              <span>Nosotros</span>
+            </router-link>
           </li>
+
           <li class="nav-item">
-            <router-link class="custom-link" to="/empresas">Empresas</router-link>
+            <router-link class="custom-link d-flex flex-column align-items-center" to="/empresas">
+              <span class="material-symbols-outlined">business</span>
+              <span>Empresas</span>
+            </router-link>
           </li>
+
           <li class="nav-item">
-            <router-link class="custom-link" to="/products">Productos</router-link>
+            <router-link class="custom-link d-flex flex-column align-items-center" to="/products">
+              <span class="material-symbols-outlined">fragrance</span>
+              <span>Productos</span>
+            </router-link>
           </li>
         </ul>
 
@@ -51,10 +62,12 @@ import ThemeSwitcher from '../UI/theme-switcher.vue';
 
 <style scoped>
 .custom-nav {
-  background-color: var(--nav-bg); 
+  background-color: var(--nav-bg);
   min-height: 110px;
   transition: background-color 0.3s ease;
 }
+
+
 
 .logo-line {
   color: var(--nav-text);
@@ -81,7 +94,7 @@ import ThemeSwitcher from '../UI/theme-switcher.vue';
   height: 3px;
   bottom: 0;
   left: 50%;
-  background-color: #52b155; 
+  background-color: #52b155;
   transition: all 0.3s ease-in-out;
   transform: translateX(-50%);
 }
@@ -116,6 +129,19 @@ import ThemeSwitcher from '../UI/theme-switcher.vue';
   transition: filter 0.3s ease;
 }
 
+.material-symbols-outlined {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.custom-link span:last-child {
+  font-size: 0.9rem;
+}
+
+.custom-link {
+  gap: 4px;
+}
+
 @media (min-width: 992px) {
   .navbar-nav {
     position: absolute;
@@ -130,17 +156,17 @@ import ThemeSwitcher from '../UI/theme-switcher.vue';
     border-top: 1px solid var(--nav-border);
     padding-top: 1rem;
   }
-  
+
   .custom-link {
     display: inline-block;
     margin: 5px 0;
   }
-  
+
   .ms-lg-auto {
     margin-top: 1rem;
     width: 100%;
   }
-  
+
   .btn-reserva {
     width: 100%;
   }

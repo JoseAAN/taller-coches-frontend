@@ -1,12 +1,14 @@
 <template>
     <div class="product-card" @click="goToDetails(product.id)">
-        <img :src="product.image" :alt="product.name" class="product-image" />
+        <img :src="product.image || defaultImage" :alt="product.name" class="product-image" />
 
         <h3 class="product-name">{{ product.name }}</h3>
         <BasePrice :amount="product.price" :locale="locale" :currency="currency" size="md" />
 
-        <button @click.stop="addToCart" class="btn material-icons">
-            shopping_cart
+        <button @click.stop="addToCart" class="btn">
+            <span class="material-symbols-outlined">
+                shopping_cart
+            </span>
         </button>
     </div>
 </template>
@@ -30,6 +32,10 @@ export default {
         currency: {
             type: String,
             default: 'EUR'
+        },
+        defaultImage: {
+            type: String,
+            default: 'https://placehold.co/600x700'
         }
     },
 
@@ -39,8 +45,8 @@ export default {
         },
         goToDetails(productId) {
             console.log(productId);
-            
-            this.$router.push({name: 'ProductDetails', params: {id: productId}})
+
+            this.$router.push({ name: 'ProductDetails', params: { id: productId } })
         }
     },
     mounted() {
@@ -58,7 +64,7 @@ export default {
     gap: 0.5rem;
     cursor: pointer;
     transition: box-shadow 0.2s, background 0.2s;
-    background:var(--bg-color);
+    background: var(--bg-color);
     color: var(--nav-text);
 }
 
