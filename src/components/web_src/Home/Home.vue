@@ -33,7 +33,7 @@
       checkUser() {
         const token = localStorage.getItem('token');
         if (token) {
-          fetch('http://api/user', {
+          fetch('http://127.0.0.1:8000/api/user', {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Accept': 'application/json'
@@ -41,8 +41,6 @@
           })
           .then(response => {
             if (response.ok) {
-              alert('Usuario verificado');
-              
               this.user_verfied = true;
             } else {
               localStorage.removeItem('token');

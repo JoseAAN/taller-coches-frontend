@@ -15,6 +15,7 @@
 
 <script>
 import BasePrice from '../../UI/global-price.vue'
+import { cart } from '@/Cart.js';
 
 export default {
     name: 'ProductCard',
@@ -41,7 +42,25 @@ export default {
 
     methods: {
         addToCart() {
-            //meter llamada a carrito
+            fetch(`http://127.0.0.1:8000/api/v1/addToCart`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ product_id: this.product.id, quantity: 1, cart_id: cart.id, priceInTime: this.product.price })
+            })
+                .then(res => res.json())
+                .then(res => {
+                    cart.loadUserCart();
+                    console.log(cart);
+                    
+                    console.log('Producto añadido al carrito:', res)
+                })
+                .catch(err => {
+                    console.error('Error al añadir al carrito:', err)
+                })
         },
         goToDetails(productId) {
             console.log(productId);

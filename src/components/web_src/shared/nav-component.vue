@@ -1,42 +1,77 @@
 <template>
   <nav class="navbar navbar-expand-lg custom-nav shadow-sm px-md-4">
-    <div class="container-fluid">
+    <div class="container-fluid position-relative">
+      
       <router-link class="navbar-brand d-flex flex-column m-0" to="/">
         <span class="logo-line">LOGO</span>
         <span class="logo-line">MARCA</span>
       </router-link>
 
-      <div class="d-flex align-items-center gap-2">
-        <ThemeSwitcher class="d-lg-none" />
-        <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse"
+      <div class="d-flex align-items-center gap-2 ms-auto d-lg-none">
+        
+        <router-link to="/cart" class="btn btn-icon-action position-relative d-flex align-items-center justify-content-center p-1 rounded-circle">
+          <span class="material-symbols-outlined" style="font-size: 26px;">shopping_cart</span>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem; padding: 0.3em 0.4em;">
+            {{ cart.quantity }}
+          </span>
+        </router-link>
+
+        <a v-if="!user" href="/login" class="btn btn-icon-action d-flex align-items-center justify-content-center p-1 rounded-circle">
+          <span class="material-symbols-outlined" style="font-size: 26px;">login</span>
+        </a>
+        
+        <div v-else class="dropdown">
+          <button class="btn btn-icon-action d-flex align-items-center justify-content-center p-1 rounded-circle dropdown-toggle" 
+                  type="button" 
+                  data-bs-toggle="dropdown" 
+                  aria-expanded="false">
+            <span class="material-symbols-outlined" style="font-size: 26px;">account_circle</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm custom-dropdown position-absolute">
+            <li>
+              <router-link to="/profile" class="dropdown-item d-flex align-items-center gap-2">
+                <span class="material-symbols-outlined" style="font-size: 20px;">manage_accounts</span>
+                Mi cuenta
+              </router-link>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <button @click="logout" class="dropdown-item text-danger d-flex align-items-center gap-2">
+                <span class="material-symbols-outlined" style="font-size: 20px;">logout</span>
+                Cerrar sesión
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <ThemeSwitcher />
+
+        <button class="navbar-toggler custom-toggler ms-1" type="button" data-bs-toggle="collapse"
           data-bs-target="#navbarTaller">
           <span class="navbar-toggler-icon"></span>
         </button>
       </div>
 
-      <div class="collapse navbar-collapse" id="navbarTaller">
-        <ul class="navbar-nav mx-auto gap-lg-4 my-3 my-lg-0">
+      <div class="collapse navbar-collapse w-100" id="navbarTaller">
+        <ul class="navbar-nav gap-lg-4 my-3 my-lg-0">
           <li class="nav-item">
             <router-link class="custom-link d-flex flex-column align-items-center" to="/servicios">
               <span class="material-symbols-outlined">local_car_wash</span>
               <span>Servicios</span>
             </router-link>
           </li>
-
           <li class="nav-item">
             <router-link class="custom-link d-flex flex-column align-items-center" to="/nosotros">
               <span class="material-symbols-outlined">groups</span>
               <span>Nosotros</span>
             </router-link>
           </li>
-
           <li class="nav-item">
             <router-link class="custom-link d-flex flex-column align-items-center" to="/empresas">
               <span class="material-symbols-outlined">business</span>
               <span>Empresas</span>
             </router-link>
           </li>
-
           <li class="nav-item">
             <router-link class="custom-link d-flex flex-column align-items-center" to="/products">
               <span class="material-symbols-outlined">fragrance</span>
@@ -45,19 +80,81 @@
           </li>
         </ul>
 
-        <div class="d-flex align-items-center justify-content-center ms-lg-auto gap-3">
-          <ThemeSwitcher class="d-none d-lg-block" />
-          <button class="btn btn-reserva fw-bold text-white">
-            RESERVAR CITA
-          </button>
+        <div class="d-none d-lg-flex align-items-center justify-content-center ms-auto gap-3 right-actions">
+          <ThemeSwitcher />
+
+          <router-link to="/cart" class="btn btn-icon-action position-relative d-flex align-items-center justify-content-center p-2 rounded-circle" title="Carrito">
+            <span class="material-symbols-outlined">shopping_cart</span>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; padding: 0.35em 0.5em;">
+              {{ cart.quantity }}
+            </span>
+          </router-link>
+
+          <a v-if="!user" href="/login" class="btn btn-auth fw-bold">
+            Iniciar Sesión
+          </a>
+
+          <div v-else class="dropdown">
+            <button class="btn btn-profile d-flex align-items-center justify-content-center p-2 rounded-circle dropdown-toggle" 
+                    type="button" 
+                    id="userDropdownDesktop" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false" 
+                    title="Opciones de cuenta">
+              <span class="material-symbols-outlined">person</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm custom-dropdown" aria-labelledby="userDropdownDesktop">
+              <li>
+                <router-link to="/profile" class="dropdown-item d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined" style="font-size: 20px;">manage_accounts</span>
+                  Mi cuenta
+                </router-link>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <button @click="logout" class="dropdown-item text-danger d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined" style="font-size: 20px;">logout</span>
+                  Cerrar sesión
+                </button>
+              </li>
+            </ul>
+          </div>
+
         </div>
       </div>
     </div>
   </nav>
 </template>
 
-<script setup>
+<script>
 import ThemeSwitcher from '../UI/theme-switcher.vue';
+import { cart } from '@/Cart.js';
+
+export default {
+  name: 'nav-component',
+  components: { ThemeSwitcher },
+  data() {
+    return {
+      user: localStorage.getItem('user_token') ? JSON.parse(localStorage.getItem('user')) : null
+    }
+  },
+  computed: {
+    cart() {
+      return cart;
+    }
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem('user_token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      window.location.href = '/login'; 
+    }
+  },
+  mounted() {
+    console.log('cart nav', this.cart);
+  }
+}
 </script>
 
 <style scoped>
@@ -66,8 +163,6 @@ import ThemeSwitcher from '../UI/theme-switcher.vue';
   min-height: 110px;
   transition: background-color 0.3s ease;
 }
-
-
 
 .logo-line {
   color: var(--nav-text);
@@ -85,6 +180,7 @@ import ThemeSwitcher from '../UI/theme-switcher.vue';
   position: relative;
   padding: 8px 0;
   transition: color 0.3s ease;
+  gap: 4px;
 }
 
 .custom-link::after {
@@ -99,10 +195,7 @@ import ThemeSwitcher from '../UI/theme-switcher.vue';
   transform: translateX(-50%);
 }
 
-.custom-link:hover::after {
-  width: 100%;
-}
-
+.custom-link:hover::after,
 .custom-link.router-link-active::after {
   width: 100%;
 }
@@ -111,17 +204,61 @@ import ThemeSwitcher from '../UI/theme-switcher.vue';
   color: #52b155 !important;
 }
 
-.btn-reserva {
-  background-color: #52b155;
+.btn-icon-action {
+  color: var(--nav-text);
+  background-color: transparent;
+  transition: all 0.3s ease;
   border: none;
-  padding: 12px 28px;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  white-space: nowrap;
 }
 
-.btn-reserva:hover {
-  background-color: #469c49;
+.btn-icon-action:hover {
+  color: #52b155;
+  transform: scale(1.05);
+}
+
+.btn-auth {
+  color: var(--nav-text);
+  border: 2px solid var(--nav-text);
+  background-color: transparent;
+  padding: 8px 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-auth:hover {
+  background-color: var(--nav-text);
+  color: var(--nav-bg);
+}
+
+.btn-profile {
+  background-color: var(--nav-text);
+  color: var(--nav-bg);
+  transition: all 0.3s ease;
+  border: 2px solid var(--nav-text);
+}
+
+.btn-profile:hover {
+  opacity: 0.8;
+  color: var(--nav-bg);
+}
+
+.dropdown-toggle::after {
+  display: none;
+}
+
+.custom-dropdown {
+  background-color: var(--nav-bg);
+  border: 1px solid var(--nav-border, #ddd);
+}
+
+.dropdown-item {
+  color: var(--nav-text);
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: var(--nav-border, #f8f9fa);
+  color: var(--nav-text);
 }
 
 .navbar-toggler-icon {
@@ -138,22 +275,20 @@ import ThemeSwitcher from '../UI/theme-switcher.vue';
   font-size: 0.9rem;
 }
 
-.custom-link {
-  gap: 4px;
-}
-
 @media (min-width: 992px) {
   .navbar-nav {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
   }
 }
 
 @media (max-width: 991px) {
   .navbar-nav {
     text-align: center;
-    border-top: 1px solid var(--nav-border);
+    border-top: 1px solid var(--nav-border, #ddd);
     padding-top: 1rem;
   }
 
@@ -161,14 +296,12 @@ import ThemeSwitcher from '../UI/theme-switcher.vue';
     display: inline-block;
     margin: 5px 0;
   }
-
-  .ms-lg-auto {
-    margin-top: 1rem;
-    width: 100%;
-  }
-
-  .btn-reserva {
-    width: 100%;
+  
+  .custom-dropdown.position-absolute {
+      position: absolute !important;
+      right: 0;
+      top: 100%;
+      z-index: 1050;
   }
 }
 </style>

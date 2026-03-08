@@ -21,18 +21,18 @@
               :class="['w-100', { 'p-invalid': errors.email }]" @focus="clearError('email')" />
             <label for="email">Email</label>
           </FloatLabel>
-          <small class="p-error" v-if="errors.email">{{ errors.email[0] }}</small>
-
+          
           <FloatLabel>
             <Password id="password" 
-              :inputProps="{autocomplete: 'current-password', name: 'password'}" 
-              v-model="form.password" 
-              toggleMask 
-              :class="['w-100', { 'p-invalid': errors.password }]"
-              @focus="clearError('password')" 
+            :inputProps="{autocomplete: 'current-password', name: 'password'}" 
+            v-model="form.password" 
+            toggleMask 
+            :class="['w-100', { 'p-invalid': errors.password }]"
+            @focus="clearError('password')" 
             />
             <label for="password">Contraseña</label>
           </FloatLabel>
+          <small class="p-error" v-if="errors.email">{{ errors.email[0] }}</small>
           <small class="p-error" v-if="errors.password">{{ errors.password[0] }}</small>
 
           <div ref="recaptcha" class="d-flex justify-content-center mt-2"></div>
@@ -60,6 +60,7 @@ import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
 import { loaderState } from '@/loaderState';
+import { cart } from '@/Cart.js';
 
 export default {
   name: 'login-component',
@@ -107,7 +108,15 @@ export default {
             this.success = true;
             this.form = { email: '', password: '' };
             window.grecaptcha.reset();
-            localStorage.setItem('user_token', data.token);
+            
+            localStorage.setItem('user_token', data.access_token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            cart.loadUserCart();
+            if (data.user.role === 'admin') {
+              this.$router.push('/admin');
+            } else {
+              this.$router.push('/');
+            }
           } else {
             throw new Error('Error de servidor');
           }

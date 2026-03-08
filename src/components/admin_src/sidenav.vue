@@ -84,8 +84,6 @@ export default {
     },
 
     fetchSidebarItems() {
-      console.log('dentro fetch');
-
       fetch('http://127.0.0.1:8000/api/v1/admin-navigation')
         .then(res => res.json())
         .then(res => {
@@ -98,11 +96,11 @@ export default {
         })
     },
     goTo(route) {
-    if (route) {
-      this.$router.push(route)
-      this.closeSidebar()
+      if (route) {
+        this.$router.push(route)
+        this.closeSidebar()
+      }
     }
-  }
 
   },
 
@@ -360,7 +358,6 @@ export default {
   }
 }
 
-/* Alineación cuando el sidebar está cerrado */
 .sidenav:not(.is-open) .skeleton-item {
   justify-content: center;
   padding: 0.75rem 0;
