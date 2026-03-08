@@ -128,7 +128,7 @@
 
 <script>
 import ThemeSwitcher from '../UI/theme-switcher.vue';
-import { cart } from '@/Cart.js';
+import { cart } from '@/JS/Cart.js';
 
 export default {
   name: 'nav-component',

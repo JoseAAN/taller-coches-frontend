@@ -60,7 +60,7 @@ import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
 import { loaderState } from '@/loaderState';
-import { cart } from '@/Cart.js';
+import { cart } from '@/JS/Cart.js';
 
 export default {
   name: 'login-component',

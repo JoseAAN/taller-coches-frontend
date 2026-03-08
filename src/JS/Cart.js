@@ -31,6 +31,9 @@ export const cart = reactive({
                 this.products = data.data.items || [];
                 this.total = data.data.total;
                 this.quantity = data.data.items.length;
+                console.log('quantitu');
+                console.log(this.quantity);
+                
             });
         } catch (error) {
             console.error('Error loading cart:', error);

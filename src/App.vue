@@ -6,7 +6,7 @@
 
 <script>
 import Loader from './components/web_src/shared/loader.vue';
-import { cart } from '@/Cart.js';
+import { cart } from '@/JS/Cart.js';
 export default {
   components: {
     Loader

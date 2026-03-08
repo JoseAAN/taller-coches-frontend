@@ -15,7 +15,7 @@
 
 <script>
 import BasePrice from '../../UI/global-price.vue'
-import { cart } from '@/Cart.js';
+import { cart } from '@/JS/Cart.js';
 
 export default {
     name: 'ProductCard',

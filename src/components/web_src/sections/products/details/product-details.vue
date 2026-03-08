@@ -42,6 +42,8 @@
 
 <script>
 import InputNumber from 'primevue/inputnumber';
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
 export default {
     name: "ProductDetails",
     components: { InputNumber },
@@ -55,7 +57,7 @@ export default {
     },
     methods: {
         getProduct() {
-            fetch(`http://127.0.0.1:8000/api/v1/products/${this.productId}`)
+            fetch(`${BASE_URL}/v1/products/${this.productId}`)
                 .then(res => {
                     if (!res.ok) throw new Error("Error al recoger los productos");
                     return res.json();
@@ -63,6 +65,28 @@ export default {
                 .then(data => this.product = data.data)
                 .catch(err => console.error('Error al cargar productos:', err));
         },
+
+            addToCart() {
+                fetch(`${BASE_URL}/v1/cart`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({
+                        product_id: this.productId,
+                        quantity: this.value
+                    })
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error("Error al añadir al carrito");
+                    return res.json();
+                })
+                .then(data => {
+                    console.log('Producto añadido al carrito:', data);
+                })
+                .catch(err => console.error('Error al añadir al carrito:', err));
+            }
     },
     mounted() {
         this.productId = this.$route.params.id;
