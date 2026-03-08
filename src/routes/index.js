@@ -80,7 +80,6 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach(() => {
-  console.log('after');
   loaderState.hide();
 });
 
