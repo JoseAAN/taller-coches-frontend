@@ -34,6 +34,22 @@ const routes = [
     ]
   },
   {
+    path: '/profile',
+    component: () => import('../components/web_src/layouts/layout-profile.vue'),
+    children: [
+       {
+        path: '',
+        name: 'HomeProfile',
+        component: () => import('../components/web_src/sections/profile/sections-profile/profile-index.vue')
+      },
+      {
+        path: 'vehicles',
+        name: 'VehiclesProfile',
+        component: () => import('../components/web_src/sections/profile/sections-profile/profile-vehicles.vue')
+      }
+    ]
+  },
+  {
     path: '/admin',
     component: () => import('../components/admin_src/AdminLayout.vue'),
     children: [
