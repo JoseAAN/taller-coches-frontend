@@ -152,7 +152,6 @@ export default {
     }
   },
   mounted() {
-    console.log('cart nav', this.cart);
   }
 }
 </script>
