@@ -1,21 +1,58 @@
 <template>
     <div class="product-card" @click="goToDetails(product.id)">
-        <img :src="product.image || defaultImage" :alt="product.name" class="product-image" />
 
-        <h3 class="product-name">{{ product.name }}</h3>
-        <BasePrice :amount="product.price" :locale="locale" :currency="currency" size="md" />
+        <div class="image-wrapper">
+            <img :src="product.image || defaultImage" :alt="product.name" class="product-image" />
 
-        <button @click.stop="addToCart" class="btn">
-            <span class="material-symbols-outlined">
-                shopping_cart
+            <span v-if="product.stock > 0" class="stock in-stock">
+                En stock
             </span>
-        </button>
+
+            <span v-else class="stock out-stock">
+                Agotado
+            </span>
+        </div>
+
+        <div class="product-content">
+
+            <h3 class="product-name">
+                {{ product.name }}
+            </h3>
+
+            <p class="product-description">
+                {{ shortDescription }}
+            </p>
+
+            <div class="product-footer">
+
+                <BasePrice
+                    :amount="product.price"
+                    :locale="locale"
+                    :currency="currency"
+                    size="lg"
+                />
+
+                <button
+                    class="cart-btn"
+                    @click.stop="addToCart"
+                    :disabled="product.stock <= 0"
+                >
+                    <span class="material-symbols-outlined">
+                        shopping_cart
+                    </span>
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
 </template>
 
 <script>
+import { loaderState } from '@/loaderState'
 import BasePrice from '../../UI/global-price.vue'
-import { cart } from '@/JS/Cart.js';
+import { cart } from '@/JS/Cart.js'
 
 export default {
     name: 'ProductCard',
@@ -40,111 +77,146 @@ export default {
         }
     },
 
+    computed: {
+        shortDescription() {
+            if (!this.product.description) return ''
+            return this.product.description.length > 90
+                ? this.product.description.substring(0, 90) + '...'
+                : this.product.description
+        }
+    },
+
     methods: {
         addToCart() {
+            loaderState.show()
             fetch(`http://127.0.0.1:8000/api/v1/addToCart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('user_token')}`
                 },
-                body: JSON.stringify({ product_id: this.product.id, quantity: 1, cart_id: cart.id, priceInTime: this.product.price })
+                body: JSON.stringify({
+                    product_id: this.product.id,
+                    quantity: 1,
+                    cart_id: cart.id,
+                    priceInTime: this.product.price
+                })
             })
                 .then(res => res.json())
-                .then(res => {
-                    cart.loadUserCart();
-                    console.log(cart);
-                    
+                .then(async res => {
+                    await cart.loadUserCart()
                     console.log('Producto añadido al carrito:', res)
                 })
                 .catch(err => {
                     console.error('Error al añadir al carrito:', err)
                 })
         },
-        goToDetails(productId) {
-            console.log(productId);
 
+        goToDetails(productId) {
             this.$router.push({ name: 'ProductDetails', params: { id: productId } })
         }
-    },
-    mounted() {
     }
 }
 </script>
 
 <style scoped>
 .product-card {
-    border: 1px solid var(--nav-border);
-    border-radius: 8px;
-    padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    cursor: pointer;
-    transition: box-shadow 0.2s, background 0.2s;
+    border: 1px solid var(--nav-border);
+    border-radius: 10px;
+    overflow: hidden;
     background: var(--bg-color);
     color: var(--nav-text);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .product-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
 }
 
 .product-image {
     width: 100%;
-    height: auto;
-    border-radius: 4px;
+    height: 100%;
     object-fit: cover;
 }
 
-.product-name {
+.stock {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 0.75rem;
     font-weight: 600;
-    font-size: 1.1rem;
+    padding: 4px 8px;
+    border-radius: 4px;
 }
 
-.btn {
-    display: inline-flex;
+.in-stock {
+    background: #16a34a;
+    color: white;
+}
+
+.out-stock {
+    background: #dc2626;
+    color: white;
+}
+
+.product-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.9rem;
+}
+
+.product-name {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.product-description {
+    font-size: 0.85rem;
+    opacity: 0.75;
+    line-height: 1.35;
+}
+
+.product-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-btn {
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    padding: 0;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    cursor: pointer;
     border: none;
-    margin-top: 0.5rem;
-    background-color: #1d49d8;
+    cursor: pointer;
+    background: #2563eb;
     color: white;
-    transition: background-color 0.2s;
+    transition: background 0.2s ease, transform 0.1s ease;
 }
 
-.btn:hover {
-    background-color: #3561f1;
+.cart-btn:hover {
+    background: #1d4ed8;
 }
 
-.p-dark .product-card,
-[data-theme='dark'] .product-card {
-    border-color: var(--nav-border);
-    background: var(--nav-bg);
-    color: var(--nav-text);
-}
-
-.p-dark .pagination button,
-[data-theme='dark'] .pagination button {
-    border-color: var(--nav-text);
-    color: var(--nav-text);
-}
-
-.p-dark .pagination button.active,
-[data-theme='dark'] .pagination button.active {
-    background: var(--nav-text);
-    color: var(--nav-bg);
-}
-
-.p-dark .btn-primary,
-[data-theme='dark'] .btn-primary {
-    background-color: #1d4ed8;
-    color: white;
+.cart-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
 }
 </style>

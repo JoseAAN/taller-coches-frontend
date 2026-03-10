@@ -16,7 +16,7 @@ import './assets/main.css'
 
 const app = createApp(App)
 
-localStorage.setItem('token', 'MoeEmpJF2RFg0VpAtFS2sdS0ZzWWq365lkzUwEWfQzTEEqbaYEMQyMZiS25Z')
+localStorage.setItem('user_token', '')
 
 // Toast options for notifications
 const options = {
