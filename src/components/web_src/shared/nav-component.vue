@@ -144,12 +144,18 @@ export default {
     }
   },
   methods: {
-    logout() {
-      localStorage.removeItem('user_token');
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      window.location.href = '/login'; 
-    }
+      goToProfile() {
+    // Cierra el dropdown manualmente primero, luego navega
+    setTimeout(() => {
+      this.$router.push('/profile');
+    }, 150);
+  },
+  logout() {
+    localStorage.removeItem('user_token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    window.location.href = '/login'; 
+  }
   },
   mounted() {
   }
