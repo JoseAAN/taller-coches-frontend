@@ -223,19 +223,20 @@ export default {
           body: JSON.stringify(this.editForm)
         });
 
-        if (!response.ok) throw new Error('Error al guardar');
+        if (!response.ok){
+          const errorData = await response.json();
+          this.errorMessage = errorData.message || 'Error al actualizar el perfil.';
+          return;
+        };
 
-        // Actualiza los datos en pantalla sin recargar
-        this.infoUser.User.name = this.editForm.name;
-        this.infoUser.User.email = this.editForm.email;
-        this.infoUser.User.dni = this.editForm.dni;
-        this.infoUser.User.phone = this.editForm.phone;
-        this.infoUser.User.address = this.editForm.address;
-
+        //Enviamos al padre los datos actualizados 
+        this.$emit('infoUser-update', { ...this.editForm });
+       
         this.editing = false;
         this.errorMessage = '';
       } catch (error) {
-        console.error('Error guardando perfil:', error);
+        this.errorMessage = 'Error de conexión. Por favor, intenta nuevamente.';
+        console.error('Error al actualizar perfil:', error);
       }
     }
   }

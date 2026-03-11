@@ -9,8 +9,10 @@
         :infoVehicles="profileData.infoVehicles"
         :infoCartInvoices="profileData.infoCartInvoices"
         :infoServiceInvoices="profileData.infoServiceInvoices"
+     
+        @infoUser-update="actualizarDatosUsuario"
       />
-
+    
       <div v-else class="text-center py-5">
         <span class="material-symbols-outlined" style="font-size: 48px;">hourglass_empty</span>
         <p>Cargando...</p>
@@ -38,6 +40,11 @@ export default {
       console.error("Fallo al inicializar:", error);
       this.$router.push('/');
     }
+  },
+  methods: {
+    actualizarDatosUsuario(nuevosDatos) {
+    Object.assign(this.profileData.infoUser.User, nuevosDatos);
+  }
   }
 }
 </script>
