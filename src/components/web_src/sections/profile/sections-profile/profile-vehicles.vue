@@ -147,6 +147,7 @@
         </div>
     </Transition>
 
+    <!--Modal de eliminación-->
     <Transition name="modal">
         <div v-if="showDeleteModal" class="modal-overlay" @click.self="closeDeleteModal">
             <div class="modal-box" style="max-width: 400px">

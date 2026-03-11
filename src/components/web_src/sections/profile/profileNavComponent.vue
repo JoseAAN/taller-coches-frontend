@@ -25,13 +25,13 @@
         <span class="material-symbols-outlined">directions_car</span>
         <span>Vehículos</span>
       </router-link>
-      <router-link class="sidebar-link" to="/profile/cart-invoices" @click="$emit('close-menu')">
+      <router-link class="sidebar-link" to="/profile/InvoicesProducts" @click="$emit('close-menu')">
         <span class="material-symbols-outlined">shopping_bag</span>
-        <span>Carrito Facturas</span>
+        <span>Mis compras</span>
       </router-link>
-      <router-link class="sidebar-link" to="/profile/service-invoices" @click="$emit('close-menu')">
+      <router-link class="sidebar-link" to="/profile/InvoicesServices" @click="$emit('close-menu')">
         <span class="material-symbols-outlined">receipt_long</span>
-        <span>Servicios Facturas</span>
+        <span>Mis servicios</span>
       </router-link>
     </nav>
 

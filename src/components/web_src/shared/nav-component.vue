@@ -29,10 +29,11 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm custom-dropdown position-absolute">
             <li>
-              <router-link to="/profile" class="dropdown-item d-flex align-items-center gap-2">
+              <!-- ✅ MOBILE -->
+              <button @click="goToProfile" class="dropdown-item d-flex align-items-center gap-2">
                 <span class="material-symbols-outlined" style="font-size: 20px;">manage_accounts</span>
                 Mi cuenta
-              </router-link>
+              </button>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
@@ -105,10 +106,11 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm custom-dropdown" aria-labelledby="userDropdownDesktop">
               <li>
-                <router-link to="/profile" class="dropdown-item d-flex align-items-center gap-2">
+                <!-- ✅ DESKTOP -->
+                <button @click="goToProfile" class="dropdown-item d-flex align-items-center gap-2">
                   <span class="material-symbols-outlined" style="font-size: 20px;">manage_accounts</span>
                   Mi cuenta
-                </router-link>
+                </button>
               </li>
               <li><hr class="dropdown-divider"></li>
               <li>
@@ -144,20 +146,17 @@ export default {
     }
   },
   methods: {
-      goToProfile() {
-    // Cierra el dropdown manualmente primero, luego navega
-    setTimeout(() => {
-      this.$router.push('/profile');
-    }, 150);
-  },
-  logout() {
-    localStorage.removeItem('user_token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    window.location.href = '/login'; 
-  }
-  },
-  mounted() {
+    goToProfile() {
+      setTimeout(() => {
+        this.$router.push('/profile');
+      }, 150);
+    },
+    logout() {
+      localStorage.removeItem('user_token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      window.location.href = '/login'; 
+    }
   }
 }
 </script>
