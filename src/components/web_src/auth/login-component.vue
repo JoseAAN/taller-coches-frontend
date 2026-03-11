@@ -26,7 +26,8 @@
             <Password id="password" 
             :inputProps="{autocomplete: 'current-password', name: 'password'}" 
             v-model="form.password" 
-            toggleMask 
+            toggleMask
+            :feedback="false"
             :class="['w-100', { 'p-invalid': errors.password }]"
             @focus="clearError('password')" 
             />
