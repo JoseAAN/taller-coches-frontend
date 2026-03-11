@@ -49,7 +49,7 @@
             </p>
             <p class="user-detail">
               <span class="material-symbols-outlined detail-icon">badge</span>
-              {{ infoUser.User.dni ?? 'Sin DNI' }}
+              {{ infoUser.User.dni ?? 'Sin DNI/NIE' }}
             </p>
             <p class="user-detail">
               <span class="material-symbols-outlined detail-icon">phone</span>
@@ -64,6 +64,10 @@
 
           <!-- MODO EDICIÓN -->
           <template v-else>
+            <p class="error-message" v-if="errorMessage">
+              <span class="material-symbols-outlined">error</span>
+              {{ errorMessage }}
+            </p>
             <div class="edit-field">
               <label class="edit-label">
                 <span class="material-symbols-outlined detail-icon">person</span>
@@ -166,7 +170,8 @@ export default {
         dni: '',
         phone: '',
         address: ''
-      }
+      },
+      errorMessage: ''
     }
   },
   methods: {
@@ -182,9 +187,30 @@ export default {
       this.editing = true;
     },
     cancelEditing() {
+      this.errorMessage = '';
       this.editing = false;
     },
     async saveProfile() {
+
+      if(this.editForm.name.trim() === '' || this.editForm.email.trim() === '') {
+        this.errorMessage = 'El nombre y el correo son obligatorios.';
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(this.editForm.email)) {
+        this.errorMessage = 'Por favor, ingresa un correo electrónico válido.';
+        return;
+      }
+
+      if (this.editForm.dni && this.editForm.dni.trim() !== '') {
+      const dniNieRegex = /^([0-9]{8}|[XYZ][0-9]{7})[A-Za-z]$/;
+      if (!dniNieRegex.test(this.editForm.dni)) {
+        this.errorMessage = 'El DNI/NIE debe tener el formato correcto';
+        return;
+      }
+    }
+
       try {
         const token = localStorage.getItem('user_token');
         const response = await fetch(`${BASE_URL}/v1/profile`, {
@@ -207,6 +233,7 @@ export default {
         this.infoUser.User.address = this.editForm.address;
 
         this.editing = false;
+        this.errorMessage = '';
       } catch (error) {
         console.error('Error guardando perfil:', error);
       }
@@ -457,6 +484,45 @@ export default {
 
   .material-symbols-outlined { font-size: 40px; margin-bottom: 8px; }
   p { margin: 0; font-size: 0.9rem; }
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  background-color: #fee;
+  border: 1.5px solid #dc3545;
+  border-radius: 8px;
+  color: #dc3545;
+  font-size: 0.88rem;
+  font-weight: 600;
+  animation: slideIn 0.3s ease;
+
+  .material-symbols-outlined {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .error-message {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #ff6b7a;
+    border-color: #ff6b7a;
+  }
 }
 
 /* ── RESPONSIVE ── */
