@@ -2,7 +2,7 @@
     <div v-if="service" class="service-details">
 
         <div class="service-left">
-            <img :src="service.image || defaultImage" :alt="service.name" class="serviceImage">
+            <img :src="getImageUrl(service.image)" :alt="service.name" class="serviceImage">
         </div>
 
         <div class="service-right">
@@ -45,6 +45,18 @@ export default {
         }
     },
     methods: {
+        // 1. Nuestra nueva función
+        getImageUrl(imageName) {
+            if (!imageName) return 'https://placehold.co/800x600/e2e8f0/475569?text=Sin+Imagen';
+            if (imageName.startsWith('http')) return imageName;
+            try {
+                return new URL(`../../../../../assets/img-servicios/${imageName}`, import.meta.url).href;
+            } catch (error) {
+                return 'https://placehold.co/800x600/e2e8f0/475569?text=Error';
+            }
+        }, // <--- ¡ESTA ES LA COMA VITAL QUE FALTABA!
+
+        // 2. Tu función original
         getService() {
             fetch(`http://127.0.0.1:8000/api/v1/services/${this.serviceId}`)
                 .then(res => {
@@ -54,8 +66,10 @@ export default {
                 .then(data => this.service = data.data)
                 .catch(err => console.error('Error al cargar servicio:', err));
         },
+        
+        // 3. Función de reserva
         bookService() {
-            alert(`Iniciando reserva para: ${this.service.name}`);
+            alert(`Iniciando reserva para: ${this.service?.name}`);
         }
     },
     mounted() {
