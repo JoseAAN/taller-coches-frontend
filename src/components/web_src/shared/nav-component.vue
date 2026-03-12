@@ -314,9 +314,13 @@ export default {
   background-image: url('src/assets/LogoModoClaro.png');
   background-size: contain;
   background-repeat: no-repeat;
+  transition: transform 0.3s ease;
 }
 
 [data-theme="dark"] .logo-container {
   background-image: url('src/assets/LogoModoOscuro.png');
+}
+.navbar-brand:hover .logo-container {
+  transform: scale(1.05);
 }
 </style>
