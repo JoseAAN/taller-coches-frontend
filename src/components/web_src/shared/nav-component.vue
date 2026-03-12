@@ -2,9 +2,8 @@
   <nav class="navbar navbar-expand-lg custom-nav shadow-sm px-md-4">
     <div class="container-fluid position-relative">
       
-      <router-link class="navbar-brand d-flex flex-column m-0" to="/">
-        <span class="logo-line">LOGO</span>
-        <span class="logo-line">MARCA</span>
+      <router-link class="navbar-brand" to="/">
+        <div class="logo-container"></div>
       </router-link>
 
       <div class="d-flex align-items-center gap-2 ms-auto d-lg-none">
@@ -307,5 +306,21 @@ export default {
       top: 100%;
       z-index: 1050;
   }
+}
+
+.logo-container {
+  width: 150px;
+  height: 100px;
+  background-image: url('src/assets/LogoModoClaro.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 0.3s ease;
+}
+
+[data-theme="dark"] .logo-container {
+  background-image: url('src/assets/LogoModoOscuro.png');
+}
+.navbar-brand:hover .logo-container {
+  transform: scale(1.05);
 }
 </style>

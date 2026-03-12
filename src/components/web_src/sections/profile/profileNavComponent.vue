@@ -2,9 +2,9 @@
   <aside class="sidebar" :class="{ 'sidebar-open': menuOpen }">
 
     <div class="sidebar-brand" @click="goHome">
-      <span class="logo-line">LOGO</span>
-      <span class="logo-line">MARCA</span>
+    <div class="logo-container">
     </div>
+</div>
 
     <div class="sidebar-user" v-if="infoUser?.User">
       <div class="sidebar-avatar">
@@ -76,7 +76,7 @@ export default {
   border-right: 1px solid var(--nav-border, #ddd);
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 1rem;
+  padding: 1rem; /* Reducido de 1.5rem */
   position: fixed;
   top: 0;
   left: 0;
@@ -87,18 +87,29 @@ export default {
 
 .sidebar-brand {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  margin-bottom: 2rem;
-  padding: 0 0.5rem;
+  margin-bottom: 1.5rem; 
+  padding: 0.5rem 0; 
 }
 
-.logo-line {
-  color: var(--nav-text);
-  font-weight: 850;
-  font-size: 1.6rem;
-  line-height: 0.85;
-  letter-spacing: -1px;
+.logo-container {
+  width: 180px; 
+  height: 150px; 
+  background-image: url('src/assets/LogoModoClaro.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.3s ease;
+}
+
+[data-theme="dark"] .logo-container {
+  background-image: url('src/assets/LogoModoOscuro.png');
+}
+
+.sidebar-brand:hover .logo-container {
+  transform: scale(1.20);
 }
 
 .sidebar-user {
@@ -188,6 +199,37 @@ export default {
   border-top: 1px solid var(--nav-border, #ddd);
 }
 
+.btn-sidebar-home {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--nav-text);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-sidebar-home .material-symbols-outlined {
+  font-size: 22px;
+  opacity: 0.6;
+}
+
+.btn-sidebar-home:hover {
+  background-color: var(--nav-border, #f0f0f0);
+  color: #52b155;
+}
+
+.btn-sidebar-home:hover .material-symbols-outlined {
+  opacity: 1;
+  color: #52b155;
+}
+
 .btn-sidebar-logout {
   display: flex;
   align-items: center;
@@ -221,36 +263,5 @@ export default {
     transform: translateX(0);
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
   }
-}
-
-.btn-sidebar-home {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: none;
-  background: transparent;
-  color: var(--nav-text);
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: 100%;
-}
-
-.btn-sidebar-home .material-symbols-outlined {
-  font-size: 22px;
-  opacity: 0.6;
-}
-
-.btn-sidebar-home:hover {
-  background-color: var(--nav-border, #f0f0f0);
-  color: #52b155;
-}
-
-.btn-sidebar-home:hover .material-symbols-outlined {
-  opacity: 1;
-  color: #52b155;
 }
 </style>
