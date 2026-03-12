@@ -37,8 +37,8 @@ export default {
     name: "BasePrice",
 
     props: {
-        amount: { type: String, required: true },
-        oldAmount: { type: String, default: null },
+        amount: { type: [String, Number], required: true },
+        oldAmount: { type: [String, Number], default: null },
         size: { type: String, default: "md" },
         locale: { type: String, default: "es" },
         currency: { type: String, default: "EUR" }

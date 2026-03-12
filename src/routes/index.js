@@ -30,6 +30,16 @@ const routes = [
         path: 'services/:id',
         name: 'ServiceDetails',
         component: () => import('../components/web_src/sections/services/details/service-details.vue')
+      },
+      {
+        path: 'cart',
+        name: 'Cart',
+        component: () => import('../components/web_src/sections/cart/cart-page.vue')
+      },
+      {
+        path: 'checkout-invoice',
+        name: 'CheckoutView',
+        component: () => import('../components/web_src/sections/cart/checkout-success.vue')
       }
     ]
   },

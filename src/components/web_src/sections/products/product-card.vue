@@ -35,7 +35,7 @@
                 <button
                     class="cart-btn"
                     @click.stop="addToCart"
-                    :disabled="product.stock <= 0"
+                    :disabled="isOutOfStock"
                 >
                     <span class="material-symbols-outlined">
                         shopping_cart
@@ -83,34 +83,16 @@ export default {
             return this.product.description.length > 90
                 ? this.product.description.substring(0, 90) + '...'
                 : this.product.description
+        },
+        isOutOfStock() {
+            const inCart = cart.getProductQuantityInCart(this.product.id);
+            return this.product.stock <= inCart;
         }
     },
 
     methods: {
-        addToCart() {
-            loaderState.show()
-            fetch(`http://127.0.0.1:8000/api/v1/addToCart`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('user_token')}`
-                },
-                body: JSON.stringify({
-                    product_id: this.product.id,
-                    quantity: 1,
-                    cart_id: cart.id,
-                    priceInTime: this.product.price
-                })
-            })
-                .then(res => res.json())
-                .then(async res => {
-                    await cart.loadUserCart()
-                    console.log('Producto añadido al carrito:', res)
-                })
-                .catch(err => {
-                    console.error('Error al añadir al carrito:', err)
-                })
+        async addToCart() {
+            await cart.addToCart(this.product.id, 1, this.product.price);
         },
 
         goToDetails(productId) {

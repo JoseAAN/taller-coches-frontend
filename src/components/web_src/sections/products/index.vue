@@ -37,9 +37,7 @@
                 :key="product.id"
                 :product="product"
                 :locale="locale"
-                :amount="product.price"
                 :currency="currency"
-                @add-to-cart="addToCart"
             />
         </div>
 

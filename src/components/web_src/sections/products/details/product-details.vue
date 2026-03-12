@@ -26,12 +26,14 @@
 
             <div class="quantity-selector">
                 <label for="minmax-buttons">Cantidad:</label>
-                <InputNumber v-model="value" inputId="minmax-buttons" mode="decimal" showButtons :min="1" :max="100"
-                    fluid class="quantityInput" />
+                <InputNumber v-model="value" inputId="minmax-buttons" mode="decimal" showButtons :min="1" :max="availableStock"
+                    fluid class="quantityInput" :disabled="availableStock <= 0" />
+                <span class="stock-warning" v-if="availableStock <= 0">Máximo alcanzado en carrito</span>
+                <span class="stock-warning" v-else-if="availableStock < product.stock">Tienes {{ cartQuantity }} en el carrito (Máx: {{ product.stock }})</span>
             </div>
 
             <div class="product-actions">
-                <button :disabled="product.stock === 0" class="btn-cart material-symbols-outlined">
+                <button :disabled="availableStock <= 0" @click="addToCart" class="btn-cart material-symbols-outlined">
                     shopping_cart
                 </button>
             </div>
@@ -42,8 +44,9 @@
 
 <script>
 import InputNumber from 'primevue/inputnumber';
+import { cart } from '@/JS/Cart.js';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default {
     name: "ProductDetails",
     components: { InputNumber },
@@ -53,6 +56,16 @@ export default {
             product: null,
             value: 1,
             defaultImage: 'https://placehold.co/600x700'
+        }
+    },
+    computed: {
+        cartQuantity() {
+            if (!this.product) return 0;
+            return cart.getProductQuantityInCart(this.product.id);
+        },
+        availableStock() {
+            if (!this.product) return 0;
+            return Math.max(0, this.product.stock - this.cartQuantity);
         }
     },
     methods: {
@@ -66,27 +79,16 @@ export default {
                 .catch(err => console.error('Error al cargar productos:', err));
         },
 
-            addToCart() {
-                fetch(`${BASE_URL}/v1/cart`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: JSON.stringify({
-                        product_id: this.productId,
-                        quantity: this.value
-                    })
-                })
-                .then(res => {
-                    if (!res.ok) throw new Error("Error al añadir al carrito");
-                    return res.json();
-                })
-                .then(data => {
-                    console.log('Producto añadido al carrito:', data);
-                })
-                .catch(err => console.error('Error al añadir al carrito:', err));
+        async addToCart() {
+            if (this.value > this.availableStock) {
+                alert('No puedes añadir más de ' + this.availableStock + ' unidades.');
+                return;
             }
+            const result = await cart.addToCart(this.productId, this.value, this.product.price);
+            if (result.success) {
+                this.value = 1; // Reset quantity after successful add
+            }
+        }
     },
     mounted() {
         this.productId = this.$route.params.id;
