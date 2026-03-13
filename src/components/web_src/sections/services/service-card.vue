@@ -26,6 +26,7 @@
                 <button @click.stop="bookService" class="btn btn-action-card w-100 fw-bold py-1">
                     RESERVAR AHORA
                 </button>
+                
             </div>
         </div>
     </div>
@@ -59,7 +60,9 @@ export default {
             }
         },
         bookService() {
-            this.$emit('book-service', this.service);
+            this.$router.push({
+                name: 'AppointmentCalendar'
+            });
         },
         goToDetails(serviceId) {
             this.$router.push({ name: 'ServiceDetails', params: { id: serviceId } });

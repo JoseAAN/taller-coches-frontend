@@ -44,6 +44,17 @@ const routes = [
     ]
   },
   {
+    path: '/appointments',
+    component: () => import('../components/web_src/layouts/layout-appointments.vue'),
+    children: [
+      {
+        path: '',
+        name: 'AppointmentCalendar',
+        component: () => import('../components/web_src/sections/appointment/inf/appointment.vue')
+      }
+    ]
+  },
+  {
     path: '/profile',
     component: () => import('../components/web_src/layouts/layout-profile.vue'),
     children: [
