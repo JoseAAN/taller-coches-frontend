@@ -9,6 +9,7 @@
         :infoVehicles="profileData.infoVehicles"
         :infoCartInvoices="profileData.infoCartInvoices"
         :infoServiceInvoices="profileData.infoServiceInvoices"
+        :infoAppointments="profileData.infoAppointments"
      
         @infoUser-update="actualizarDatosUsuario"
       />
@@ -36,6 +37,7 @@ export default {
     try {
       const data = await fetchProfile();
       this.profileData = data;
+      console.log("Datos del perfil cargados:", this.profileData);
     } catch (error) {
       console.error("Fallo al inicializar:", error);
       this.$router.push('/');

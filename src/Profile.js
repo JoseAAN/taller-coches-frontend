@@ -31,11 +31,13 @@ export const fetchProfile = async () => {
 
         const infoCartInvoices = data.CartInvoices;
         const infoServiceInvoices = data.ServiceInvoices;
+        const infoAppointments = {
+            appointments: data.Appointments
+        };
 
-        return { infoUser, infoVehicles, infoCartInvoices, infoServiceInvoices };
+        return { infoUser, infoVehicles, infoCartInvoices, infoServiceInvoices, infoAppointments, infoAppointments };
     } catch (error) {
         console.error('Error loading profile:', error);
-        // Es recomendable retornar un valor o lanzar el error para que el componente lo maneje
         throw error; 
     }
 };

@@ -33,6 +33,10 @@
         <span class="material-symbols-outlined">receipt_long</span>
         <span>Mis servicios</span>
       </router-link>
+      <router-link class="sidebar-link" to="/profile/Appointments" @click="$emit('close-menu')">
+        <span class="material-symbols-outlined">calendar_month</span>
+        <span>Mis citas</span>
+      </router-link>
     </nav>
 
     <div class="sidebar-footer">

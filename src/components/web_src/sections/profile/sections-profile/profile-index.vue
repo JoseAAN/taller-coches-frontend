@@ -192,6 +192,10 @@ export default {
     },
     async saveProfile() {
 
+      if (this.editForm.dni === '') this.editForm.dni = null;
+      if (this.editForm.phone === '') this.editForm.phone = null;
+      if (this.editForm.address === '') this.editForm.address = null
+
       if(this.editForm.name.trim() === '' || this.editForm.email.trim() === '') {
         this.errorMessage = 'El nombre y el correo son obligatorios.';
         return;
