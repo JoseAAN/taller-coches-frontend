@@ -115,7 +115,7 @@ export const cart = reactive({
 
     getProductQuantityInCart(productId) {
         const item = this.products.find(p => p.id === productId);
-        return item && item.pivot ? item.pivot.quantity : 0;
+        return item ? item.quantity : 0;
     },
 
     async addToCart(productId, quantity, priceInTime) {

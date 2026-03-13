@@ -39,7 +39,7 @@
                     <div class="item-info">
                         <h4 class="item-name">{{ item.name }}</h4>
                         <p class="item-price-unit">
-                            <BasePrice :amount="item.pivot?.priceInTime || item.price" size="sm" />
+                            <BasePrice :amount="item.priceInTime || item.price" size="sm" />
                             <span class="unit-label">/ unidad</span>
                         </p>
 
@@ -57,24 +57,24 @@
                             <button
                                 class="qty-btn"
                                 @click="decreaseQuantity(item)"
-                                :disabled="(item.pivot?.quantity || 1) <= 1"
+                                :disabled="(item.quantity || 1) <= 1"
                             >
                                 <span class="material-symbols-outlined">remove</span>
                             </button>
 
-                            <span class="qty-value">{{ item.pivot?.quantity || 1 }}</span>
+                            <span class="qty-value">{{ item.quantity || 1 }}</span>
 
                             <button
                                 class="qty-btn"
                                 @click="increaseQuantity(item)"
-                                :disabled="(item.pivot?.quantity || 1) >= item.stock"
+                                :disabled="(item.quantity || 1) >= item.stock"
                             >
                                 <span class="material-symbols-outlined">add</span>
                             </button>
                         </div>
 
                         <div class="item-subtotal">
-                            <BasePrice :amount="String(item.pivot?.totalPerProduct || item.price)" size="md" />
+                            <BasePrice :amount="String(item.totalPerProduct || item.price)" size="md" />
                         </div>
 
                         <button class="btn-remove" @click="removeItem(item)">
@@ -142,23 +142,23 @@ export default {
 
     methods: {
         async removeItem(item) {
-            const pivotId = item.pivot?.id
+            const pivotId = item.pivot_id
             if (!pivotId) return
             await cart.removeItem(pivotId)
         },
 
         async increaseQuantity(item) {
-            const pivotId = item.pivot?.id
-            const currentQty = item.pivot?.quantity || 1
+            const pivotId = item.pivot_id
+            const currentQty = item.quantity || 1
             if (currentQty >= item.stock) return
-            await cart.updateQuantity(pivotId, currentQty + 1, item.pivot?.priceInTime || item.price)
+            await cart.updateQuantity(pivotId, currentQty + 1, item.priceInTime || item.price)
         },
 
         async decreaseQuantity(item) {
-            const pivotId = item.pivot?.id
-            const currentQty = item.pivot?.quantity || 1
+            const pivotId = item.pivot_id
+            const currentQty = item.quantity || 1
             if (currentQty <= 1) return
-            await cart.updateQuantity(pivotId, currentQty - 1, item.pivot?.priceInTime || item.price)
+            await cart.updateQuantity(pivotId, currentQty - 1, item.priceInTime || item.price)
         },
 
         async checkout() {

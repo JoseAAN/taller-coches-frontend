@@ -24,11 +24,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="item in cartDetails.products" :key="item.id">
+                            <tr v-for="item in cartDetails.items" :key="item.id">
                                 <td>{{ item.name }}</td>
-                                <td>{{ item.pivot.quantity }}</td>
-                                <td>{{ item.pivot.priceInTime }} €</td>
-                                <td>{{ item.pivot.totalPerProduct }} €</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.priceInTime }} €</td>
+                                <td>{{ item.totalPerProduct }} €</td>
                             </tr>
                         </tbody>
                         <tfoot>
@@ -143,44 +143,45 @@ export default {
     display: flex;
     justify-content: center;
     padding: 3rem 1rem;
-    background: #fdfdfd;
+    background: var(--bg-color);
     min-height: 70vh;
 }
 
 .success-card {
-    background: #fff;
-    border: 1px solid #eee;
+    background: var(--nav-bg, #ffffff);
+    border: 1px solid var(--nav-border, #eee);
     padding: 2.5rem;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     max-width: 600px;
     width: 100%;
     text-align: center;
+    color: var(--text-color, #000);
 }
 
 .success-icon {
     font-size: 64px;
-    color: #52b155;
+    color: #4ade80;
     margin-bottom: 1rem;
 }
 
 .success-title {
     font-size: 1.8rem;
-    color: #333;
+    color: var(--text-color, #333);
     margin: 0 0 0.5rem;
 }
 
 .success-subtitle {
-    color: #666;
+    color: #9ca3af;
     margin-bottom: 2rem;
 }
 
 .invoice-box {
     text-align: left;
-    background: #f9f9f9;
+    background: var(--bg-color);
     padding: 1.5rem;
     border-radius: 8px;
-    border: 1px solid #ebebeb;
+    border: 1px solid var(--nav-border, #ebebeb);
     margin-bottom: 2rem;
 }
 
@@ -188,7 +189,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--nav-border, #ddd);
     padding-bottom: 0.8rem;
     margin-bottom: 1rem;
 }
@@ -196,12 +197,12 @@ export default {
 .invoice-header h2 {
     margin: 0;
     font-size: 1.2rem;
-    color: #333;
+    color: var(--text-color, #333);
 }
 
 .invoice-number {
     font-weight: bold;
-    color: #52b155;
+    color: #4ade80;
 }
 
 .invoice-table {
@@ -211,13 +212,14 @@ export default {
 }
 
 .invoice-table th, .invoice-table td {
-    padding: 0.5rem;
-    border-bottom: 1px solid #eee;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--nav-border, #eee);
+    color: var(--text-color, #333);
 }
 
 .invoice-table th {
     text-align: left;
-    color: #666;
+    color: #9ca3af;
     font-weight: 600;
 }
 
@@ -227,12 +229,11 @@ export default {
 
 .font-bold {
     font-weight: bold;
-    color: #333;
 }
 
 .invoice-dates {
     font-size: 0.9rem;
-    color: #555;
+    color: #9ca3af;
     margin-top: 1rem;
 }
 
@@ -246,30 +247,43 @@ export default {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #333;
+    background: #374151;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-print:hover {
+    background: #1f2937;
 }
 
 .btn-shop {
     display: flex;
     align-items: center;
-    background: #52b155;
-    color: white;
+    background: #4ade80;
+    color: #051221;
     padding: 10px 20px;
     border-radius: 6px;
     text-decoration: none;
     font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-shop:hover {
+    background: #22c55e;
+}
+
+.loading-state, .error-state p {
+    color: var(--text-color);
 }
 
 .loading-state {
     text-align: center;
     padding: 6rem;
-    color: #666;
 }
 
 .error-state {
@@ -281,10 +295,17 @@ export default {
 
 .x-icon {
     font-size: 48px;
-    color: #dc2626;
+    color: #ef4444;
 }
 
 @media print {
+    @page {
+        margin: 0; /* This removes the browser headers and footers (URL, date, pages) */
+    }
+    body {
+        background: white !important;
+        color: black !important;
+    }
     body * {
         visibility: hidden !important;
     }
@@ -293,18 +314,21 @@ export default {
         margin: 0;
         border: none;
         box-shadow: none;
+        background: white !important;
     }
     .invoice-box, .invoice-box * {
         visibility: visible !important;
+        color: black !important;
     }
     .invoice-box {
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
+        background: white !important;
+        border: none;
         margin: 0;
-        padding: 20px;
-        background: white;
+        padding: 20mm; /* Extra padding to prevent cutting off text since we removed the page margin */
     }
     .actions, .success-title, .success-subtitle, .success-icon {
         display: none !important;
