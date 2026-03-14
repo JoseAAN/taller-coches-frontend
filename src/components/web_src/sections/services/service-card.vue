@@ -1,33 +1,34 @@
 <template>
-    <div class="card service-card shadow-sm w-100 flex-row" @click="goToDetails(service.id)">
+    <div class="card service-card shadow-sm w-100 flex-column" @click="goToDetails(service.id)">
         
-        <div class="card-img-side p-0">
+        <div class="card-img-top-container">
             <img :src="getImageUrl(service.image)" :alt="service.name" class="service-img-cover">
         </div>
 
-        <div class="card-body d-flex flex-column p-2">
-            <h6 class="card-title fw-bold mb-1 text-navy">
+        <hr class="card-separator">
+
+        <div class="card-body d-flex flex-column p-3">
+            <h5 class="card-title fw-bold mb-2 text-navy text-center">
                 {{ service.name }}
-            </h6>
+            </h5>
 
-            <ul class="list-unstyled mb-2 flex-grow-1">
-                <li class="d-flex align-items-start mb-1">
-                    <i class="pi pi-check-circle me-2 icon-green mt-1"></i>
-                    <span class="text-secondary-custom small">{{ service.description }}</span>
-                </li>
-            </ul>
-
-            <div class="mt-auto pt-1 border-top d-flex flex-column gap-2">
-                <div class="d-flex align-items-center gap-1">
-                    <span class="fw-bold text-navy small">Desde</span>
-                    <BasePrice :amount="service.price" :locale="locale" :currency="currency" size="md" />
-                </div>
-                
-                <button @click.stop="bookService" class="btn btn-action-card w-100 fw-bold py-1">
-                    RESERVAR AHORA
-                </button>
-                
+            <div class="d-flex align-items-start mt-2">
+                <i class="pi pi-check-circle me-2 icon-green mt-1"></i>
+                <span class="text-secondary-custom small line-clamp">{{ service.description }}</span>
             </div>
+        </div>
+
+        <hr class="card-separator">
+
+        <div class="card-footer bg-transparent border-0 p-3 pt-2 d-flex flex-column gap-2 mt-auto">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+                <span class="fw-bold text-navy small">Desde</span>
+                <BasePrice :amount="service.price" :locale="locale" :currency="currency" size="md" />
+            </div>
+            
+            <button @click.stop="bookService" class="btn btn-action-card w-100 fw-bold py-2">
+                RESERVAR AHORA
+            </button>
         </div>
     </div>
 </template>
@@ -44,22 +45,23 @@ export default {
         currency: { type: String, default: 'EUR' }
     },
     methods: {
-        // NUEVO: Función para resolver imágenes en Vite
         getImageUrl(imageName) {
-            // Si no hay imagen en la API, mostramos un placeholder
-            if (!imageName) return 'https://placehold.co/400x400/e2e8f0/475569?text=Sin+Imagen';
+            // Chivato temporal: te dirá en consola qué está intentando buscar
+            console.log(`Buscando imagen para ${this.service.name}:`, imageName);
+
+            if (!imageName) return 'https://placehold.co/600x400/e2e8f0/475569?text=Sin+Imagen';
             
-            // Si la API devuelve una URL completa (http...), la usamos tal cual
             if (imageName.startsWith('http')) return imageName;
             
-            // Si es un archivo local, le decimos a Vite dónde buscarlo
             try {
                 return new URL(`../../../../assets/img-servicios/${imageName}`, import.meta.url).href;
             } catch (error) {
-                return 'https://placehold.co/400x400/e2e8f0/475569?text=Error';
+                console.error("Error cargando la imagen local:", error);
+                return 'https://placehold.co/600x400/e2e8f0/475569?text=Error';
             }
         },
         bookService() {
+            // Tu lógica original intacta
             this.$router.push({
                 name: 'AppointmentCalendar'
             });
@@ -73,29 +75,28 @@ export default {
 
 <style scoped>
 .service-card {
-    border: none;
+    border: 1px solid var(--nav-border);
     border-radius: 12px;
     overflow: hidden;
     background-color: var(--nav-bg);
     color: var(--nav-text);
-    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
     height: 100%; 
-    min-height: 180px; 
+    min-height: 380px; 
     display: flex;
     cursor: pointer;
 }
 
 .service-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08) !important;
 }
 
-/* NUEVOS ESTILOS PARA LA IMAGEN */
-.card-img-side {
-    width: 140px; /* Ancho fijo para la imagen lateral */
-    min-width: 140px;
-    flex-shrink: 0;
+/* Contenedor de la foto arriba */
+.card-img-top-container {
+    width: 100%;
+    height: 180px;
     overflow: hidden;
     background-color: #f8f9fa;
 }
@@ -103,28 +104,60 @@ export default {
 .service-img-cover {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Evita que la imagen se deforme */
+    object-fit: cover; 
     object-position: center;
+    transition: transform 0.5s ease;
 }
 
-.text-navy { color: var(--nav-text); font-size: 0.85rem; }
-.text-secondary-custom { color: var(--nav-text); opacity: 0.8; font-size: 0.75rem; }
-.icon-green { color: #52b155; font-size: 0.9rem; }
+.service-card:hover .service-img-cover {
+    transform: scale(1.05);
+}
+
+/* Separadores */
+.card-separator {
+    margin: 0;
+    border: 0;
+    border-top: 1px solid var(--nav-border);
+    opacity: 0.6;
+}
+
+/* Textos */
+.text-navy { color: var(--nav-text); }
+
+.text-secondary-custom { 
+    color: var(--nav-text); 
+    opacity: 0.8; 
+    font-size: 0.85rem; 
+    line-height: 1.4;
+}
+
+/* Trunca textos largos a 3 líneas */
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+.icon-green { color: #52b155; font-size: 1rem; }
+
+/* Botón */
 .btn-action-card {
     background-color: #52b155;
     color: white;
     border: none;
     border-radius: 8px;
     transition: all 0.3s ease;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
 }
-.btn-action-card:hover { background-color: #469c49; transform: scale(1.02); }
+.btn-action-card:hover { 
+    background-color: #469c49; 
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(82, 177, 85, 0.3);
+}
 
-@media (max-width: 991px) {
-    .service-card { flex-direction: column; }
-    .card-img-side {
-        width: 100%;
-        height: 200px; /* En móviles la imagen se pone arriba y le damos altura */
-    }
+[data-theme="dark"] .card-img-top-container {
+    background-color: #0f172a;
 }
 </style>

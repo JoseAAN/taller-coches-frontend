@@ -28,7 +28,7 @@
         </div>
 
     </div>
-    
+
     <div v-else class="text-center py-5">
         <p>Cargando información del servicio...</p>
     </div>
@@ -66,10 +66,12 @@ export default {
                 .then(data => this.service = data.data)
                 .catch(err => console.error('Error al cargar servicio:', err));
         },
-        
+
         // 3. Función de reserva
         bookService() {
-            alert(`Iniciando reserva para: ${this.service?.name}`);
+            this.$router.push({
+            name: 'AppointmentCalendar'
+            });
         }
     },
     mounted() {
