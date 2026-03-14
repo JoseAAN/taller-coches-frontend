@@ -9,8 +9,8 @@
         <div class="title-underline"></div>
 
         <p class="description">
-            Estamos trabajando para traerte una experiencia aún mejor.
-            ¡Volverá pronto con mejoras increíbles!
+            Estamos trabajando para traerte una mejor experiencia.
+            ¡No te pierdas las próximas actualizaciones!
         </p>
 
         <router-link to="/" class="btn-home">

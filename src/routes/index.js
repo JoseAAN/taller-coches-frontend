@@ -45,6 +45,11 @@ const routes = [
         path: 'about',
         name: 'About',
         component: () => import('../components/web_src/maintenance-view.vue')
+      },
+      {
+        path: 'empresas',
+        name: 'Empresas',
+        component: () => import('../components/web_src/maintenance-view.vue')
       }
     ]
   },

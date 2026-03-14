@@ -18,6 +18,7 @@ const app = createApp(App)
 
 //BASE_URL así será global, con hacer this.$BASE_URL ya se llamaría
 app.config.globalProperties.$BASE_URL = import.meta.env.VITE_API_BASE_URL
+
 // Toast options for notifications
 const options = {
     position: "top-right",
