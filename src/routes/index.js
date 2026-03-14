@@ -98,6 +98,7 @@ const routes = [
   {
     path: '/admin',
     component: () => import('../components/admin_src/AdminLayout.vue'),
+    meta: { requiresAdmin: true },
     children: [
       {
         path: '',
@@ -135,6 +136,26 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+  //verificacion para saber si la ruta requiere admin o no
+
+  // TODO: tenemos esto de momento pero habría que cambiarlo por:
+  // - Hacer peticion por cada ruta que vaya el cliente (realentiza la página)
+  // - Guardar role en pinia o en app global properties
+  
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
+
+  if (requiresAdmin) {
+    const token = localStorage.getItem('user_token');
+    const user = JSON.parse(localStorage.getItem('user'));
+    
+    console.log('aqui si');
+    if (!token || !user || user.userRole !== 'admin') {
+      return next('/login');
+    }
+    
+    
+  }
   loaderState.show();
   await new Promise(resolve => setTimeout(resolve, 400));
 
