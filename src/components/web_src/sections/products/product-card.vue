@@ -4,11 +4,8 @@
         <div class="image-wrapper">
             <img :src="product.image || defaultImage" :alt="product.name" class="product-image" />
 
-            <span v-if="product.stock > 0" class="stock in-stock">
-                En stock
-            </span>
 
-            <span v-else class="stock out-stock">
+            <span v-if="product.stock <= 0" class="stock out-stock">
                 Agotado
             </span>
         </div>
@@ -116,8 +113,8 @@ export default {
 }
 
 .product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
 }
 
 .image-wrapper {

@@ -123,7 +123,7 @@ export default {
         },
         toggleHomeStatus(service) {
             const activeShowOnHome = !service.show_on_home;
-            let token = localStorage.getItem('token'); 
+            let token = localStorage.getItem('user_token'); 
             fetch(`http://127.0.0.1:8000/api/v1/services/${service.id}/toggle-home`, {
                 method: 'POST',
                 headers: {

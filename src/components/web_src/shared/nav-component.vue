@@ -1,29 +1,31 @@
 <template>
   <nav class="navbar navbar-expand-lg custom-nav shadow-sm px-md-4">
     <div class="container-fluid position-relative">
-      
+
       <router-link class="navbar-brand" to="/">
         <div class="logo-container"></div>
       </router-link>
 
       <div class="d-flex align-items-center gap-2 ms-auto d-lg-none">
-        
-        <router-link to="/cart" class="btn btn-icon-action position-relative d-flex align-items-center justify-content-center p-1 rounded-circle">
+
+        <router-link to="/cart"
+          class="btn btn-icon-action position-relative d-flex align-items-center justify-content-center p-1 rounded-circle">
           <span class="material-symbols-outlined" style="font-size: 26px;">shopping_cart</span>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem; padding: 0.3em 0.4em;">
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            style="font-size: 0.6rem; padding: 0.3em 0.4em;">
             {{ cart.quantity }}
           </span>
         </router-link>
 
-        <a v-if="!user" href="/login" class="btn btn-icon-action d-flex align-items-center justify-content-center p-1 rounded-circle">
+        <a v-if="!user" href="/login"
+          class="btn btn-icon-action d-flex align-items-center justify-content-center p-1 rounded-circle">
           <span class="material-symbols-outlined" style="font-size: 26px;">login</span>
         </a>
-        
+
         <div v-else class="dropdown">
-          <button class="btn btn-icon-action d-flex align-items-center justify-content-center p-1 rounded-circle dropdown-toggle" 
-                  type="button" 
-                  data-bs-toggle="dropdown" 
-                  aria-expanded="false">
+          <button
+            class="btn btn-icon-action d-flex align-items-center justify-content-center p-1 rounded-circle dropdown-toggle"
+            type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <span class="material-symbols-outlined" style="font-size: 26px;">account_circle</span>
           </button>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm custom-dropdown position-absolute">
@@ -34,7 +36,9 @@
                 Mi cuenta
               </button>
             </li>
-            <li><hr class="dropdown-divider"></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
             <li>
               <button @click="logout" class="dropdown-item text-danger d-flex align-items-center gap-2">
                 <span class="material-symbols-outlined" style="font-size: 20px;">logout</span>
@@ -61,7 +65,7 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="custom-link d-flex flex-column align-items-center" to="/nosotros">
+            <router-link class="custom-link d-flex flex-column align-items-center" to="/about">
               <span class="material-symbols-outlined">groups</span>
               <span>Nosotros</span>
             </router-link>
@@ -83,9 +87,12 @@
         <div class="d-none d-lg-flex align-items-center justify-content-center ms-auto gap-3 right-actions">
           <ThemeSwitcher />
 
-          <router-link to="/cart" class="btn btn-icon-action position-relative d-flex align-items-center justify-content-center p-2 rounded-circle" title="Carrito">
+          <router-link to="/cart"
+            class="btn btn-icon-action position-relative d-flex align-items-center justify-content-center p-2 rounded-circle"
+            title="Carrito">
             <span class="material-symbols-outlined">shopping_cart</span>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; padding: 0.35em 0.5em;">
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              style="font-size: 0.65rem; padding: 0.35em 0.5em;">
               {{ cart.quantity }}
             </span>
           </router-link>
@@ -95,12 +102,10 @@
           </a>
 
           <div v-else class="dropdown">
-            <button class="btn btn-profile d-flex align-items-center justify-content-center p-2 rounded-circle dropdown-toggle" 
-                    type="button" 
-                    id="userDropdownDesktop" 
-                    data-bs-toggle="dropdown" 
-                    aria-expanded="false" 
-                    title="Opciones de cuenta">
+            <button
+              class="btn btn-profile d-flex align-items-center justify-content-center p-2 rounded-circle dropdown-toggle"
+              type="button" id="userDropdownDesktop" data-bs-toggle="dropdown" aria-expanded="false"
+              title="Opciones de cuenta">
               <span class="material-symbols-outlined">person</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm custom-dropdown" aria-labelledby="userDropdownDesktop">
@@ -111,7 +116,9 @@
                   Mi cuenta
                 </button>
               </li>
-              <li><hr class="dropdown-divider"></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
               <li>
                 <button @click="logout" class="dropdown-item text-danger d-flex align-items-center gap-2">
                   <span class="material-symbols-outlined" style="font-size: 20px;">logout</span>
@@ -154,8 +161,44 @@ export default {
       localStorage.removeItem('user_token');
       localStorage.removeItem('user');
       localStorage.removeItem('token');
-      window.location.href = '/login'; 
-    }
+      window.location.href = '/login';
+    },
+
+    //mover esta llamada a otro sitio
+    checkUser() {
+      const token = localStorage.getItem('user_token');
+      if (token) {
+        fetch(`${this.$BASE_URL}/user`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+          }
+        })
+          .then(response => {
+            if (response.ok) {
+              this.user_verfied = true;
+              return response.json();
+            } else {
+            }
+          }).then(data => {
+            console.log('dentro');
+            this.user = data;
+            console.log(data);
+
+            console.log(this.user);
+          })
+          .catch(error => {
+            console.error('Usuario inválido:', error);
+            localStorage.removeItem('token');
+          });
+      } else {
+        this.user_verfied = false;
+      }
+    },
+
+    mounted() {
+      this.checkUser();
+    },
   }
 }
 </script>
@@ -299,12 +342,12 @@ export default {
     display: inline-block;
     margin: 5px 0;
   }
-  
+
   .custom-dropdown.position-absolute {
-      position: absolute !important;
-      right: 0;
-      top: 100%;
-      z-index: 1050;
+    position: absolute !important;
+    right: 0;
+    top: 100%;
+    z-index: 1050;
   }
 }
 
@@ -320,6 +363,7 @@ export default {
 [data-theme="dark"] .logo-container {
   background-image: url('src/assets/LogoModoOscuro.png');
 }
+
 .navbar-brand:hover .logo-container {
   transform: scale(1.05);
 }

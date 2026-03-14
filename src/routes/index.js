@@ -40,6 +40,11 @@ const routes = [
         path: 'checkout-invoice',
         name: 'CheckoutView',
         component: () => import('../components/web_src/sections/cart/checkout-success.vue')
+      },
+      {
+        path: 'about',
+        name: 'About',
+        component: () => import('../components/web_src/maintenance-view.vue')
       }
     ]
   },
