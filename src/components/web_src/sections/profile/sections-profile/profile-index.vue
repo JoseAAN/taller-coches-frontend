@@ -59,7 +59,7 @@
               <span class="material-symbols-outlined detail-icon">location_on</span>
               {{ infoUser.User.address ?? 'Sin dirección' }}
             </p>
-            <span class="role-badge">{{ infoUser.Role.RolName }}</span>
+            
           </template>
 
           <!-- MODO EDICIÓN -->
