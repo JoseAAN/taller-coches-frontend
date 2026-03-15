@@ -1,22 +1,20 @@
 <template>
     <div class="products-container">
-        <div class="row">
-            <div class="col-md-3">
-                <ProductFilter @filter-changed="handleFilters" />
+        <div class="row mb-3 justify-content-center">
+            <div class="col-12 d-flex justify-content-center gap-2">
+                <input v-model="activeFilters.search" type="text" class="form-control" placeholder="Buscar producto..."
+                    @keyup.enter="handleFilters({ ...activeFilters })" />
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
+                    <span class="material-symbols-outlined">instant_mix</span>
+                </button>
             </div>
+        </div>
 
+        <div class="row justify-content-center">
             <div class="col-md-9">
                 <div class="products-header">
-                    <div class="products-count">
-                        {{ meta.total }} productos encontrados
-                    </div>
-                    <div class="products-page">
-                        Página {{ meta.current_page }} de {{ meta.last_page }}
-                    </div>
-                </div>
-
-                <div v-if="activeFilters.search" class="active-search mb-3">
-                    Buscando: "{{ activeFilters.search }}"
+                    <div class="products-count">{{ meta.total }} productos encontrados</div>
+                    <div class="products-page">Página {{ meta.current_page }} de {{ meta.last_page }}</div>
                 </div>
 
                 <div class="products-grid">
@@ -28,7 +26,7 @@
                     <ul class="pagination justify-content-center">
                         <li class="page-item" :class="{ disabled: meta.current_page === 1 }">
                             <a class="page-link" href="#" @click.prevent="goToPage(meta.current_page - 1)">
-                                <span class="material-symbols-outlined" style="vertical-align: middle;">chevron_left</span>
+                                <span class="material-symbols-outlined">chevron_left</span>
                             </a>
                         </li>
                         <li v-for="page in meta.last_page" :key="page" class="page-item"
@@ -37,11 +35,26 @@
                         </li>
                         <li class="page-item" :class="{ disabled: meta.current_page === meta.last_page }">
                             <a class="page-link" href="#" @click.prevent="goToPage(meta.current_page + 1)">
-                                <span class="material-symbols-outlined" style="vertical-align: middle;">chevron_right</span>
+                                <span class="material-symbols-outlined">chevron_right</span>
                             </a>
                         </li>
                     </ul>
                 </nav>
+            </div>
+        </div>
+
+        <!-- modal para los filtros -->
+        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filterModalLabel">Filtros</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <ProductFilter v-model="activeFilters" @filter-changed="handleFilters" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -69,7 +82,7 @@ export default {
         }
     },
     methods: {
-    getProducts(url = `${this.$BASE_URL}/v1/products`) {
+        getProducts(url = `${this.$BASE_URL}/v1/products`) {
             loaderState.show();
             // urlsearchparams es una clase interna de js para hacer query params, basicamente convierte los datos a ?search=xxx&category=yyy&max_price=zzz
             const params = new URLSearchParams();
@@ -77,20 +90,19 @@ export default {
             if (this.activeFilters.category) params.append('category', this.activeFilters.category);
             if (this.activeFilters.maxPrice) params.append('max_price', this.activeFilters.maxPrice);
 
-            // creamos la url dependiendo de si tiene query params, si no, etc.
             const finalUrl = url.includes('?') ? `${url}&${params.toString()}` : `${url}?${params.toString()}`;
 
             fetch(finalUrl, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
             })
-            .then(res => res.json())
-            .then(data => {
-                this.products = data.data;
-                this.meta = data.meta;
-                loaderState.hide();
-            })
-            .catch(err => console.error(err));
+                .then(res => res.json())
+                .then(data => {
+                    this.products = data.data;
+                    this.meta = data.meta;
+                    loaderState.hide();
+                })
+                .catch(err => console.error(err));
         },
         handleFilters(filters) {
             this.activeFilters = filters;
@@ -113,6 +125,11 @@ export default {
     margin: auto;
     padding: 1.5rem 1rem 2rem;
 }
+
+.products-container input.form-control {
+    max-width: 320px;
+}
+
 .products-header {
     display: flex;
     justify-content: space-between;
@@ -121,24 +138,28 @@ export default {
     font-weight: 600;
     color: var(--nav-text);
 }
+
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.6rem;
 }
-.page-link {
-    color: var(--nav-text);
-    border: 1px solid #dee2e6;
+
+@media (max-width: 1200px) {
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
-.page-item.active .page-link {
-    background-color: var(--nav-text);
-    border-color: var(--nav-text);
-    color: white;
-}
-@media (max-width: 1100px) {
-    .products-grid { grid-template-columns: repeat(2, 1fr); }
-}
+
 @media (max-width: 768px) {
-    .products-grid { grid-template-columns: 1fr; }
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
 }
 </style>

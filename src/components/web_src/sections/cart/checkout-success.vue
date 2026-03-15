@@ -302,6 +302,10 @@ export default {
     @page {
         margin: 0; /* This removes the browser headers and footers (URL, date, pages) */
     }
+
+    :global(footer) {
+        display: none !important;
+    }
     body {
         background: white !important;
         color: black !important;

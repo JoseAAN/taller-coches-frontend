@@ -1,35 +1,69 @@
 <template>
     <div class="filter-box">
-        <h3>Filtros</h3>
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h3 class="filter-title m-0">
+                <i class="pi pi-filter-fill me-2"></i>Filtros
+            </h3>
+            <button class="text-reset-link" @click="resetFilters">Limpiar todo</button>
+        </div>
 
         <div class="filter-group">
-            <label>Buscar</label>
-            <div class="searchBox">
-                <input class="searchInput" type="text" v-model="filters.search" placeholder="Producto..."
-                    @keyup.enter="applyFilters" />
-                <button class="searchButton" @click="applyFilters">
-                    <i class="material-symbols-outlined">search</i>
-                </button>
+            <label class="filter-label">Categoría</label>
+            <div class="select-wrapper">
+                <select v-model="filters.category" class="custom-select">
+                    <option value="">Todas las categorías</option>
+                    <option v-for="cat in categories" :key="cat" :value="cat">
+                        {{ cat }}
+                    </option>
+                </select>
+                <i class="pi pi-chevron-down select-icon"></i>
             </div>
         </div>
 
-        <div class="filter-group">
-            <label>Categoría</label>
-            <select v-model="filters.category" @change="applyFilters" class="form-select">
-                <option value="">Todas las categorías</option>
-                <option value="ropa">Ropa</option>
-                <option value="tecnologia">Tecnología</option>
-                <option value="hogar">Hogar</option>
-            </select>
+        <div class="filter-group mb-4">
+            <label class="filter-label">Rango de Precio</label>
+            
+            <div class="price-slider-container mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="range-type">Mínimo</span>
+                    <span class="price-badge">{{ filters.minPrice }} €</span>
+                </div>
+                <input 
+                    type="range" 
+                    class="custom-range" 
+                    min="0" 
+                    :max="filters.maxPrice" 
+                    step="10" 
+                    v-model="filters.minPrice"
+                />
+            </div>
+
+            <div class="price-slider-container">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="range-type">Máximo</span>
+                    <span class="price-badge">{{ filters.maxPrice }} €</span>
+                </div>
+                <input 
+                    type="range" 
+                    class="custom-range" 
+                    :min="filters.minPrice" 
+                    max="1000" 
+                    step="10" 
+                    v-model="filters.maxPrice"
+                />
+            </div>
+            
+            <div class="range-limits mt-2">
+                <span>0€</span>
+                <span>1000€</span>
+            </div>
         </div>
 
-        <div class="filter-group">
-            <label>Precio Máximo</label>
-            <input type="range" class="form-range" min="0" max="1000" step="10" v-model="filters.maxPrice" @input="applyFilters" />
-            <span class="price-display">{{ filters.maxPrice }} €</span>
+        <div class="d-flex justify-content-center">
+            <button class="btn-apply-filters" @click="applyFilters">
+                APLICAR FILTROS
+            </button>
         </div>
-
-        <button class="reset-btn" @click="resetFilters">Limpiar Filtros</button>
     </div>
 </template>
 
@@ -39,10 +73,11 @@ export default {
     data() {
         return {
             filters: {
-                search: '',
                 category: '',
+                minPrice: 0,
                 maxPrice: 1000
-            }
+            },
+            categories: ['ropa', 'tecnologia', 'hogar']
         }
     },
     methods: {
@@ -50,8 +85,8 @@ export default {
             this.$emit('filter-changed', { ...this.filters });
         },
         resetFilters() {
-            this.filters.search = '';
             this.filters.category = '';
+            this.filters.minPrice = 0;
             this.filters.maxPrice = 1000;
             this.applyFilters();
         }
@@ -61,85 +96,130 @@ export default {
 
 <style scoped>
 .filter-box {
-    background: #ffffff;
+    background: var(--nav-bg);
     padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    border: 1px solid #eaeaea;
+    border-radius: 16px;
+    border: 1px solid var(--nav-border);
+    color: var(--nav-text);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.filter-box h3 {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    color: #003366;
-    font-size: 1.2rem;
+.filter-title { 
+    color: var(--nav-text); 
+    font-weight: 700; 
 }
 
-.filter-group {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+.filter-label { 
+    display: block; 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+    text-transform: uppercase; 
+    margin-bottom: 1rem; 
+    color: var(--nav-text);
 }
 
-.filter-group label {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #003366;
+.range-type {
+    font-size: 0.75rem;
+    color: var(--nav-text);
+    opacity: 0.8;
 }
 
-.searchBox {
+.select-wrapper {
     position: relative;
-    height: 40px;
-    border-radius: 40px;
-    background: #003366;
     display: flex;
     align-items: center;
-    padding: 0 10px;
 }
 
-.searchButton {
-    color: white;
-    width: 30px;
-    height: 30px;
-    background: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    cursor: pointer;
-}
-
-.searchInput {
-    border: none;
-    background: none;
+.custom-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--nav-border);
+    background: var(--bg-color);
+    color: var(--nav-text);
+    appearance: none;
     outline: none;
-    color: white;
-    font-size: 0.9rem;
-    width: 100%;
 }
 
-.price-display {
+.select-icon {
+    position: absolute;
+    right: 1rem;
+    pointer-events: none;
+    color: var(--nav-text);
+}
+
+.price-slider-container {
+    background: rgba(128, 128, 128, 0.1); 
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--nav-border);
+}
+
+.price-badge {
+    background: #52b155;
+    color: white;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-weight: 700;
     font-size: 0.85rem;
-    font-weight: bold;
-    color: #003366;
-    text-align: right;
 }
 
-.reset-btn {
+.custom-range {
+    -webkit-appearance: none;
     width: 100%;
-    padding: 0.6rem;
-    background: transparent;
-    border: 1px solid #003366;
-    color: #003366;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
+    height: 6px;
+    background: var(--nav-border);
+    border-radius: 5px;
+    outline: none;
 }
 
-.reset-btn:hover {
-    background: #003366;
+.custom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #52b155;
+    border: 3px solid var(--nav-bg);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.range-limits {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--nav-text);
+    opacity: 0.6;
+}
+
+.btn-apply-filters {
+    width: 100%;
+    background-color: #52b155;
     color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 10px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.btn-apply-filters:hover {
+    background-color: #469c49;
+    box-shadow: 0 4px 12px rgba(82, 177, 85, 0.3);
+}
+
+.text-reset-link {
+    background: none;
+    border: none;
+    color: #ff5c5c;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+[data-theme='dark'] .custom-select option {
+    background-color: var(--nav-bg);
+    color: var(--nav-text);
 }
 </style>
