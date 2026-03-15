@@ -5,7 +5,7 @@
     </header>
 
     <main>
-      <section class="services-section">
+      <section class="services-section mb-5">
         <div class="section-title-container">
           <h2 class="main-title">Te podría interesar</h2>
           <div class="title-underline"></div>
@@ -17,15 +17,16 @@
         <div class="section-title-container">
           <span class="subtitle text-uppercase">Resultados Reales</span>
           <h2 class="main-title">La diferencia está en los detalles</h2>
-          <p class="section-description">Desliza la barra para comparar el estado de llegada frente a nuestro acabado profesional.</p>
+          <p class="section-description">Desliza la barra para comparar el estado de llegada frente a nuestro acabado
+            profesional.</p>
         </div>
 
         <div class="comparator-wrapper">
           <slider-comparator :before="cochesucio" :after="cochelimpio" />
         </div>
       </section>
-      
-      </main>
+
+    </main>
   </div>
 </template>
 
@@ -63,18 +64,18 @@ export default {
             'Accept': 'application/json'
           }
         })
-        .then(response => {
-          if (!response.ok) throw new Error();
-          return response.json();
-        })
-        .then(data => {
-          this.user_verfied = true;
-          this.user = data;
-        })
-        .catch(() => {
-          this.user_verfied = false;
-          localStorage.removeItem('user_token');
-        });
+          .then(response => {
+            if (!response.ok) throw new Error();
+            return response.json();
+          })
+          .then(data => {
+            this.user_verfied = true;
+            this.user = data;
+          })
+          .catch(() => {
+            this.user_verfied = false;
+            localStorage.removeItem('user_token');
+          });
       }
     }
   },
@@ -85,6 +86,9 @@ export default {
 </script>
 
 <style scoped>
+.services-section {
+  margin-bottom: 5rem;
+}
 .section-title-container {
   text-align: center;
   margin-top: 4rem;
@@ -135,9 +139,11 @@ export default {
   .main-title {
     font-size: 1.8rem;
   }
+
   .section-title-container {
     margin-top: 3rem;
   }
+
   .section-description {
     font-size: 1rem;
   }

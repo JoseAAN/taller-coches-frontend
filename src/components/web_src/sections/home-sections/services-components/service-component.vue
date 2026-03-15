@@ -1,35 +1,36 @@
 <template>
-    <div class="container py-5">
-        <div class="row g-3 row-cols-1 row-cols-md-2 row-cols-lg-3 justify-content-center">
-            <div v-for="service in services" :key="service.id" class="col d-flex">
-                <div class="card service-card shadow-sm w-100 flex-row">
-                    <div
-                        class="card-img-side d-flex align-items-center justify-content-center bg-light-gray text-navy p-2">
-                        <h5 class="fw-bold m-0 text-center">
-                            {{ service.name }}
-                        </h5>
-                    </div>
+    <div class="services-grid">
+        <div v-for="service in services" :key="service.id">
+            <div class="card service-card shadow-sm flex-column" @click="goToDetails(service.id)">
 
-                    <div class="card-body d-flex flex-column p-2">
-                        <h6 class="card-title fw-bold mb-1 text-navy">
-                            {{ service.name }}
-                        </h6>
+                <div class="card-img-top-container">
+                    <img :src="getImageUrl(service.image)" :alt="service.name" class="service-img-cover">
+                </div>
 
-                        <ul class="list-unstyled mb-2 flex-grow-1">
-                            <li class="d-flex align-items-start mb-1">
-                                <i class="pi pi-check-circle me-2 icon-green mt-1"></i>
-                                <span class="text-secondary-custom small">{{ service.description }}</span>
-                            </li>
-                        </ul>
+                <hr class="card-separator">
 
-                        <div class="mt-auto pt-1 border-top">
-                            <h4 class="fw-bold text-navy mb-1">Desde {{parseInt(service.price) }}€</h4>
-                            <button class="btn btn-action-card w-100 fw-bold py-1">
-                                RESERVAR AHORA
-                            </button>
-                        </div>
+                <div class="card-body d-flex flex-column p-3">
+                    <h5 class="card-title fw-bold mb-2 text-navy text-center">
+                        {{ service.name }}
+                    </h5>
+                    <div class="d-flex align-items-start mt-2">
+                        <i class="pi pi-check-circle me-2 icon-green mt-1"></i>
+                        <span class="text-secondary-custom small line-clamp">{{ service.description }}</span>
                     </div>
                 </div>
+
+                <hr class="card-separator">
+
+                <div class="card-footer bg-transparent border-0 p-3 pt-2 d-flex flex-column gap-2 mt-auto">
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <span class="fw-bold text-navy ">Desde</span>
+                        <span class="fw-bold text-navy">{{ parseInt(service.price) }}€</span>
+                    </div>
+                    <button class="btn btn-action-card w-100 fw-bold py-2">
+                        RESERVAR AHORA
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -38,14 +39,17 @@
 <script>
 export default {
     name: 'ServiceComponent',
+
     data() {
         return {
             services: []
         }
     },
+
     methods: {
+
         getServicesOnHome() {
-            fetch('http://127.0.0.1:8000/api/v1/services/services-home')
+            fetch(`${this.$BASE_URL}/v1/services/services-home`)
                 .then(response => response.json())
                 .then(data => {
                     this.services = data.data;
@@ -53,8 +57,20 @@ export default {
                 .catch(error => {
                     console.error('Error fetching services:', error);
                 });
+        },
+
+        getImageUrl(imageName) {
+
+
+            if (!imageName) {
+                return 'https://via.placeholder.com/600x400?text=Servicio';
+            }
+
+            return new URL(`../../../../../assets/img-servicios/${imageName}`, import.meta.url).href;
         }
+
     },
+
     mounted() {
         this.getServicesOnHome();
     }
@@ -62,46 +78,81 @@ export default {
 </script>
 
 <style scoped>
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
 .service-card {
-    border: none;
+    border: 1px solid var(--nav-border);
     border-radius: 12px;
     overflow: hidden;
     background-color: var(--nav-bg);
-    transition: transform 0.3s ease, background-color 0.3s ease;
-    width: 100%;
-    max-width: 480px;
-    height: 180px;
+    color: var(--nav-text);
     display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 380px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .service-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
 }
 
-.card-img-side {
-    min-width: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f4f4f4;
-    padding: 0.5rem;
+.card-img-top-container {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+
+.service-img-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.5s ease;
+}
+
+.service-card:hover .service-img-cover {
+    transform: scale(1.02);
+}
+
+.card-separator {
+    margin: 0;
+    border: 0;
+    border-top: 1px solid var(--nav-border);
+    opacity: 0.6;
 }
 
 .text-navy {
     color: var(--nav-text);
-    transition: color 0.3s ease;
-    font-size: 0.85rem;
 }
 
 .text-secondary-custom {
     color: var(--nav-text);
     opacity: 0.8;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .icon-green {
     color: #52b155;
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 
 .btn-action-card {
@@ -110,28 +161,29 @@ export default {
     border: none;
     border-radius: 8px;
     transition: all 0.3s ease;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
 }
 
 .btn-action-card:hover {
     background-color: #469c49;
-    transform: scale(1.02);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(82, 177, 85, 0.3);
 }
 
-[data-theme="dark"] .card-img-side {
-    background-color: #1a2e44;
-    color: #f8f9fa;
+[data-theme="dark"] .card-img-top-container {
+    background-color: #0f172a;
 }
 
-@media (max-width: 991px) {
-    .service-card {
-        flex-direction: column;
-        height: auto;
-        max-width: 100%;
+@media (max-width: 992px) {
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
+}
 
-    .card-img-side {
-        min-width: 100%;
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr;
         padding: 1rem;
     }
 }
