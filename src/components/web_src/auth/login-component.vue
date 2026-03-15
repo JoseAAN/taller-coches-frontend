@@ -97,7 +97,7 @@ export default {
 
       this.loading = true;
       this.form.captcha = token;
-      fetch('http://127.0.0.1:8000/api/login', {
+      fetch(`${this.$BASE_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(this.form)
@@ -112,6 +112,7 @@ export default {
             
             localStorage.setItem('user_token', data.access_token);
             localStorage.setItem('user', JSON.stringify(data.user));
+
             cart.loadUserCart();
             if (data.user.role === 'admin') {
               this.$router.push('/admin');

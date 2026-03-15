@@ -71,11 +71,13 @@ export default {
     methods: {
     getProducts(url = `${this.$BASE_URL}/v1/products`) {
             loaderState.show();
+            // urlsearchparams es una clase interna de js para hacer query params, basicamente convierte los datos a ?search=xxx&category=yyy&max_price=zzz
             const params = new URLSearchParams();
             if (this.activeFilters.search) params.append('search', this.activeFilters.search);
             if (this.activeFilters.category) params.append('category', this.activeFilters.category);
             if (this.activeFilters.maxPrice) params.append('max_price', this.activeFilters.maxPrice);
 
+            // creamos la url dependiendo de si tiene query params, si no, etc.
             const finalUrl = url.includes('?') ? `${url}&${params.toString()}` : `${url}?${params.toString()}`;
 
             fetch(finalUrl, {

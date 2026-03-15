@@ -1,33 +1,42 @@
 <template>
-  <header>
-    <hero-component></hero-component>
-    
-    <section class="services-section">
-      <div class="section-title-container">
-        <h2 class="main-title">Te podría interesar</h2>
-        <div class="title-underline"></div>
-      </div>
-      <service-component class="mt-4"></service-component>
-    </section>
+  <div class="page-wrapper">
+    <header>
+      <hero-component></hero-component>
+    </header>
 
-    <section class="comparison-section mt-5">
-      <div class="section-title-container">
-        <span class="subtitle text-uppercase">Resultados Reales</span>
-        <h2 class="main-title">La diferencia está en los detalles</h2>
-        <p class="section-description">Desliza la barra para comparar el estado de llegada frente a nuestro acabado profesional.</p>
-      </div>
+    <main>
+      <section class="services-section">
+        <div class="section-title-container">
+          <h2 class="main-title">Te podría interesar</h2>
+          <div class="title-underline"></div>
+        </div>
+        <service-component class="mt-4"></service-component>
+      </section>
 
-      <div class="comparator-wrapper">
-        <slider-comparator :before="cochesucio" :after="cochelimpio" />
-      </div>
-    </section>
-  </header>
+      <section class="comparison-section mt-5">
+        <div class="section-title-container">
+          <span class="subtitle text-uppercase">Resultados Reales</span>
+          <h2 class="main-title">La diferencia está en los detalles</h2>
+          <p class="section-description">Desliza la barra para comparar el estado de llegada frente a nuestro acabado profesional.</p>
+        </div>
+
+        <div class="comparator-wrapper">
+          <slider-comparator :before="cochesucio" :after="cochelimpio" />
+        </div>
+      </section>
+      
+      </main>
+
+    <footer-component></footer-component>
+  </div>
 </template>
 
 <script>
 import HeroComponent from '../sections/home-sections/hero-component.vue';
 import ServiceComponent from '../sections/home-sections/services-components/service-component.vue';
 import SliderComparator from '../UI/slider-comparator.vue';
+import FooterComponent from '../shared/main-footer.vue';
+
 import cochelimpio from "@/assets/cochelimpio.jpeg";
 import cochesucio from "@/assets/cochesucio.jpeg";
 
@@ -35,7 +44,8 @@ export default {
   components: {
     HeroComponent,
     ServiceComponent,
-    SliderComparator
+    SliderComparator,
+    FooterComponent
   },
   data() {
     return {
