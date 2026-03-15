@@ -66,6 +66,7 @@ import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
 import {loaderState} from '@/loaderState';
+import { cart } from '@/JS/Cart.js';
 
 export default {
   name: 'RegisterComponent',
@@ -152,7 +153,16 @@ export default {
             this.form = { name: '', email: '', password: '', password_confirmation: '' };
             
             window.grecaptcha.reset();
-            localStorage.setItem('user_token', data.token);
+            
+            localStorage.setItem('user_token', data.access_token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+
+            cart.loadUserCart();
+            if (data.user.role === 'admin') {
+              this.$router.push('/admin');
+            } else {
+              this.$router.push('/');
+            }
           } else {
             throw new Error('Error de servidor');
           }

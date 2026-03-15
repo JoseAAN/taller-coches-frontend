@@ -68,7 +68,7 @@ const routes = [
     path: '/profile',
     component: () => import('../components/web_src/layouts/layout-profile.vue'),
     children: [
-       {
+      {
         path: '',
         name: 'HomeProfile',
         component: () => import('../components/web_src/sections/profile/sections-profile/profile-index.vue')
@@ -78,12 +78,12 @@ const routes = [
         name: 'VehiclesProfile',
         component: () => import('../components/web_src/sections/profile/sections-profile/profile-vehicles.vue')
       },
-       {
+      {
         path: 'InvoicesProducts',
         name: 'InvoicesProductsProfile',
         component: () => import('../components/web_src/sections/profile/sections-profile/profile-productos-invoices.vue')
       },
-       {
+      {
         path: 'InvoicesServices',
         name: 'InvoicesServicesProfile',
         component: () => import('../components/web_src/sections/profile/sections-profile/profile-services-invoices.vue')
@@ -114,7 +114,7 @@ const routes = [
         name: 'admin.sidebar-configuration',
         component: () => import('../components/admin_src/sidebar-configuration/sidebar-configuration.vue')
       }
-    
+
     ]
   },
   {
@@ -135,14 +135,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log('dentro');
-  
+
   //verificacion para saber si la ruta requiere admin o no
-  
+
   // TODO: tenemos esto de momento pero habría que cambiarlo por:
   // - Hacer peticion por cada ruta que vaya el cliente (realentiza la página)
   // - Guardar role en pinia o en app global properties
-  
+
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
 
@@ -150,7 +149,7 @@ router.beforeEach((to, from, next) => {
 
   if (requiresAdmin) {
     const token = localStorage.getItem('user_token');
-    
+
     if (!token) {
       return next('/login');
     }
@@ -158,21 +157,21 @@ router.beforeEach((to, from, next) => {
     return fetch(`${BASE_URL}/user`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
-    .then(response => {
-      if (!response.ok) throw new Error('Failed to fetch user data');
-      return response.json();
-    })
-    .then(data => {
-      if (data.role && data.role.id === 1) {
-        next();
-      } else {
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to fetch user data');
+        return response.json();
+      })
+      .then(data => {
+        if (data.role && data.role.id === 1) {
+          next();
+        } else {
+          next('/login');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
         next('/login');
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching user data:', error);
-      next('/login');
-    });
+      });
   } else {
     next();
   }
