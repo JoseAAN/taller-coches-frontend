@@ -37,7 +37,6 @@ export default {
     try {
       const data = await fetchProfile();
       this.profileData = data;
-      console.log("Datos del perfil cargados:", this.profileData);
     } catch (error) {
       console.error("Fallo al inicializar:", error);
       this.$router.push('/');
@@ -52,14 +51,13 @@ export default {
 </script>
 
 <style scoped>
-/* ✅ Solo esto necesita el padre */
 .profile-layout {
   display: flex;
   min-height: 100vh;
 }
 
 .profile-content {
-  margin-left: 260px; /* mismo ancho que el sidebar */
+  margin-left: 260px;
   flex: 1;
   padding: 2rem;
 }

@@ -181,11 +181,7 @@ export default {
             } else {
             }
           }).then(data => {
-            console.log('dentro');
             this.user = data;
-            console.log(data);
-
-            console.log(this.user);
           })
           .catch(error => {
             console.error('Usuario inválido:', error);

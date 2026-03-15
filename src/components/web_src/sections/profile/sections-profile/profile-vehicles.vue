@@ -289,7 +289,6 @@ export default {
             }
         },
         confirmDelete(vehicle, index) {
-            console.log('Vehículo a eliminar:', vehicle);
             this.vehicleToDelete = vehicle;
             this.vehicleToDeleteIndex = index;
             this.showDeleteModal = true;

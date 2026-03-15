@@ -88,7 +88,6 @@ export default {
         .then(res => res.json())
         .then(res => {
           this.menu = res.data
-          console.log(this.menu);
 
         })
         .finally(() => {

@@ -46,9 +46,6 @@ export default {
     },
     methods: {
         getImageUrl(imageName) {
-            // Chivato temporal: te dirá en consola qué está intentando buscar
-            console.log(`Buscando imagen para ${this.service.name}:`, imageName);
-
             if (!imageName) return 'https://placehold.co/600x400/e2e8f0/475569?text=Sin+Imagen';
             
             if (imageName.startsWith('http')) return imageName;
@@ -61,7 +58,6 @@ export default {
             }
         },
         bookService() {
-            // Tu lógica original intacta
             this.$router.push({
                 name: 'AppointmentCalendar'
             });
@@ -93,7 +89,6 @@ export default {
     box-shadow: 0 12px 24px rgba(0,0,0,0.08) !important;
 }
 
-/* Contenedor de la foto arriba */
 .card-img-top-container {
     width: 100%;
     height: 180px;
@@ -113,7 +108,6 @@ export default {
     transform: scale(1.05);
 }
 
-/* Separadores */
 .card-separator {
     margin: 0;
     border: 0;
@@ -121,7 +115,6 @@ export default {
     opacity: 0.6;
 }
 
-/* Textos */
 .text-navy { color: var(--nav-text); }
 
 .text-secondary-custom { 
@@ -131,7 +124,6 @@ export default {
     line-height: 1.4;
 }
 
-/* Trunca textos largos a 3 líneas */
 .line-clamp {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -141,7 +133,6 @@ export default {
 
 .icon-green { color: #52b155; font-size: 1rem; }
 
-/* Botón */
 .btn-action-card {
     background-color: #52b155;
     color: white;
