@@ -26,8 +26,6 @@
       </section>
       
       </main>
-
-    <footer-component></footer-component>
   </div>
 </template>
 

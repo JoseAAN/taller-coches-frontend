@@ -135,9 +135,11 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
+  console.log('dentro');
+  
   //verificacion para saber si la ruta requiere admin o no
-
+  
   // TODO: tenemos esto de momento pero habría que cambiarlo por:
   // - Hacer peticion por cada ruta que vaya el cliente (realentiza la página)
   // - Guardar role en pinia o en app global properties
@@ -145,21 +147,36 @@ router.beforeEach(async (to, from, next) => {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
 
+  loaderState.show();
+
   if (requiresAdmin) {
     const token = localStorage.getItem('user_token');
-    const user = JSON.parse(localStorage.getItem('user'));
     
-    console.log('aqui si');
-    if (!token || !user || user.userRole !== 'admin') {
+    if (!token) {
       return next('/login');
     }
-    
-    
-  }
-  loaderState.show();
-  await new Promise(resolve => setTimeout(resolve, 400));
 
-  next();
+    return fetch(`${BASE_URL}/user`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Failed to fetch user data');
+      return response.json();
+    })
+    .then(data => {
+      if (data.role && data.role.id === 1) {
+        next();
+      } else {
+        next('/login');
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching user data:', error);
+      next('/login');
+    });
+  } else {
+    next();
+  }
 });
 
 router.afterEach(() => {
