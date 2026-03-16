@@ -98,6 +98,7 @@ const routes = [
   {
     path: '/admin',
     component: () => import('../components/admin_src/AdminLayout.vue'),
+    meta: { requiresAdmin: true },
     children: [
       {
         path: '',
@@ -165,6 +166,7 @@ router.beforeEach((to, from, next) => {
         if (data.role && data.role.id === 1) {
           next();
         } else {
+          console.error('Usuario sin permisos entro en un área restringida');
           next('/login');
         }
       })
