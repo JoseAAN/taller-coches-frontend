@@ -45,7 +45,7 @@ export default {
         }
     },
     methods: {
-        // 1. Nuestra nueva función
+        
         getImageUrl(imageName) {
             if (!imageName) return 'https://placehold.co/800x600/e2e8f0/475569?text=Sin+Imagen';
             if (imageName.startsWith('http')) return imageName;
@@ -54,9 +54,9 @@ export default {
             } catch (error) {
                 return 'https://placehold.co/800x600/e2e8f0/475569?text=Error';
             }
-        }, // <--- ¡ESTA ES LA COMA VITAL QUE FALTABA!
+        },
 
-        // 2. Tu función original
+        
         getService() {
             fetch(`http://127.0.0.1:8000/api/v1/services/${this.serviceId}`)
                 .then(res => {
@@ -67,7 +67,7 @@ export default {
                 .catch(err => console.error('Error al cargar servicio:', err));
         },
 
-        // 3. Función de reserva
+        
         bookService() {
             this.$router.push({
             name: 'AppointmentCalendar'
