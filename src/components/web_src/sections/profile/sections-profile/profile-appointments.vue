@@ -66,8 +66,13 @@
 <script>
 export default {
     props: {
+        infoUser: { type: Object, default: () => ({}) },
+        infoVehicles: { type: Object, default: () => ({}) },
+        infoCartInvoices: { type: Array, default: () => [] },
+        infoServiceInvoices: { type: Array, default: () => [] },
         infoAppointments: { type: Object, default: () => ({}) }
     },
+    emits: ['infoUser-update'],
     methods: {
         formatDate(dateString) {
             const date = new Date(dateString);

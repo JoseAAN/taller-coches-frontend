@@ -59,7 +59,8 @@ export default {
         },
         bookService() {
             this.$router.push({
-                name: 'AppointmentCalendar'
+                name: 'AppointmentCalendar',
+                query: { service_id: this.service.id }
             });
         },
         goToDetails(serviceId) {

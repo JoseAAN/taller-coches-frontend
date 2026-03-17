@@ -25,10 +25,10 @@
                         </thead>
                         <tbody>
                             <tr v-for="item in cartDetails.items" :key="item.id">
-                                <td>{{ item.name }}</td>
+                                <td>{{ item.details.name }}</td>
                                 <td>{{ item.quantity }}</td>
-                                <td>{{ item.priceInTime }} €</td>
-                                <td>{{ item.totalPerProduct }} €</td>
+                                <td>{{ item.price_at_time }} €</td>
+                                <td>{{ item.subtotal }} €</td>
                             </tr>
                         </tbody>
                         <tfoot>
@@ -90,7 +90,7 @@ export default {
                 const token = localStorage.getItem('user_token');
                 
                 // Fetch the user's invoice by cart ID
-                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/v1/product-invoices/by-cart/${cartId}`, {
+                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/v1/invoices/by-cart/${cartId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

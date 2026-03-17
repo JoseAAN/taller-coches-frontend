@@ -27,12 +27,12 @@
           </div>
           <div>
             <p class="invoice-number"># {{ invoice.invoice_number }}</p>
-            <p class="invoice-service-name">{{ invoice.Appointments.service.name }}</p>
+            <p class="invoice-service-name">{{ invoice.appointment.service.name }}</p>
           </div>
         </div>
 
         <div class="invoice-card-right">
-          <span class="invoice-total">{{ invoice.Appointments.final_price }} €</span>
+          <span class="invoice-total">{{ invoice.appointment.final_price }} €</span>
           <button @click="openInvoice(invoice)" class="btn-view">
             <span class="material-symbols-outlined">visibility</span>
             Ver detalle
@@ -67,21 +67,21 @@
               <span class="material-symbols-outlined detail-icon">local_car_wash</span>
               <div>
                 <p class="detail-label">Servicio</p>
-                <p class="detail-value">{{ selectedInvoice?.Appointments.service.name }}</p>
+                <p class="detail-value">{{ selectedInvoice?.appointment.service.name }}</p>
               </div>
             </div>
             <div class="detail-row">
               <span class="material-symbols-outlined detail-icon">category</span>
               <div>
                 <p class="detail-label">Tipo</p>
-                <p class="detail-value">{{ selectedInvoice?.Appointments.service.type.name }}</p>
+                <p class="detail-value">{{ selectedInvoice?.appointment.service.type.name }}</p>
               </div>
             </div>
             <div class="detail-row">
               <span class="material-symbols-outlined detail-icon">timer</span>
               <div>
                 <p class="detail-label">Duración estimada</p>
-                <p class="detail-value">{{ selectedInvoice?.Appointments.service.average_duration_mins }} min</p>
+                <p class="detail-value">{{ selectedInvoice?.appointment.service.average_duration_mins }} min</p>
               </div>
             </div>
           </div>
@@ -93,21 +93,21 @@
               <span class="material-symbols-outlined detail-icon">directions_car</span>
               <div>
                 <p class="detail-label">Vehículo</p>
-                <p class="detail-value">{{ selectedInvoice?.Appointments.vehicle.brand }} {{ selectedInvoice?.Appointments.vehicle.model }}</p>
+                <p class="detail-value">{{ selectedInvoice?.appointment.vehicle.brand }} {{ selectedInvoice?.appointment.vehicle.model }}</p>
               </div>
             </div>
             <div class="detail-row">
               <span class="material-symbols-outlined detail-icon">pin</span>
               <div>
                 <p class="detail-label">Matrícula</p>
-                <p class="detail-value">{{ selectedInvoice?.Appointments.vehicle.license_plate }}</p>
+                <p class="detail-value">{{ selectedInvoice?.appointment.vehicle.license_plate }}</p>
               </div>
             </div>
             <div class="detail-row">
               <span class="material-symbols-outlined detail-icon">palette</span>
               <div>
                 <p class="detail-label">Color</p>
-                <p class="detail-value">{{ selectedInvoice?.Appointments.vehicle.color }}</p>
+                <p class="detail-value">{{ selectedInvoice?.appointment.vehicle.color }}</p>
               </div>
             </div>
           </div>
@@ -119,14 +119,14 @@
               <span class="material-symbols-outlined detail-icon">calendar_today</span>
               <div>
                 <p class="detail-label">Fecha de entrada</p>
-                <p class="detail-value">{{ new Date(selectedInvoice?.Appointments.appointment_date).toLocaleDateString('es-ES') }}</p>
+                <p class="detail-value">{{ new Date(selectedInvoice?.appointment.appointment_date).toLocaleDateString('es-ES') }}</p>
               </div>
             </div>
             <div class="detail-row">
               <span class="material-symbols-outlined detail-icon">event_available</span>
               <div>
                 <p class="detail-label">Fecha de salida</p>
-                <p class="detail-value">{{ new Date(selectedInvoice?.Appointments.end_time).toLocaleDateString('es-ES') }}</p>
+                <p class="detail-value">{{ new Date(selectedInvoice?.appointment.end_time).toLocaleDateString('es-ES') }}</p>
               </div>
             </div>
           </div>
@@ -134,7 +134,7 @@
           <!-- TOTAL -->
           <div class="modal-total">
             <span class="modal-total-label">Total pagado</span>
-            <span class="modal-total-value">{{ selectedInvoice?.Appointments.final_price }} €</span>
+            <span class="modal-total-value">{{ selectedInvoice?.appointment.final_price }} €</span>
           </div>
 
         </div>
@@ -155,8 +155,13 @@
 <script>
 export default {
   props: {
-    infoServiceInvoices: { type: Array, default: () => [] }
+    infoUser: { type: Object, default: () => ({}) },
+    infoVehicles: { type: Object, default: () => ({}) },
+    infoCartInvoices: { type: Array, default: () => [] },
+    infoServiceInvoices: { type: Array, default: () => [] },
+    infoAppointments: { type: Array, default: () => [] }
   },
+  emits: ['infoUser-update'],
   data() {
     return {
       showModal: false,

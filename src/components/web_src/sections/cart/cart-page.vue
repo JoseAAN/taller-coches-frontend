@@ -6,7 +6,7 @@
                 <span class="material-symbols-outlined">shopping_cart</span>
                 Mi Carrito
             </h2>
-            <span class="cart-count">{{ cart.products.length }} producto(s)</span>
+            <span class="cart-count">{{ cart.items?.length || 0 }} elemento(s)</span>
         </div>
 
         <!-- CARRITO VACÍO -->
@@ -16,11 +16,11 @@
             <router-link to="/login" class="btn-action">Iniciar Sesión</router-link>
         </div>
 
-        <div v-else-if="cart.products.length === 0" class="empty-state">
+        <div v-else-if="cart.items.length === 0" class="empty-state">
             <span class="material-symbols-outlined empty-icon">remove_shopping_cart</span>
             <p class="empty-title">Tu carrito está vacío</p>
-            <p class="empty-subtitle">Explora nuestros productos y añade lo que necesites</p>
-            <router-link to="/products" class="btn-action">Ver Productos</router-link>
+            <p class="empty-subtitle">Explora nuestros productos y servicios y añade lo que necesites</p>
+            <router-link to="/products" class="btn-action">Ver Catálogo</router-link>
         </div>
 
         <!-- CONTENIDO DEL CARRITO -->
@@ -28,28 +28,34 @@
 
             <div class="cart-items">
                 <div
-                    v-for="item in cart.products"
+                    v-for="item in cart.items"
                     :key="item.id"
                     class="cart-item"
                 >
                     <div class="item-image">
-                        <img :src="item.image || 'https://placehold.co/120x120'" :alt="item.name" />
+                        <!-- Imagen genérica si es servicio o no tiene imagen -->
+                        <img :src="item.details.image || (item.type === 'PRODUCT' ? 'https://placehold.co/120x120?text=Producto' : 'https://placehold.co/120x120?text=Servicio')" :alt="item.details.name" />
                     </div>
 
                     <div class="item-info">
-                        <h4 class="item-name">{{ item.name }}</h4>
+                        <div class="d-flex align-items-center gap-2">
+                            <h4 class="item-name">{{ item.details.name }}</h4>
+                        </div>
                         <p class="item-price-unit">
-                            <BasePrice :amount="item.priceInTime || item.price" size="sm" />
+                            <BasePrice :amount="item.price_at_time" size="sm" />
                             <span class="unit-label">/ unidad</span>
                         </p>
 
-                        <span v-if="item.stock <= 3 && item.stock > 0" class="stock-warning">
-                            <span class="material-symbols-outlined" style="font-size: 14px;">warning</span>
-                            Quedan {{ item.stock }} unidades
-                        </span>
-                        <span v-else-if="item.stock === 0" class="stock-out">
-                            Agotado
-                        </span>
+                        <!-- Stock solo para productos -->
+                        <template v-if="item.type === 'PRODUCT'">
+                            <span v-if="item.details.stock <= 3 && item.details.stock > 0" class="stock-warning">
+                                <span class="material-symbols-outlined" style="font-size: 14px;">warning</span>
+                                Quedan {{ item.details.stock }} unidades
+                            </span>
+                            <span v-else-if="item.details.stock === 0" class="stock-out">
+                                Agotado
+                            </span>
+                        </template>
                     </div>
 
                     <div class="item-actions">
@@ -57,24 +63,24 @@
                             <button
                                 class="qty-btn"
                                 @click="decreaseQuantity(item)"
-                                :disabled="(item.quantity || 1) <= 1"
+                                :disabled="item.quantity <= 1 || item.type === 'SERVICE'"
                             >
                                 <span class="material-symbols-outlined">remove</span>
                             </button>
 
-                            <span class="qty-value">{{ item.quantity || 1 }}</span>
+                            <span class="qty-value">{{ item.quantity }}</span>
 
                             <button
                                 class="qty-btn"
                                 @click="increaseQuantity(item)"
-                                :disabled="(item.quantity || 1) >= item.stock"
+                                :disabled="item.type === 'SERVICE' || (item.type === 'PRODUCT' && item.quantity >= item.details.stock)"
                             >
                                 <span class="material-symbols-outlined">add</span>
                             </button>
                         </div>
 
                         <div class="item-subtotal">
-                            <BasePrice :amount="String(item.totalPerProduct || item.price)" size="md" />
+                            <BasePrice :amount="String(item.subtotal)" size="md" />
                         </div>
 
                         <button class="btn-remove" @click="removeItem(item)">
@@ -90,7 +96,7 @@
                     <h3 class="summary-title">Resumen del pedido</h3>
 
                     <div class="summary-row">
-                        <span>Productos ({{ cart.quantity }})</span>
+                        <span>Líneas de pedido ({{ cart.items.length }})</span>
                         <BasePrice :amount="String(cart.total)" size="sm" />
                     </div>
 
@@ -106,7 +112,7 @@
                         <BasePrice :amount="String(cart.total)" size="lg" />
                     </div>
 
-                    <button class="btn-checkout" @click="checkout" :disabled="cart.products.length === 0 || isProcessing">
+                    <button class="btn-checkout" @click="checkout" :disabled="cart.items.length === 0 || isProcessing">
                         <span class="material-symbols-outlined" v-if="!isProcessing">shopping_bag</span>
                         <span v-else class="material-symbols-outlined loader-spin">sync</span>
                         {{ isProcessing ? 'Procesando...' : 'Finalizar compra' }}
@@ -142,23 +148,19 @@ export default {
 
     methods: {
         async removeItem(item) {
-            const pivotId = item.pivot_id
-            if (!pivotId) return
-            await cart.removeItem(pivotId)
+            await cart.removeItem(item.id)
         },
 
         async increaseQuantity(item) {
-            const pivotId = item.pivot_id
-            const currentQty = item.quantity || 1
-            if (currentQty >= item.stock) return
-            await cart.updateQuantity(pivotId, currentQty + 1, item.priceInTime || item.price)
+            const currentQty = item.quantity
+            if (item.type === 'PRODUCT' && currentQty >= item.details.stock) return
+            await cart.updateQuantity(item.id, currentQty + 1)
         },
 
         async decreaseQuantity(item) {
-            const pivotId = item.pivot_id
-            const currentQty = item.quantity || 1
+            const currentQty = item.quantity
             if (currentQty <= 1) return
-            await cart.updateQuantity(pivotId, currentQty - 1, item.priceInTime || item.price)
+            await cart.updateQuantity(item.id, currentQty - 1)
         },
 
         async checkout() {
@@ -166,7 +168,7 @@ export default {
                 this.isProcessing = true;
                 const token = localStorage.getItem('user_token');
                 
-                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/v1/product-invoices`, {
+                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/v1/invoices`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

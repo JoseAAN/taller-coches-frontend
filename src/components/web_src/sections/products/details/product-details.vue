@@ -44,7 +44,7 @@
 
 <script>
 import InputNumber from 'primevue/inputnumber';
-import { cart } from '@/JS/Cart.js';
+import { cart, ITEM_TYPES } from '@/JS/Cart.js';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default {
@@ -61,7 +61,9 @@ export default {
     computed: {
         cartQuantity() {
             if (!this.product) return 0;
-            return cart.getProductQuantityInCart(this.product.id);
+            // Buscar en cart.items el item que sea PRODUCT y tenga el id de este producto
+            const item = cart.items.find(i => i.type === 'PRODUCT' && i.details.id === this.product.id);
+            return item ? item.quantity : 0;
         },
         availableStock() {
             if (!this.product) return 0;
@@ -84,7 +86,8 @@ export default {
                 alert('No puedes añadir más de ' + this.availableStock + ' unidades.');
                 return;
             }
-            const result = await cart.addToCart(this.productId, this.value, this.product.price);
+            // Nueva firma: typeId, targetId, quantity, price
+            const result = await cart.addToCart(ITEM_TYPES.PRODUCT, this.productId, this.value, this.product.price);
             if (result.success) {
                 this.value = 1; // Reset quantity after successful add
             }

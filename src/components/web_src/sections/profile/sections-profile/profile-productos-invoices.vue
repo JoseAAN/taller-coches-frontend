@@ -26,8 +26,8 @@
             <span class="material-symbols-outlined">receipt</span>
           </div>
           <div>
-            <p class="invoice-number"># {{ invoice.invoiceNumber }}</p>
-            <p class="invoice-products-count">{{ invoice.products.length }} producto{{ invoice.products.length !== 1 ? 's' : '' }}</p>
+            <p class="invoice-number"># {{ invoice.invoice_number }}</p>
+            <p class="invoice-products-count">{{ invoice.cart?.items?.length || 0 }} producto{{ (invoice.cart?.items?.length || 0) !== 1 ? 's' : '' }}</p>
           </div>
         </div>
 
@@ -51,7 +51,7 @@
         <div class="modal-header">
           <div class="d-flex align-items-center gap-2">
             <span class="material-symbols-outlined" style="color: #52b155; font-size: 22px;">receipt</span>
-            <h5 class="modal-title">Factura # {{ selectedInvoice?.invoiceNumber }}</h5>
+            <h5 class="modal-title">Factura # {{ selectedInvoice?.invoice_number }}</h5>
           </div>
           <button @click="closeModal" class="btn-close-modal">
             <span class="material-symbols-outlined">close</span>
@@ -64,7 +64,7 @@
           <p class="modal-section-title">Productos comprados</p>
           <div class="product-list">
             <div
-              v-for="(product, pIndex) in selectedInvoice?.products"
+              v-for="(item, pIndex) in selectedInvoice?.cart?.items"
               :key="pIndex"
               class="product-row"
             >
@@ -73,17 +73,13 @@
                   <span class="material-symbols-outlined">inventory_2</span>
                 </div>
                 <div>
-                  <p class="product-name">{{ product.name }}</p>
-                  <span
-                    v-for="(cat, cIndex) in product.categories"
-                    :key="cIndex"
-                    class="product-category"
-                  >
-                    {{ cat }}
+                  <p class="product-name">{{ item.details.name }}</p>
+                  <span class="product-category">
+                    {{ item.type }}
                   </span>
                 </div>
               </div>
-              <span class="product-price">{{ product.price }} €</span>
+              <span class="product-price">{{ item.subtotal }} €</span>
             </div>
           </div>
 
@@ -111,8 +107,13 @@
 <script>
 export default {
   props: {
-    infoCartInvoices: { type: Array, default: () => [] }
+    infoUser: { type: Object, default: () => ({}) },
+    infoVehicles: { type: Object, default: () => ({}) },
+    infoCartInvoices: { type: Array, default: () => [] },
+    infoServiceInvoices: { type: Array, default: () => [] },
+    infoAppointments: { type: Array, default: () => [] }
   },
+  emits: ['infoUser-update'],
   data() {
     return {
       showModal: false,

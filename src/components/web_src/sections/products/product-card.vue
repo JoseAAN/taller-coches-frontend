@@ -49,7 +49,7 @@
 <script>
 import { loaderState } from '@/loaderState'
 import BasePrice from '../../UI/global-price.vue'
-import { cart } from '@/JS/Cart.js'
+import { cart, ITEM_TYPES } from '@/JS/Cart.js'
 
 export default {
     name: 'ProductCard',
@@ -82,14 +82,15 @@ export default {
                 : this.product.description
         },
         isOutOfStock() {
-            const inCart = cart.getProductQuantityInCart(this.product.id);
+            const itemInCart = cart.items.find(i => i.type === 'PRODUCT' && i.details.id === this.product.id);
+            const inCart = itemInCart ? itemInCart.quantity : 0;
             return this.product.stock <= inCart;
         }
     },
 
     methods: {
         async addToCart() {
-            await cart.addToCart(this.product.id, 1, this.product.price);
+            await cart.addToCart(ITEM_TYPES.PRODUCT, this.product.id, 1, this.product.price);
         },
 
         goToDetails(productId) {

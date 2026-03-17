@@ -3,9 +3,14 @@ import { reactive } from "vue";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+export const ITEM_TYPES = {
+    PRODUCT: 1,
+    SERVICE: 2
+};
+
 export const cart = reactive({
     id: null,
-    products: [],
+    items: [],
     total: 0,
     quantity: 0,
 
@@ -31,14 +36,14 @@ export const cart = reactive({
 
             if (!data.data) {
                 this.id = null;
-                this.products = [];
+                this.items = [];
                 this.total = 0;
                 this.quantity = 0;
                 return;
             }
 
             this.id = data.data.id;
-            this.products = data.data.items || [];
+            this.items = data.data.items || [];
             this.total = data.data.price;
             this.quantity = this.checkQuantity(data.data.items || []);
             loaderState.hide();
@@ -55,13 +60,13 @@ export const cart = reactive({
         return total;
     },
 
-    async removeItem(cartProductId) {
+    async removeItem(itemId) {
         const token = localStorage.getItem('user_token');
         if (!token) return;
 
         try {
             loaderState.show();
-            const response = await fetch(`${BASE_URL}/v1/cart-products/${cartProductId}`, {
+            const response = await fetch(`${BASE_URL}/v1/cart-items/${itemId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -71,7 +76,7 @@ export const cart = reactive({
             });
 
             if (!response.ok) {
-                throw new Error('Error eliminando producto del carrito');
+                throw new Error('Error eliminando item del carrito');
             }
 
             await this.loadUserCart();
@@ -82,13 +87,13 @@ export const cart = reactive({
         }
     },
 
-    async updateQuantity(cartProductId, quantity, priceInTime) {
+    async updateQuantity(itemId, quantity) {
         const token = localStorage.getItem('user_token');
         if (!token) return;
 
         try {
             loaderState.show();
-            const response = await fetch(`${BASE_URL}/v1/cart-products/${cartProductId}`, {
+            const response = await fetch(`${BASE_URL}/v1/cart-items/${itemId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,8 +101,7 @@ export const cart = reactive({
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    quantity: quantity,
-                    priceInTime: priceInTime
+                    quantity: quantity
                 })
             });
 
@@ -113,46 +117,55 @@ export const cart = reactive({
         }
     },
 
-    getProductQuantityInCart(productId) {
-        const item = this.products.find(p => p.id === productId);
-        return item ? item.quantity : 0;
-    },
-
-    async addToCart(productId, quantity, priceInTime) {
+    /**
+     * Añade un producto o servicio al carrito.
+     * @param {number} typeId - ITEM_TYPES.PRODUCT o ITEM_TYPES.SERVICE
+     * @param {number} targetId - ID del producto o ID del appointment
+     * @param {number} quantity - Cantidad (siempre 1 para servicios)
+     * @param {number} price - Precio unitario en el momento
+     */
+    async addToCart(typeId, targetId, quantity, price) {
         const token = localStorage.getItem('user_token');
         if (!token) return { success: false, message: 'No autenticado' };
 
         try {
             loaderState.show();
-            // Asegurarnos de tener el cart.id
+            
             if (!this.id) {
                 await this.loadUserCart();
             }
 
-            const response = await fetch(`${BASE_URL}/v1/addToCart`, {
+            const payload = {
+                cart_id: this.id,
+                item_type_id: typeId,
+                quantity: quantity,
+                price_at_time: price
+            };
+
+            // Según el tipo, asignamos el campo correspondiente
+            if (typeId === ITEM_TYPES.PRODUCT) {
+                payload.product_id = targetId;
+            } else if (typeId === ITEM_TYPES.SERVICE) {
+                payload.appointment_id = targetId;
+            }
+
+            const response = await fetch(`${BASE_URL}/v1/cart-items`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    product_id: productId,
-                    quantity: quantity,
-                    cart_id: this.id,
-                    priceInTime: priceInTime
-                })
+                body: JSON.stringify(payload)
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                // El backend devuelve 400 con un mensaje si no hay stock suficiente
                 alert(data.message || 'Error al añadir al carrito');
                 return { success: false, message: data.message };
             }
 
-            // Recargar para tener el total/cantidades actualizadas
             await this.loadUserCart();
             return { success: true };
             
@@ -166,7 +179,7 @@ export const cart = reactive({
 
     clearCart() {
         this.id = null;
-        this.products = [];
+        this.items = [];
         this.total = 0;
         this.quantity = 0;
     }
