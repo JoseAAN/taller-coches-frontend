@@ -30,7 +30,6 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm custom-dropdown position-absolute">
             <li>
-              <!-- ✅ MOBILE -->
               <button @click="goToProfile" class="dropdown-item d-flex align-items-center gap-2">
                 <span class="material-symbols-outlined" style="font-size: 20px;">manage_accounts</span>
                 Mi cuenta
@@ -91,7 +90,7 @@
             class="btn btn-icon-action position-relative d-flex align-items-center justify-content-center p-2 rounded-circle"
             title="Carrito">
             <span class="material-symbols-outlined">shopping_cart</span>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            <span v-if="this.user" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
               style="font-size: 0.65rem; padding: 0.35em 0.5em;">
               {{ cart.quantity }}
             </span>
@@ -110,10 +109,15 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm custom-dropdown" aria-labelledby="userDropdownDesktop">
               <li>
-                <!-- ✅ DESKTOP -->
                 <button @click="goToProfile" class="dropdown-item d-flex align-items-center gap-2">
                   <span class="material-symbols-outlined" style="font-size: 20px;">manage_accounts</span>
                   Mi cuenta
+                </button>
+              </li>
+              <li v-if="this.user.role.id == 1">
+                <button @click="goToAdmin" class="dropdown-item d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined" style="font-size: 20px;">shield_person</span>
+                  Admin Panel
                 </button>
               </li>
               <li>
@@ -137,19 +141,22 @@
 <script>
 import ThemeSwitcher from '../UI/theme-switcher.vue';
 import { cart } from '@/JS/Cart.js';
+import { authState, fetchUserData, logout } from '@/JS/Auth.js';
 
 export default {
   name: 'nav-component',
   components: { ThemeSwitcher },
   data() {
     return {
-      user: localStorage.getItem('user_token') ? JSON.parse(localStorage.getItem('user')) : null
     }
   },
   computed: {
     cart() {
       return cart;
-    }
+    },
+    user() {
+      return authState.user;
+    },
   },
   methods: {
     goToProfile() {
@@ -157,45 +164,20 @@ export default {
         this.$router.push('/profile');
       }, 150);
     },
+    goToAdmin() {
+      setTimeout(() => {
+        this.$router.push('/admin');
+      }, 150);
+    },
     logout() {
-      localStorage.removeItem('user_token');
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      logout();
+      this.$router.push('/login');
     },
 
-    //mover esta llamada a otro sitio
-    checkUser() {
-      const token = localStorage.getItem('user_token');
-      if (token) {
-        fetch(`${this.$BASE_URL}/user`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json'
-          }
-        })
-          .then(response => {
-            if (response.ok) {
-              this.user_verfied = true;
-              return response.json();
-            } else {
-            }
-          }).then(data => {
-            this.user = data;
-          })
-          .catch(error => {
-            console.error('Usuario inválido:', error);
-            localStorage.removeItem('token');
-          });
-      } else {
-        this.user_verfied = false;
-      }
-    },
-
-    mounted() {
-      this.checkUser();
-    },
-  }
+  },
+  mounted() {
+    fetchUserData();
+  },
 }
 </script>
 
