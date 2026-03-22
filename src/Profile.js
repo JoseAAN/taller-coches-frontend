@@ -19,6 +19,7 @@ export const fetchProfile = async () => {
         
         const data = await response.json();
 
+
         const infoUser = {
             User: data.User,
             Role: data.User.userRole
@@ -29,13 +30,14 @@ export const fetchProfile = async () => {
             vehicleType: data.vehicle_type
         };
 
-        const infoCartInvoices = data.CartInvoices;
-        const infoServiceInvoices = data.ServiceInvoices;
+        const infoInvoices = data.Invoices;
+
         const infoAppointments = {
             appointments: data.Appointments
         };
 
-        return { infoUser, infoVehicles, infoCartInvoices, infoServiceInvoices, infoAppointments, infoAppointments };
+        return { infoUser, infoVehicles, infoInvoices,infoAppointments };
+
     } catch (error) {
         console.error('Error loading profile:', error);
         throw error; 
