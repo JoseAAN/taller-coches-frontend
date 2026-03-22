@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!infoCartInvoices?.length" class="loading-state">
+  <div v-if="!infoInvoices?.length" class="loading-state">
     <span class="material-symbols-outlined loading-icon">hourglass_empty</span>
     <p class="loading-text">No tienes facturas de carrito.</p>
   </div>
@@ -11,13 +11,13 @@
         <span class="material-symbols-outlined header-icon">shopping_bag</span>
         <h4 class="page-title">Mis Compras</h4>
       </div>
-      <span class="invoice-count">{{ infoCartInvoices.length }} factura{{ infoCartInvoices.length !== 1 ? 's' : '' }}</span>
+      <span class="invoice-count">{{ infoInvoices.length }} factura{{ infoInvoices.length !== 1 ? 's' : '' }}</span>
     </div>
 
     <!-- LISTADO FACTURAS -->
     <div class="invoices-list">
       <div
-        v-for="(invoice, index) in infoCartInvoices"
+        v-for="(invoice, index) in infoInvoices"
         :key="index"
         class="invoice-card"
       >
@@ -27,7 +27,8 @@
           </div>
           <div>
             <p class="invoice-number"># {{ invoice.invoiceNumber }}</p>
-            <p class="invoice-products-count">{{ invoice.products.length }} producto{{ invoice.products.length !== 1 ? 's' : '' }}</p>
+            <p class="invoice-meta">{{ invoice.created_at }}</p>
+            <p class="invoice-products-count">{{ invoice.items.length }} item{{ invoice.items.length !== 1 ? 's' : '' }}</p>
           </div>
         </div>
 
@@ -51,7 +52,10 @@
         <div class="modal-header">
           <div class="d-flex align-items-center gap-2">
             <span class="material-symbols-outlined" style="color: #52b155; font-size: 22px;">receipt</span>
-            <h5 class="modal-title">Factura # {{ selectedInvoice?.invoiceNumber }}</h5>
+            <div>
+              <h5 class="modal-title">Factura # {{ selectedInvoice?.invoiceNumber }}</h5>
+              <p class="modal-subtitle">{{ selectedInvoice?.created_at }}</p>
+            </div>
           </div>
           <button @click="closeModal" class="btn-close-modal">
             <span class="material-symbols-outlined">close</span>
@@ -61,31 +65,73 @@
         <div class="modal-body">
 
           <!-- PRODUCTOS -->
-          <p class="modal-section-title">Productos comprados</p>
-          <div class="product-list">
-            <div
-              v-for="(product, pIndex) in selectedInvoice?.products"
-              :key="pIndex"
-              class="product-row"
-            >
-              <div class="product-row-left">
-                <div class="product-icon-wrap">
-                  <span class="material-symbols-outlined">inventory_2</span>
+          <template v-if="productItems.length">
+            <p class="modal-section-title">
+              <span class="material-symbols-outlined section-icon">inventory_2</span>
+              Productos
+            </p>
+            <div class="product-list">
+              <div
+                v-for="(product, pIndex) in productItems"
+                :key="pIndex"
+                class="product-row"
+              >
+                <div class="product-row-left">
+                  <div class="product-icon-wrap product-icon-wrap--product">
+                    <span class="material-symbols-outlined">inventory_2</span>
+                  </div>
+                  <div>
+                    <p class="product-name">{{ product.name }}</p>
+                    <div class="product-tags">
+                      <span
+                        v-for="(cat, cIndex) in product.categories"
+                        :key="cIndex"
+                        class="product-category"
+                      >
+                        {{ cat }}
+                      </span>
+                    </div>
+                    <p class="product-qty">{{ product.price }} € × {{ product.quantity }} uds.</p>
+                  </div>
                 </div>
-                <div>
-                  <p class="product-name">{{ product.name }}</p>
-                  <span
-                    v-for="(cat, cIndex) in product.categories"
-                    :key="cIndex"
-                    class="product-category"
-                  >
-                    {{ cat }}
-                  </span>
-                </div>
+                <span class="product-price">{{ product.subtotal }} €</span>
               </div>
-              <span class="product-price">{{ product.price }} €</span>
             </div>
-          </div>
+          </template>
+
+          <!-- CITAS -->
+          <template v-if="appointmentItems.length">
+            <p class="modal-section-title" :style="{ marginTop: productItems.length ? '1.5rem' : '0' }">
+              <span class="material-symbols-outlined section-icon">calendar_month</span>
+              Citas / Servicios
+            </p>
+            <div class="product-list">
+              <div
+                v-for="(appt, aIndex) in appointmentItems"
+                :key="aIndex"
+                class="product-row product-row--appointment"
+              >
+                <div class="product-row-left">
+                  <div class="product-icon-wrap product-icon-wrap--appointment">
+                    <span class="material-symbols-outlined">home_repair_service</span>
+                  </div>
+                  <div class="appt-info">
+                    <p class="product-name">{{ appt.service }}</p>
+                    <div class="appointment-detail">
+                      <span class="material-symbols-outlined appt-icon">calendar_today</span>
+                      <span>{{ appt.appointment_date }}</span>
+                    </div>
+                    <div class="appointment-detail">
+                      <span class="material-symbols-outlined appt-icon">directions_car</span>
+                      <span>{{ appt.vehicle }}</span>
+                    </div>
+                    <p class="product-qty">{{ appt.price }} € × {{ appt.quantity }}</p>
+                  </div>
+                </div>
+                <span class="product-price">{{ appt.subtotal }} €</span>
+              </div>
+            </div>
+          </template>
 
           <!-- TOTAL -->
           <div class="modal-total">
@@ -111,7 +157,7 @@
 <script>
 export default {
   props: {
-    infoCartInvoices: { type: Array, default: () => [] }
+    infoInvoices: { type: Array, default: () => [] }
   },
   data() {
     return {
@@ -119,14 +165,26 @@ export default {
       selectedInvoice: null
     }
   },
+  computed: {
+    // Filtra solo los items de tipo "product" de la factura seleccionada
+    productItems() {
+      if (!this.selectedInvoice) return []
+      return this.selectedInvoice.items.filter(item => item.type === 'product')
+    },
+    // Filtra solo los items de tipo "appointment" de la factura seleccionada
+    appointmentItems() {
+      if (!this.selectedInvoice) return []
+      return this.selectedInvoice.items.filter(item => item.type === 'appointment')
+    }
+  },
   methods: {
     openInvoice(invoice) {
-      this.selectedInvoice = invoice;
-      this.showModal = true;
+      this.selectedInvoice = invoice
+      this.showModal = true
     },
     closeModal() {
-      this.showModal = false;
-      this.selectedInvoice = null;
+      this.showModal = false
+      this.selectedInvoice = null
     }
   }
 }
@@ -217,6 +275,13 @@ export default {
   margin: 0 0 2px 0;
 }
 
+.invoice-meta {
+  font-size: 0.78rem;
+  color: var(--nav-text);
+  opacity: 0.4;
+  margin: 0 0 2px 0;
+}
+
 .invoice-products-count {
   font-size: 0.82rem;
   color: var(--nav-text);
@@ -298,6 +363,13 @@ export default {
   font-size: 1rem;
   font-weight: 700;
   color: var(--nav-text);
+  margin: 0 0 2px 0;
+}
+
+.modal-subtitle {
+  font-size: 0.78rem;
+  color: var(--nav-text);
+  opacity: 0.45;
   margin: 0;
 }
 
@@ -316,6 +388,9 @@ export default {
 .modal-body { padding: 1.5rem; }
 
 .modal-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--nav-text);
@@ -325,50 +400,75 @@ export default {
   margin: 0 0 1rem 0;
 }
 
-/* ── PRODUCTOS EN MODAL ── */
+.section-icon { font-size: 16px; }
+
+/* ── ITEMS EN MODAL ── */
 .product-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .product-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 12px;
   border: 1px solid var(--nav-border, #ddd);
   border-radius: 10px;
   transition: border-color 0.2s ease;
 
   &:hover { border-color: #52b155; }
+
+  // Las citas tienen un toque azulado al hover
+  &--appointment:hover { border-color: #5b8fd4; }
 }
 
 .product-row-left {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
+  flex: 1;
+  min-width: 0;
+  margin-right: 12px;
 }
 
 .product-icon-wrap {
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  background-color: rgba(82, 177, 85, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-top: 2px;
 
-  .material-symbols-outlined { font-size: 20px; color: #52b155; }
+  .material-symbols-outlined { font-size: 20px; }
+
+  &--product {
+    background-color: rgba(82, 177, 85, 0.1);
+    .material-symbols-outlined { color: #52b155; }
+  }
+
+  &--appointment {
+    background-color: rgba(91, 143, 212, 0.12);
+    .material-symbols-outlined { color: #5b8fd4; }
+  }
 }
 
 .product-name {
   font-weight: 600;
   font-size: 0.9rem;
   color: var(--nav-text);
-  margin: 0 0 3px 0;
+  margin: 0 0 5px 0;
+}
+
+.product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 5px;
 }
 
 .product-category {
@@ -381,11 +481,51 @@ export default {
   opacity: 0.7;
 }
 
+.product-qty {
+  font-size: 0.78rem;
+  color: var(--nav-text);
+  opacity: 0.45;
+  margin: 0;
+}
+
+/* Detalles de cita (fecha, matrícula) */
+.appt-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.appointment-detail {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  color: var(--nav-text);
+  opacity: 0.65;
+  margin-bottom: 4px;
+  line-height: 1.3;
+
+  span:last-child {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.appt-icon {
+  font-size: 15px;
+  color: #5b8fd4;
+  opacity: 1;
+  flex-shrink: 0;
+}
+
 .product-price {
   font-weight: 700;
   font-size: 0.95rem;
   color: var(--nav-text);
   white-space: nowrap;
+  padding-top: 2px;
 }
 
 /* ── TOTAL ── */
@@ -394,6 +534,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.2rem;
+  margin-top: 1.2rem;
   background-color: rgba(82, 177, 85, 0.08);
   border: 1.5px solid #52b155;
   border-radius: 10px;

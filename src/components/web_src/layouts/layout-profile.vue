@@ -7,10 +7,8 @@
         v-if="profileData"
         :infoUser="profileData.infoUser"
         :infoVehicles="profileData.infoVehicles"
-        :infoCartInvoices="profileData.infoCartInvoices"
-        :infoServiceInvoices="profileData.infoServiceInvoices"
+        :infoInvoices="profileData.infoInvoices"
         :infoAppointments="profileData.infoAppointments"
-     
         @infoUser-update="actualizarDatosUsuario"
       />
     

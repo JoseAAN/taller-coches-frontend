@@ -79,14 +79,9 @@ const routes = [
         component: () => import('../components/web_src/sections/profile/sections-profile/profile-vehicles.vue')
       },
       {
-        path: 'InvoicesProducts',
-        name: 'InvoicesProductsProfile',
-        component: () => import('../components/web_src/sections/profile/sections-profile/profile-productos-invoices.vue')
-      },
-      {
-        path: 'InvoicesServices',
-        name: 'InvoicesServicesProfile',
-        component: () => import('../components/web_src/sections/profile/sections-profile/profile-services-invoices.vue')
+        path: 'Invoices',
+        name: 'InvoicesProfile',
+        component: () => import('../components/web_src/sections/profile/sections-profile/profile-invoices.vue')
       },
       {
         path: 'Appointments',

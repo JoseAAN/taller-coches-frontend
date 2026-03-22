@@ -62,7 +62,7 @@
             
           </template>
 
-          <!-- MODO EDICIÓN -->
+          <!-- MODO EDICION -->
           <template v-else>
             <p class="error-message" v-if="errorMessage">
               <span class="material-symbols-outlined">error</span>
@@ -109,7 +109,7 @@
       </div>
     </div>
 
-    <!-- VEHÍCULOS -->
+    <!-- VEHICULOS DEL USUARIO-->
     <div class="profile-card mb-4">
       <div class="profile-card-header">
         <div class="d-flex align-items-center gap-2">

@@ -25,13 +25,9 @@
         <span class="material-symbols-outlined">directions_car</span>
         <span>Vehículos</span>
       </router-link>
-      <router-link class="sidebar-link" to="/profile/InvoicesProducts" @click="$emit('close-menu')">
+      <router-link class="sidebar-link" to="/profile/Invoices" @click="$emit('close-menu')">
         <span class="material-symbols-outlined">shopping_bag</span>
         <span>Mis compras</span>
-      </router-link>
-      <router-link class="sidebar-link" to="/profile/InvoicesServices" @click="$emit('close-menu')">
-        <span class="material-symbols-outlined">receipt_long</span>
-        <span>Mis servicios</span>
       </router-link>
       <router-link class="sidebar-link" to="/profile/Appointments" @click="$emit('close-menu')">
         <span class="material-symbols-outlined">calendar_month</span>
@@ -80,7 +76,7 @@ export default {
   border-right: 1px solid var(--nav-border, #ddd);
   display: flex;
   flex-direction: column;
-  padding: 1rem; /* Reducido de 1.5rem */
+  padding: 1rem; 
   position: fixed;
   top: 0;
   left: 0;
