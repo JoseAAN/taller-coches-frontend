@@ -1,24 +1,20 @@
 <template>
-  <div class="appointment-layout">
-    <!-- Header -->
-    <header class="appointment-header">
-      <div class="header-content">
-        <div class="logo-container" @click="goHome">
-          <div class="logo-image"></div>
-        </div>
-        
-        <h1 class="appointment-title">Reserva tu Cita</h1>
-        
-        <div class="header-actions">
-          <ThemeSwitcher />
-          <button @click="goHome" class="btn-home" title="Volver al inicio">
-            <span class="material-symbols-outlined">home</span>
-          </button>
-        </div>
+  <header class="appointment-header">
+    <div class="header-content">
+      <div class="logo-container" @click="goHome">
+        <div class="logo-image"></div>
       </div>
-    </header>
-
-  </div>
+      
+      <h1 class="appointment-title">Reserva tu Cita</h1>
+      
+      <div class="header-actions">
+        <ThemeSwitcher />
+        <button @click="goHome" class="btn-home" title="Volver al inicio">
+          <span class="material-symbols-outlined">home</span>
+        </button>
+      </div>
+    </div>
+  </header>
 </template>
 
 <script>
