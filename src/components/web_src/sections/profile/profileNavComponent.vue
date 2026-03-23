@@ -97,7 +97,7 @@ export default {
 .logo-container {
   width: 180px; 
   height: 150px; 
-  background-image: url('src/assets/LogoModoClaro.png');
+  background-image: url('@/assets/LogoModoClaro.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -105,7 +105,7 @@ export default {
 }
 
 [data-theme="dark"] .logo-container {
-  background-image: url('src/assets/LogoModoOscuro.png');
+  background-image: url('@/assets/LogoModoOscuro.png');
 }
 
 .sidebar-brand:hover .logo-container {
