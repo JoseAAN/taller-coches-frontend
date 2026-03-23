@@ -13,7 +13,7 @@
                 <select v-model="filters.category" class="custom-select">
                     <option value="">Todas las categorías</option>
                     <option v-for="cat in categories" :key="cat" :value="cat">
-                        {{ cat }}
+                        {{ cat.name }}
                     </option>
                 </select>
                 <i class="pi pi-chevron-down select-icon"></i>
@@ -77,7 +77,7 @@ export default {
                 minPrice: 0,
                 maxPrice: 1000
             },
-            categories: ['ropa', 'tecnologia', 'hogar']
+            categories: []
         }
     },
     methods: {
@@ -89,7 +89,23 @@ export default {
             this.filters.minPrice = 0;
             this.filters.maxPrice = 1000;
             this.applyFilters();
-        }
+        },
+        getCategories() {
+            fetch(`${this.$BASE_URL}/v1/categories`)
+                .then(response => response.json())
+                .then(data => {
+                    
+                    this.categories = data;
+                    console.log(this.categories);
+                })
+                .catch(error => {
+                    console.error('Error fetching categories:', error);
+                });
+        },
+
+    },
+    mounted() {
+        this.getCategories();
     }
 }
 </script>
