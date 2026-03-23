@@ -119,7 +119,7 @@ export default {
     // Agrupo las horas por las horas a las que empiezan las de las 10:00 las de las 11:00 etc..
     groupedSlots() {
       return this.slots.reduce((groups, slot) => {
-        const hour = slot.start.split(':')[0] // "08:00" → "08"
+        const hour = slot.start.split(':')[0] 
         if (!groups[hour]) groups[hour] = []
         groups[hour].push(slot)
         return groups

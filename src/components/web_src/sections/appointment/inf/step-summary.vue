@@ -11,7 +11,7 @@
 
     <div class="summary-box">
 
-      <!-- VEHÍCULO -->
+      <!-- COCHE -->
       <div class="summary-row">
         <div class="summary-icon-wrap">
           <span class="material-symbols-outlined">directions_car</span>
@@ -61,7 +61,11 @@
           <div class="summary-tags">
             <span class="summary-tag">
               <span class="material-symbols-outlined" style="font-size:13px">schedule</span>
-              {{ startTime }}
+              Entrada: {{ startTime }}
+            </span>
+            <span class="summary-tag">
+              <span class="material-symbols-outlined" style="font-size:13px">flag</span>
+              Salida: {{ endTime }}
             </span>
           </div>
         </div>
@@ -69,7 +73,6 @@
 
       <div class="summary-divider"></div>
 
-      <!-- TOTAL -->
       <div class="summary-total">
         <span class="summary-total-label">Total</span>
         <span class="summary-total-value">{{ service.price }} €</span>
@@ -77,13 +80,11 @@
 
     </div>
 
-    <!-- AVISO -->
     <div class="summary-notice">
       <span class="material-symbols-outlined">info</span>
       <p>Al confirmar, la cita se añadirá a tu carrito y podrás completar el pago desde allí.</p>
     </div>
 
-    <!-- ACCIONES -->
     <div class="step-actions">
       <button class="btn-back" @click="$emit('back')">
         <span class="material-symbols-outlined">arrow_back</span>
@@ -100,7 +101,7 @@
 </template>
 
 <script>
-import { cart } from '/src/js/Cart.js' // ajusta la ruta a donde tengas tu cart.js
+import { cart } from '/src/js/Cart.js' 
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -117,18 +118,30 @@ export default {
       loading: false
     }
   },
+    computed: {
+    endTime() {
+      if (!this.startTime || !this.service.average_duration_mins) return null
+      const [hours, minutes] = this.startTime.split(':').map(Number)
+
+      const date = new Date()
+      date.setHours(hours)
+      date.setMinutes(minutes + this.service.average_duration_mins)
+
+      const h = String(date.getHours()).padStart(2, '0')
+      const m = String(date.getMinutes()).padStart(2, '0')
+      return `${h}:${m}`
+    }
+  },
   methods: {
     async confirmar() {
       this.loading = true
       const token = localStorage.getItem('user_token')
 
       try {
-        // 1 — Aseguramos que tenemos el cart.id
         if (!cart.id) {
           await cart.loadUserCart()
         }
 
-        // 2 — Creamos la cita
         const appointmentResponse = await fetch(`${BASE_URL}/v1/appointment`, {
           method: 'POST',
           headers: {
@@ -144,13 +157,11 @@ export default {
         })
 
         if (!appointmentResponse.ok) {
-          alert('Error al crear la cita, puede que el horario ya no esté disponible')
+          alert('Error al crear la cita')
           return
         }
-
         const appointmentData = await appointmentResponse.json()
 
-        // 3 — Añadimos la cita al carrito
         const cartResponse = await fetch(`${BASE_URL}/v1/cart-items`, {
           method: 'POST',
           headers: {
@@ -170,8 +181,6 @@ export default {
           alert('La cita se creó pero no se pudo añadir al carrito')
           return
         }
-
-        // 4 — Recargamos el carrito y vamos al carrito
         await cart.loadUserCart()
         this.$router.push('/cart')
 
@@ -193,7 +202,6 @@ export default {
   padding: 0 1.5rem;
 }
 
-/* ── HEADER ── */
 .step-header {
   display: flex;
   align-items: center;
@@ -222,7 +230,7 @@ export default {
   margin: 0;
 }
 
-/* ── CAJA RESUMEN ── */
+
 .summary-box {
   background-color: var(--nav-bg);
   border: 1px solid var(--nav-border, #ddd);
@@ -309,7 +317,7 @@ export default {
   margin: 1.2rem 0;
 }
 
-/* ── TOTAL ── */
+
 .summary-total {
   display: flex;
   align-items: center;
@@ -334,7 +342,7 @@ export default {
   letter-spacing: -0.5px;
 }
 
-/* ── AVISO ── */
+
 .summary-notice {
   display: flex;
   align-items: flex-start;
@@ -361,7 +369,6 @@ export default {
   }
 }
 
-/* ── ACCIONES ── */
 .step-actions {
   display: flex;
   justify-content: space-between;
@@ -413,7 +420,7 @@ export default {
   }
 }
 
-/* ── ANIMACIÓN SPINNER ── */
+
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

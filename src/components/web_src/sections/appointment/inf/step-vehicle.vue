@@ -9,25 +9,27 @@
       </div>
     </div>
 
-    <!-- CARGANDO -->
     <div v-if="loading" class="loading-state">
       <span class="material-symbols-outlined loading-icon">hourglass_empty</span>
       <p class="loading-text">Cargando vehículos...</p>
     </div>
 
-    <!-- ERROR -->
     <div v-else-if="error" class="error-state">
       <span class="material-symbols-outlined">error</span>
       <p>{{ error }}</p>
     </div>
 
-    <!-- SIN VEHÍCULOS -->
+    <!--EN CASO DE QUE NO TENGA COCHES-->
     <div v-else-if="!vehicles.length" class="loading-state">
       <span class="material-symbols-outlined loading-icon">garage</span>
       <p class="loading-text">No tienes vehículos registrados</p>
+      <button class="btn-next" @click="$router.push('/profile/vehicles')">
+        <span class="material-symbols-outlined">add_circle</span>
+        Añadir vehículo
+      </button>
     </div>
 
-    <!-- LISTA DE VEHÍCULOS -->
+    <!-- LISTA DE COCHES -->
     <div v-else class="vehicles-grid">
       <div
         v-for="vehicle in vehicles"
@@ -55,7 +57,6 @@
       </div>
     </div>
 
-    <!-- BOTÓN SIGUIENTE -->
     <div class="step-actions">
       <button class="btn-next" :disabled="!selectedId" @click="confirm">
         Siguiente

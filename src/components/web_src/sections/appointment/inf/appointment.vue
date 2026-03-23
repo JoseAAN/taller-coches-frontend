@@ -42,12 +42,11 @@ export default {
     return {
       paso: 1,
       data: {
-        // IDs para enviar al backend
         vehicle_Id: null,
         service_Id: null,
         date: null,
         start_time: null,
-        // Objetos completos para mostrar en el resumen
+        // Objetos para el resumen
         vehicle: null,
         service: null,
       }
@@ -56,7 +55,7 @@ export default {
   methods: {
     seleccionarVehiculo(vehicle) {
       this.data.vehicle_Id = vehicle.id
-      this.data.vehicle = vehicle       // guardamos el objeto completo
+      this.data.vehicle = vehicle       
       this.paso = 2
     },
     seleccionarServicio(service) {

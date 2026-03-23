@@ -9,13 +9,11 @@
       </div>
     </div>
 
-    <!-- CARGANDO -->
     <div v-if="loading" class="loading-state">
       <span class="material-symbols-outlined loading-icon">hourglass_empty</span>
       <p class="loading-text">Cargando servicios...</p>
     </div>
 
-    <!-- ERROR -->
     <div v-else-if="error" class="error-state">
       <span class="material-symbols-outlined">error</span>
       <p>{{ error }}</p>
@@ -65,7 +63,6 @@
       </div>
     </div>
 
-    <!-- ACCIONES -->
     <div class="step-actions">
       <button class="btn-back" @click="$emit('back')">
         <span class="material-symbols-outlined">arrow_back</span>
