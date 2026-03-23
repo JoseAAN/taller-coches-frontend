@@ -44,10 +44,20 @@
 
           <Button :label="loading ? 'Iniciando...' : 'Iniciar Sesión'" :disabled="loading"
             class="btn-register w-100 fw-bold py-3 mt-2" @click.prevent="iniciarSesion" />
+          <div class="text-center ">
+            <router-link to="/" class="d-inline-block text-secondary text-decoration-none fw-semibold border border-2 border-secondary rounded-pill px-8 py-2" style="transition: color 0.3s ease;">
+              Quizás más tarde
+            </router-link>
+          </div>
 
           <Message v-if="success" severity="success">Sesión iniciada correctamente</Message>
 
-          <a href="/register" @click.prevent="this.$router.push('/register')">¿No tienes cuenta? Regístrate aquí</a>
+          <div class="text-center mt-3">
+            <span class="text-secondary">¿No tienes cuenta? </span>
+            <router-link to="/register" class=" text-decoration-none fw-semibold">
+              Regístrate aquí
+            </router-link>
+          </div>
         </form>
       </div>
     </div>
@@ -62,6 +72,7 @@ import Button from 'primevue/button'
 import Message from 'primevue/message'
 import { loaderState } from '@/loaderState';
 import { cart } from '@/JS/Cart.js';
+import { fetchUserData } from '@/JS/Auth.js';
 
 export default {
   name: 'login-component',
@@ -111,8 +122,7 @@ export default {
             window.grecaptcha.reset();
             
             localStorage.setItem('user_token', data.access_token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-
+            fetchUserData();
             cart.loadUserCart();
             if (data.user.role === 'admin') {
               this.$router.push('/admin');

@@ -175,7 +175,6 @@ export default {
     },
   },
   mounted() {
-    fetchUserData();
   },
 }
 </script>

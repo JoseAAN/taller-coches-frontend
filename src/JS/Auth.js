@@ -1,3 +1,4 @@
+import { loaderState } from "@/loaderState";
 import { reactive } from "vue";
 
 
@@ -14,10 +15,9 @@ export const authState = reactive({
 export const fetchUserData = async () => {
     const token = localStorage.getItem("user_token");
     if (!token) {
-        authState.isVerified = false;
         return;
     }
-
+    
     try {
         const response = await fetch(`${BASE_URL}/user`, {
             headers: {
@@ -25,10 +25,11 @@ export const fetchUserData = async () => {
                 Accept: "application/json",
             },
         });
-
+        
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem("user", JSON.stringify(data));
+            authState.user = data;
         }
     } catch (error) {
         console.error("Error validando usuario:", error);
@@ -38,7 +39,7 @@ export const fetchUserData = async () => {
 };
 
 export const logout = () => {
-    fetch(`${BASE_URL}/logout`, {
+    fetch(`${BASE_URL}/v1/logout`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("user_token")}`,
