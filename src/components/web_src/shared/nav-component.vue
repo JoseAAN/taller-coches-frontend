@@ -69,16 +69,17 @@
               <span>Nosotros</span>
             </router-link>
           </li>
-          <li class="nav-item">
-            <router-link class="custom-link d-flex flex-column align-items-center" to="/empresas">
-              <span class="material-symbols-outlined">business</span>
-              <span>Empresas</span>
-            </router-link>
-          </li>
+         
           <li class="nav-item">
             <router-link class="custom-link d-flex flex-column align-items-center" to="/products">
               <span class="material-symbols-outlined">fragrance</span>
               <span>Productos</span>
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="custom-link d-flex flex-column align-items-center" to="/appointments">
+              <span class="material-symbols-outlined">calendar_month</span>
+              <span>Agendar Cita</span>
             </router-link>
           </li>
         </ul>
@@ -147,8 +148,7 @@ export default {
   name: 'nav-component',
   components: { ThemeSwitcher },
   data() {
-    return {
-    }
+    return {}
   },
   computed: {
     cart() {
@@ -173,7 +173,6 @@ export default {
       logout();
       this.$router.push('/login');
     },
-
   },
   mounted() {
     fetchUserData();
@@ -266,6 +265,22 @@ export default {
   color: var(--nav-bg);
 }
 
+.btn-appointment {
+  background-color: #52b155;
+  color: #fff;
+  border: 2px solid #52b155;
+  padding: 8px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.btn-appointment:hover {
+  background-color: transparent;
+  color: #52b155;
+}
+
 .dropdown-toggle::after {
   display: none;
 }
@@ -332,14 +347,14 @@ export default {
 .logo-container {
   width: 150px;
   height: 100px;
-  background-image: url('src/assets/LogoModoClaro.png');
+  background-image: url('@/assets/LogoModoClaro.png');
   background-size: contain;
   background-repeat: no-repeat;
   transition: transform 0.3s ease;
 }
 
 [data-theme="dark"] .logo-container {
-  background-image: url('src/assets/LogoModoOscuro.png');
+  background-image: url('@/assets/LogoModoOscuro.png');
 }
 
 .navbar-brand:hover .logo-container {
