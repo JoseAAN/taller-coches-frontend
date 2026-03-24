@@ -109,6 +109,11 @@ const routes = [
         path: 'admin-sidebar-configuration',
         name: 'admin.sidebar-configuration',
         component: () => import('../components/admin_src/sidebar-configuration/sidebar-configuration.vue')
+      },
+      {
+        path: 'users',
+        name: 'admin.users',
+        component: () => import('../components/admin_src/users/admin-users.vue')
       }
 
     ]

@@ -1,10 +1,16 @@
 <template>
     <div class="admin-container p-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-white fw-bold h4 m-0">Gestionar Servicios en Home</h2>
-            <span class="badge-status">
-                {{ servicesSelected }} / 3 seleccionados
-            </span>
+        <div class="mb-4">
+            <button class="btn-back mb-3" @click="$router.push('/admin')">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Panel de administración
+            </button>
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="text-white fw-bold h4 m-0">Gestionar Servicios en Home</h2>
+                <span class="badge-status">
+                    {{ servicesSelected }} / 3 seleccionados
+                </span>
+            </div>
         </div>
 
         <div v-if="activeServices.length > 0" class="section-wrapper mb-5">
@@ -153,6 +159,23 @@ export default {
     background-color: #0f172a;
     min-height: 100vh;
 }
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+    letter-spacing: 0.2px;
+}
+.btn-back:hover { color: #a3e635; }
+.btn-back .material-symbols-outlined { font-size: 17px; }
 
 .section-title {
     color: #cbd5e1;

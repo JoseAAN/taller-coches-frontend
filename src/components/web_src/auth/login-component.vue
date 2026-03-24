@@ -38,8 +38,21 @@
 
           <div ref="recaptcha" class="d-flex justify-content-center mt-2"></div>
 
+          <!-- Error genérico de validación -->
           <div v-if="Object.keys(errors).length > 0" class="custom-error-alert">
-            {{ errors.general || 'Error al iniciar sesión, revisa tus datos' }}
+            {{ errors.general || errors.email?.[0] || 'Error al iniciar sesión, revisa tus datos' }}
+          </div>
+
+          <!-- Bloqueado por admin -->
+          <div v-if="blockedMessage" class="custom-error-alert alert-blocked">
+            <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-right:6px">block</span>
+            {{ blockedMessage }}
+          </div>
+
+          <!-- Bloqueo temporal por intentos -->
+          <div v-if="lockedMessage" class="custom-error-alert alert-locked">
+            <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-right:6px">timer</span>
+            {{ lockedMessage }}
           </div>
 
           <Button :label="loading ? 'Iniciando...' : 'Iniciar Sesión'" :disabled="loading"
@@ -86,7 +99,9 @@ export default {
       },
       loading: false,
       errors: {},
-      success: false
+      success: false,
+      blockedMessage: '',
+      lockedMessage: '',
     }
   },
 
@@ -95,6 +110,8 @@ export default {
       loaderState.show();
       this.errors = {};
       this.success = false;
+      this.blockedMessage = '';
+      this.lockedMessage = '';
 
       const checkErrors = this.validateForm();
       const token = window.grecaptcha.getResponse();
@@ -116,11 +133,14 @@ export default {
         .then(response => response.json().then(data => {
           if (response.status === 422) {
             this.errors = data.errors;
+          } else if (response.status === 403 && data.code === 'ACCOUNT_BLOCKED') {
+            this.blockedMessage = data.message;
+          } else if (response.status === 429 && data.code === 'TOO_MANY_ATTEMPTS') {
+            this.lockedMessage = data.message;
           } else if (response.ok) {
             this.success = true;
             this.form = { email: '', password: '' };
             window.grecaptcha.reset();
-            
             localStorage.setItem('user_token', data.access_token);
             fetchUserData();
             cart.loadUserCart();
@@ -221,6 +241,18 @@ export default {
   border-radius: 6px;
   font-size: 0.85rem;
   text-align: left;
+}
+
+.alert-blocked {
+  background-color: #fff1f2;
+  color: #be123c;
+  border: 1px solid #fecdd3;
+}
+
+.alert-locked {
+  background-color: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
 }
 
 .register-title {

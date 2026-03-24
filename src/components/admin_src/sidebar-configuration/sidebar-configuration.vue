@@ -1,17 +1,19 @@
 <template>
     <div class="admin-container p-4">
-        <div class="d-flex justify-content-between align-items-center mb-5 ml-5">
-            <div>
-                <h2 class="text-white fw-bold h4 ">Sidebar Configuración</h2>
-                <button @click="openModal()" class="btn-action btn-create-neon mt-3 w-100">
-                    <span class="material-symbols-outlined">add_circle</span>
-                    Nuevo Módulo
-                </button>
+        <div class="mb-5">
+            <button class="btn-back mb-3" @click="$router.push('/admin')">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Panel de administración
+            </button>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-white fw-bold h4">Sidebar Configuración</h2>
+                    <button @click="openModal()" class="btn-action btn-create-neon mt-3">
+                        <span class="material-symbols-outlined">add_circle</span>
+                        Nuevo Módulo
+                    </button>
+                </div>
             </div>
-            <!-- <span class="badge-status">
-                <span class="pulse-dot"></span>
-                {{ services.length }} Módulos totales
-            </span> -->
         </div>
 
         <div class="section-wrapper">
@@ -217,6 +219,23 @@ export default {
     min-height: 100vh;
     color: #cbd5e1;
 }
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+    letter-spacing: 0.2px;
+}
+.btn-back:hover { color: #a3e635; }
+.btn-back .material-symbols-outlined { font-size: 17px; }
 
 .section-title {
     color: #94a3b8;
