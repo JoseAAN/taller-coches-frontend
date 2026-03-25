@@ -146,12 +146,13 @@ export default {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({
             vehicle_id: this.vehicle.id,
             service_id: this.service.id,
-            appointment_date: this.date,
+            date: this.date,
             start_time: this.startTime
           })
         })
@@ -166,6 +167,7 @@ export default {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({
