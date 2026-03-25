@@ -82,6 +82,9 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export default {
   emits: ['select', 'back'],
+    props: {
+    preselectedId: { default: null }
+  },
   data() {
     return {
       services: [],
@@ -106,6 +109,11 @@ export default {
   },
   async mounted() {
     await this.fetchServices()
+
+    if (this.preselectedId) {
+      const service = this.services.find(s => s.id == this.preselectedId)
+      if (service) this.selectService(service)
+    }
   },
   methods: {
     async fetchServices() {

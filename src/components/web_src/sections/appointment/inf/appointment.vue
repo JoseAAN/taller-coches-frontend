@@ -7,6 +7,7 @@
     
     <StepService
       v-if="paso === 2"
+      :preselectedId="data.service_Id"
       @select="seleccionarServicio"
       @back="paso--"
     />
@@ -50,6 +51,12 @@ export default {
         vehicle: null,
         service: null,
       }
+    }
+  }, 
+  mounted() {
+    const serviceId = this.$route.query.service_id
+    if (serviceId) {
+      this.data.service_Id = parseInt(serviceId)
     }
   },
   methods: {
