@@ -115,6 +115,12 @@ const routes = [
         path: 'users',
         name: 'admin.users',
         component: () => import('../components/admin_src/users/admin-users.vue')
+      }, 
+      {
+        path: 'services',
+        name: 'admin.services',
+        component: () => import('../components/admin_src/services/services-crud.vue')
+        
       }
 
     ]
