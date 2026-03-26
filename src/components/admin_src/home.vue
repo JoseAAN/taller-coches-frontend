@@ -13,6 +13,46 @@
             </div>
         </div>
 
+        <!-- Tarjetas de Métricas -->
+        <div class="metrics-grid mb-5" v-if="!loadingStats">
+            <div class="metric-card">
+                <div class="metric-icon icon-blue"><span class="material-symbols-outlined">payments</span></div>
+                <div class="metric-info">
+                    <span class="metric-label">Ingresos de Hoy</span>
+                    <span class="metric-value">{{ stats.cards.today_revenue }} €</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon icon-pink"><span class="material-symbols-outlined">calendar_clock</span></div>
+                <div class="metric-info">
+                    <span class="metric-label">Pendientes Hoy</span>
+                    <span class="metric-value">{{ stats.cards.appointments_today }} citas</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon icon-purple"><span class="material-symbols-outlined">group_add</span></div>
+                <div class="metric-info">
+                    <span class="metric-label">Nuevos Usuarios</span>
+                    <span class="metric-value">{{ stats.cards.new_users_week }} esta sem.</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon icon-orange"><span class="material-symbols-outlined">conveyor_belt</span></div>
+                <div class="metric-info">
+                    <span class="metric-label">Sin Stock</span>
+                    <span class="metric-value" :class="{'text-danger': stats.cards.out_of_stock > 0}">{{ stats.cards.out_of_stock }} productos</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico e información -->
+        <div class="chart-section mb-5" v-if="!loadingStats && chartData">
+            <h6 class="section-label mb-3">Evolución de Ingresos (Últimos 7 días)</h6>
+            <div class="chart-card">
+                <Chart type="line" :data="chartData" :options="chartOptions" style="height: 300px" />
+            </div>
+        </div>
+
         <!-- Sección: Gestión del admin -->
         <h6 class="section-label mb-3">Gestión</h6>
         <div class="cards-grid mb-5">
@@ -95,11 +135,18 @@
 </template>
 
 <script>
+import Chart from 'primevue/chart';
+
 export default {
     name: 'AdminHome',
+    components: { Chart },
     data() {
         return {
-            currentTime: ''
+            currentTime: '',
+            loadingStats: true,
+            stats: null,
+            chartData: null,
+            chartOptions: null,
         }
     },
     methods: {
@@ -113,12 +160,78 @@ export default {
                 day: '2-digit',
                 month: 'long',
                 hour: '2-digit',
+                hour: '2-digit',
                 minute: '2-digit'
             });
+        },
+        fetchStats() {
+            const token = localStorage.getItem('user_token');
+            fetch(`${this.$BASE_URL}/v1/dashboard-stats`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.stats = data;
+                this.setChartData();
+                this.loadingStats = false;
+            })
+            .catch(err => console.error("Error cargando estadísticas: ", err));
+        },
+        setChartData() {
+            const documentStyle = getComputedStyle(document.documentElement);
+            const textColor = documentStyle.getPropertyValue('--p-text-color') || '#e2e8f0';
+            const textColorSecondary = documentStyle.getPropertyValue('--p-text-muted-color') || '#94a3b8';
+            const surfaceBorder = documentStyle.getPropertyValue('--p-content-border-color') || '#334155';
+
+            this.chartData = {
+                labels: this.stats.chart.labels,
+                datasets: [
+                    {
+                        label: 'Ingresos (€)',
+                        data: this.stats.chart.data,
+                        fill: false,
+                        borderColor: '#a3e635',
+                        tension: 0.4
+                    }
+                ]
+            };
+
+            this.chartOptions = {
+                maintainAspectRatio: false,
+                aspectRatio: 0.6,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: textColor
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: textColorSecondary
+                        },
+                        grid: {
+                            color: surfaceBorder
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: textColorSecondary
+                        },
+                        grid: {
+                            color: surfaceBorder
+                        }
+                    }
+                }
+            };
         }
     },
     mounted() {
         this.updateTime();
+        this.fetchStats();
         this._timer = setInterval(this.updateTime, 60000);
     },
     beforeUnmount() {
@@ -163,6 +276,65 @@ export default {
     letter-spacing: 1px;
     font-size: 0.72rem;
     font-weight: 700;
+}
+
+.section-label {
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+/* Metrics */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.metric-card {
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.metric-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.metric-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-label {
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.metric-value {
+    color: #f1f5f9;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.chart-card {
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 1.5rem;
 }
 
 /* Cards grid */
