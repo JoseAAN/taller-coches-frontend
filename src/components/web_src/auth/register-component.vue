@@ -135,7 +135,7 @@ export default {
       this.loading = true;
       this.form.captcha = token;
 
-      fetch('http://127.0.0.1:8000/api/v1/users', {
+      fetch(`${this.$BASE_URL}/v1/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

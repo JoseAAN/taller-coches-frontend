@@ -32,8 +32,9 @@ export default {
     },
 
     methods: {
-        getServices(url = 'http://127.0.0.1:8000/api/v1/services') {
-            fetch(url, {
+        getServices(url = null) {
+            const fetchUrl = url || `${this.$BASE_URL}/v1/services`;
+            fetch(fetchUrl, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

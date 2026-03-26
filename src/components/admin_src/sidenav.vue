@@ -84,7 +84,7 @@ export default {
     },
 
     fetchSidebarItems() {
-      fetch('http://127.0.0.1:8000/api/v1/admin-navigation')
+      fetch(`${this.$BASE_URL}/v1/admin-navigation`)
         .then(res => res.json())
         .then(res => {
           this.menu = res.data

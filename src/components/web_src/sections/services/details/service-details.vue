@@ -58,7 +58,7 @@ export default {
 
         
         getService() {
-            fetch(`http://127.0.0.1:8000/api/v1/services/${this.serviceId}`)
+            fetch(`${this.$BASE_URL}/v1/services/${this.serviceId}`)
                 .then(res => {
                     if (!res.ok) throw new Error("Error al recoger los datos del servicio");
                     return res.json();

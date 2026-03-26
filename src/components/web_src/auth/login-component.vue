@@ -144,7 +144,7 @@ export default {
             localStorage.setItem('user_token', data.access_token);
             fetchUserData();
             cart.loadUserCart();
-            if (data.user.role === 'admin') {
+            if (data.user.role.name === 'admin') {
               this.$router.push('/admin');
             } else {
               this.$router.push('/');
@@ -178,7 +178,7 @@ export default {
       }
 
       if (this.form.password.length < 4) {
-        checkErrors.password = ['La contraseña debe tener al menos 8 caracteres'];
+        checkErrors.password = ['La contraseña debe tener al menos 4 caracteres'];
       }
 
       return checkErrors;

@@ -120,7 +120,7 @@ export default {
     },
     methods: {
         getServicesOnHome() {
-            fetch('http://127.0.0.1:8000/api/v1/services')
+            fetch(`${this.$BASE_URL}/v1/services`)
                 .then(res => res.json())
                 .then(res => {
                     this.services = res.data;
@@ -130,7 +130,7 @@ export default {
         toggleHomeStatus(service) {
             const activeShowOnHome = !service.show_on_home;
             let token = localStorage.getItem('user_token'); 
-            fetch(`http://127.0.0.1:8000/api/v1/services/${service.id}/toggle-home`, {
+            fetch(`${this.$BASE_URL}/v1/services/${service.id}/toggle-home`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -67,6 +67,7 @@ const routes = [
   {
     path: '/profile',
     component: () => import('../components/web_src/layouts/layout-profile.vue'),
+    meta: { requiresAuth: true },
     children: [
       {
         path: '',
@@ -145,12 +146,13 @@ router.beforeEach((to, from, next) => {
 
   const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
   loaderState.show();
 
-  if (requiresAdmin) {
-    const token = localStorage.getItem('user_token');
+  const token = localStorage.getItem('user_token');
 
+  if (requiresAdmin) {
     if (!token) {
       return next('/login');
     }
@@ -163,17 +165,22 @@ router.beforeEach((to, from, next) => {
         return response.json();
       })
       .then(data => {
-        if (data.role && data.role.id === 1) {
+        if (data.role && data.role.name === 'admin') {
           next();
         } else {
           console.error('Usuario sin permisos entro en un área restringida');
-          next('/login');
+          next('/');
         }
       })
       .catch(error => {
         console.error('Error fetching user data:', error);
         next('/login');
       });
+  } else if (requiresAuth) {
+    if (!token) {
+      return next('/login');
+    }
+    next();
   } else {
     next();
   }

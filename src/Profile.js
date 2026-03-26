@@ -1,4 +1,4 @@
-import ProductCard from "./components/web_src/sections/products/product-card.vue";
+
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 

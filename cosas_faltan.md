@@ -1,5 +1,5 @@
 
-## URL de API hardcodeada
+## ~~URL de API hardcodeada~~ (RESUELTO)
 
 En `login-component.vue` (línea 100) la URL de la API está escrita directamente en el código:
 ```javascript
@@ -13,7 +13,7 @@ Se debería usar `VITE_API_BASE_URL` en todos los componentes.
 
 ---
 
-## Validación de contraseña inconsistente
+## ~~Validación de contraseña inconsistente~~ (RESUELTO)
 
 En `login-component.vue` (línea 149-151):
 ```javascript
@@ -25,7 +25,7 @@ La validación comprueba si la contraseña tiene menos de **4 caracteres**, pero
 
 ---
 
-## Rutas sin protección (route guards)
+## ~~Rutas sin protección (route guards)~~ (RESUELTO)
 
 No hay ningún middleware/guard para proteger rutas en el frontend:
 
@@ -54,26 +54,27 @@ Estas rutas no están definidas en el router, por lo que al hacer clic no cargan
 
 ## Panel de admin incompleto
 
-El `admin/home.vue` solo contiene un texto de prueba:
-```html
-<h1>HOLA, este es el Home Admin</h1>
-```
-Falta implementar las interfaces de administración para:
-- Gestión de productos (CRUD)
-- Gestión de servicios (CRUD)
-- Gestión de usuarios
-- Gestión de citas
-- Gestión de facturas
-- Gestión de vehículos y tipos
-- Gestión de categorías
+Falta implementar las principales interfaces de administración para poder gestionar el negocio:
 
-Actualmente solo existen:
-- Edición de servicios en la home (`service-home-edit-component.vue`)
-- Configuración del sidebar (`sidebar-configuration.vue`)
+### 1. Gestión Principal del Taller
+- **Gestión de Citas (Appointments):** Vista de calendario o tabla diaria para ver, cancelar, completar o reagendar citas (Faltan endpoints admin en backend).
+- **Gestión de Servicios (CRUD):** Vista para Crear, Editar (precio, duración) y Eliminar servicios.
+- **Gestión de Vehículos:** Vista para ver todos los coches registrados y a quién pertenecen.
+
+### 2. Gestión de Tienda / E-commerce
+- **Gestión de Productos (CRUD):** Añadir stock, cambiar precios y subir fotos de productos.
+- **Gestión de Categorías (CRUD):** Crear y agrupar productos/servicios en categorías.
+- **Gestión de Pedidos / Carritos (Carts):** Ver los pedidos realizados y su estado.
+- **Facturación (Invoices):** Revisar, imprimir en PDF o anular facturas.
+
+### 3. Mejoras del Dashboard (`home.vue`)
+- **Estadísticas e Indicadores (Analytics):** Tarjetas resumen y gráficos mostrando ingresos, citas de hoy, nuevos usuarios o productos sin stock.
+
+*Actualmente solo existen la gestión de Usuarios, la selección de servicios en la home y la configuración del sidebar.*
 
 ---
 
-## Endpoint de perfil no existe en el backend
+## ~~Endpoint de perfil no existe en el backend~~ (RESUELTO)
 
 `Profile.js` y `profile-index.vue` hacen peticiones a:
 - `GET /api/v1/profile` (para cargar datos del perfil)
@@ -83,7 +84,7 @@ Sin embargo, estas rutas **no existen** en `api.php` del backend. No hay ningún
 
 ---
 
-## Comprobación de rol incorrecta en login
+## ~~Comprobación de rol incorrecta en login~~ (RESUELTO)
 
 En `login-component.vue` (línea 116):
 ```javascript
@@ -96,7 +97,7 @@ if (data.user.role.name === 'admin') {
 
 ---
 
-## Archivos huérfanos en la raíz
+## ~~Archivos huérfanos en la raíz~~ (RESUELTO)
 
 Existen dos archivos en la raíz del proyecto frontend que no parecen pertenecer al proyecto:
 
@@ -109,7 +110,7 @@ Probablemente son archivos de prueba que se pueden eliminar.
 
 ---
 
-## Import no utilizado
+## ~~Import no utilizado~~ (RESUELTO)
 
 En `Profile.js` (línea 1):
 ```javascript

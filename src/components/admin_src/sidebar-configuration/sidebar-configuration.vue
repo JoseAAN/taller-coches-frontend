@@ -136,7 +136,7 @@ export default {
             this.serviceSelected = service ? { ...service } : { ...this.emptyForm };
         },
         getServices() {
-            fetch('http://127.0.0.1:8000/api/v1/admin-navigation')
+            fetch(`${this.$BASE_URL}/v1/admin-navigation`)
                 .then(res => {
                     if (!res.ok) {
                         throw new Error('La respuesta de la red no fue correcta');
@@ -161,8 +161,8 @@ export default {
             const id = this.serviceSelected.id;
             const method = id ? 'PUT' : 'POST';
             const url = id
-                ? `http://127.0.0.1:8000/api/v1/admin-navigation/${id}`
-                : `http://127.0.0.1:8000/api/v1/admin-navigation`;
+                ? `${this.$BASE_URL}/v1/admin-navigation/${id}`
+                : `${this.$BASE_URL}/v1/admin-navigation`;
 
             fetch(url, {
                 method: method,
@@ -187,7 +187,7 @@ export default {
         deleteService(id) {
             if (!confirm("¿Estás seguro de eliminar este módulo?")) return;
 
-            fetch(`http://127.0.0.1:8000/api/v1/admin-navigation/${id}`, {
+            fetch(`${this.$BASE_URL}/v1/admin-navigation/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
