@@ -117,6 +117,12 @@ const routes = [
         component: () => import('../components/admin_src/users/admin-users.vue')
       },
       {
+        path: 'services',
+        name: 'admin.services',
+        component: () => import('../components/admin_src/services/services-crud.vue')
+
+      },
+      {
         path: 'vehicles',
         name: 'admin.vehicles',
         component: () => import('../components/admin_src/vehicles/admin-vehicles.vue')
