@@ -120,14 +120,17 @@ const routes = [
         path: 'services',
         name: 'admin.services',
         component: () => import('../components/admin_src/services/services-crud.vue')
-
       },
       {
-        path: 'vehicles',
+        path: '',
         name: 'admin.vehicles',
         component: () => import('../components/admin_src/vehicles/admin-vehicles.vue')
+      },
+      {
+        path: 'categories',
+        name: 'admin.categories',
+        component: () => import('../components/admin_src/category/category-crud.vue')
       }
-
     ]
   },
   {

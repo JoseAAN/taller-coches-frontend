@@ -5,7 +5,8 @@
         <div class="home-header mb-5">
             <div>
                 <h1 class="text-white fw-bold mb-1">Panel de Administración</h1>
-                <p class="text-white mb-0">Bienvenido al panel de control. Gestiona todos los recursos de la plataforma.</p>
+                <p class="text-white mb-0">Bienvenido al panel de control. Gestiona todos los recursos de la plataforma.
+                </p>
             </div>
             <div class="header-time">
                 <span class="material-symbols-outlined" style="font-size:18px">schedule</span>
@@ -36,11 +37,15 @@
                     <span class="metric-value">{{ stats.cards.new_users_week }} esta sem.</span>
                 </div>
             </div>
-            <div class="metric-card" @click="showOutOfStockModal = true" style="cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'" title="Ver lista de productos agotados">
+            <div class="metric-card" @click="showOutOfStockModal = true"
+                style="cursor: pointer; transition: transform 0.2s;"
+                onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'"
+                title="Ver lista de productos agotados">
                 <div class="metric-icon icon-orange"><span class="material-symbols-outlined">conveyor_belt</span></div>
                 <div class="metric-info">
                     <span class="metric-label">Sin Stock</span>
-                    <span class="metric-value" :class="{'text-danger': stats.cards.out_of_stock > 0}">{{ stats.cards.out_of_stock }} productos</span>
+                    <span class="metric-value" :class="{ 'text-danger': stats.cards.out_of_stock > 0 }">{{
+                        stats.cards.out_of_stock }} productos</span>
                 </div>
             </div>
         </div>
@@ -50,35 +55,42 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h6 class="section-label mb-0">Evolución (Últimos 7 días)</h6>
                 <div class="d-flex gap-2 align-items-center">
-                    <select v-model="selectedDataset" @change="setChartData" class="form-select form-select-sm" style="background-color: #1e293b; color: white; border-color: #334155; width: auto;">
+                    <select v-model="selectedDataset" @change="setChartData" class="form-select form-select-sm"
+                        style="background-color: #1e293b; color: white; border-color: #334155; width: auto;">
                         <option value="revenue">Ingresos (€)</option>
                         <option value="users">Nuevos Usuarios</option>
                         <option value="appointments">Nuevas Citas</option>
                     </select>
-                    <select v-model="selectedChartType" class="form-select form-select-sm" style="background-color: #1e293b; color: white; border-color: #334155; width: auto;">
+                    <select v-model="selectedChartType" class="form-select form-select-sm"
+                        style="background-color: #1e293b; color: white; border-color: #334155; width: auto;">
                         <option value="line">Línea</option>
                         <option value="bar">Barras</option>
                     </select>
-                    <button class="btn btn-sm" :class="showDataValues ? 'btn-light' : 'btn-outline-light'" @click="showDataValues = !showDataValues" style="font-size: 0.8rem; font-weight: 600;">
+                    <button class="btn btn-sm" :class="showDataValues ? 'btn-light' : 'btn-outline-light'"
+                        @click="showDataValues = !showDataValues" style="font-size: 0.8rem; font-weight: 600;">
                         {{ showDataValues ? 'OCULTAR VALORES' : 'VER VALORES' }}
                     </button>
                 </div>
             </div>
-            
+
             <div class="chart-card">
                 <Chart :type="selectedChartType" :data="chartData" :options="chartOptions" style="height: 300px" />
             </div>
 
-            <div v-if="showDataValues" class="mt-3 p-3 text-white" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; overflow-x: auto;">
-                <table class="table table-dark table-borderless table-sm mb-0 text-center" style="background: transparent;">
+            <div v-if="showDataValues" class="mt-3 p-3 text-white"
+                style="background: #1e293b; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; overflow-x: auto;">
+                <table class="table table-dark table-borderless table-sm mb-0 text-center"
+                    style="background: transparent;">
                     <thead style="border-bottom: 1px solid #334155">
                         <tr>
-                            <th v-for="label in stats.chart.labels" :key="'th-'+label" class="pb-2" style="background: transparent; color: #94a3b8">{{ label }}</th>
+                            <th v-for="label in stats.chart.labels" :key="'th-' + label" class="pb-2"
+                                style="background: transparent; color: #94a3b8">{{ label }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td v-for="(val, index) in currentDatasetValues" :key="'td-'+index" class="pt-2 font-monospace fw-bold" style="background: transparent; color: #a3e635;">
+                            <td v-for="(val, index) in currentDatasetValues" :key="'td-' + index"
+                                class="pt-2 font-monospace fw-bold" style="background: transparent; color: #a3e635;">
                                 {{ val }}{{ selectedDataset === 'revenue' ? ' €' : '' }}
                             </td>
                         </tr>
@@ -125,7 +137,8 @@
             </button>
 
             <button class="nav-card" @click="goTo('/admin/vehicles')">
-                <div class="card-icon" style="background: rgba(234, 179, 8, 0.12); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.2);">
+                <div class="card-icon"
+                    style="background: rgba(234, 179, 8, 0.12); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.2);">
                     <span class="material-symbols-outlined">directions_car</span>
                 </div>
                 <div class="card-content">
@@ -135,6 +148,16 @@
                 <span class="material-symbols-outlined card-arrow">chevron_right</span>
             </button>
 
+            <button class="nav-card" @click="goTo('/admin/categories')">
+                <div class="card-icon icon-teal">
+                    <span class="material-symbols-outlined">label</span>
+                </div>
+                <div class="card-content">
+                    <span class="card-title">Categorías</span>
+                    <span class="card-desc">Gestionar categorías del sistema</span>
+                </div>
+                <span class="material-symbols-outlined card-arrow">chevron_right</span>
+            </button>
         </div>
 
         <!-- Sección: Accesos a la web -->
@@ -178,19 +201,23 @@
 
         <!-- Modal Productos sin stock -->
         <div v-if="showOutOfStockModal" class="modal-overlay" @click.self="showOutOfStockModal = false">
-            <div class="modal-card shadow-lg" style="background: #0f172a; padding: 1.5rem; border-radius: 16px; width: 100%; max-width: 500px; border: 1px solid #334155;">
+            <div class="modal-card shadow-lg"
+                style="background: #0f172a; padding: 1.5rem; border-radius: 16px; width: 100%; max-width: 500px; border: 1px solid #334155;">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="text-white m-0 d-flex align-items-center gap-2 fw-bold">
                         <span class="material-symbols-outlined text-danger">warning</span>
                         Productos Agotados
                     </h5>
-                    <button class="btn btn-sm btn-outline-secondary border-0 text-white" @click="showOutOfStockModal = false" style="background: transparent;">
+                    <button class="btn btn-sm btn-outline-secondary border-0 text-white"
+                        @click="showOutOfStockModal = false" style="background: transparent;">
                         <span class="material-symbols-outlined">close</span>
                     </button>
                 </div>
-                
-                <div v-if="!stats.cards.out_of_stock_list || stats.cards.out_of_stock_list.length === 0" class="text-center text-light py-4">
-                    <span class="material-symbols-outlined d-block mb-2" style="font-size: 32px; opacity: 0.5;">inventory_2</span>
+
+                <div v-if="!stats.cards.out_of_stock_list || stats.cards.out_of_stock_list.length === 0"
+                    class="text-center text-light py-4">
+                    <span class="material-symbols-outlined d-block mb-2"
+                        style="font-size: 32px; opacity: 0.5;">inventory_2</span>
                     Todos los productos tienen stock suficiente.
                 </div>
                 <div v-else class="table-responsive" style="max-height: 350px; overflow-y: auto;">
@@ -198,17 +225,20 @@
                         <thead>
                             <tr style="border-bottom: 2px solid #334155;">
                                 <th class="text-light pb-2 bg-transparent border-0 font-monospace">Producto</th>
-                                <th class="text-light text-center pb-2 bg-transparent border-0 font-monospace">Stock</th>
+                                <th class="text-light text-center pb-2 bg-transparent border-0 font-monospace">Stock
+                                </th>
                                 <th class="text-light text-end pb-2 bg-transparent border-0 font-monospace">Precio</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="prod in stats.cards.out_of_stock_list" :key="prod.id" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <tr v-for="prod in stats.cards.out_of_stock_list" :key="prod.id"
+                                style="border-bottom: 1px solid rgba(255,255,255,0.05);">
                                 <td class="text-white fw-medium py-3 bg-transparent border-0">{{ prod.name }}</td>
                                 <td class="text-center py-3 bg-transparent border-0">
                                     <span class="badge bg-danger rounded-pill px-2">{{ prod.stock }}</span>
                                 </td>
-                                <td class="text-end text-light py-3 bg-transparent border-0 fw-bold">{{ prod.price }} €</td>
+                                <td class="text-end text-light py-3 bg-transparent border-0 fw-bold">{{ prod.price }} €
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -261,13 +291,13 @@ export default {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            .then(res => res.json())
-            .then(data => {
-                this.stats = data;
-                this.setChartData();
-                this.loadingStats = false;
-            })
-            .catch(err => console.error("Error cargando estadísticas: ", err));
+                .then(res => res.json())
+                .then(data => {
+                    this.stats = data;
+                    this.setChartData();
+                    this.loadingStats = false;
+                })
+                .catch(err => console.error("Error cargando estadísticas: ", err));
         },
         setChartData() {
             const documentStyle = getComputedStyle(document.documentElement);
@@ -287,7 +317,7 @@ export default {
                 datasetLabel = 'Nuevos Usuarios';
                 datasetValues = this.stats.chart.datasets.users;
                 // Purple similar to primevue theme or my palette
-                datasetColor = '#a78bfa'; 
+                datasetColor = '#a78bfa';
             } else if (this.selectedDataset === 'appointments') {
                 datasetLabel = 'Nuevas Citas Registradas';
                 datasetValues = this.stats.chart.datasets.appointments;
@@ -489,15 +519,46 @@ export default {
     justify-content: center;
 }
 
-.card-icon .material-symbols-outlined { font-size: 22px; }
+.card-icon .material-symbols-outlined {
+    font-size: 22px;
+}
 
 /* Icon color variants */
-.icon-blue   { background: rgba(99, 179, 237, 0.12); color: #63b3ed; border: 1px solid rgba(99, 179, 237, 0.2); }
-.icon-green  { background: rgba(163, 230, 53, 0.12); color: #a3e635; border: 1px solid rgba(163, 230, 53, 0.2); }
-.icon-purple { background: rgba(167, 139, 250, 0.12); color: #a78bfa; border: 1px solid rgba(167, 139, 250, 0.2); }
-.icon-orange { background: rgba(251, 146, 60, 0.12); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.2); }
-.icon-teal   { background: rgba(45, 212, 191, 0.12); color: #2dd4bf; border: 1px solid rgba(45, 212, 191, 0.2); }
-.icon-pink   { background: rgba(244, 114, 182, 0.12); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.2); }
+.icon-blue {
+    background: rgba(99, 179, 237, 0.12);
+    color: #63b3ed;
+    border: 1px solid rgba(99, 179, 237, 0.2);
+}
+
+.icon-green {
+    background: rgba(163, 230, 53, 0.12);
+    color: #a3e635;
+    border: 1px solid rgba(163, 230, 53, 0.2);
+}
+
+.icon-purple {
+    background: rgba(167, 139, 250, 0.12);
+    color: #a78bfa;
+    border: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.icon-orange {
+    background: rgba(251, 146, 60, 0.12);
+    color: #fb923c;
+    border: 1px solid rgba(251, 146, 60, 0.2);
+}
+
+.icon-teal {
+    background: rgba(45, 212, 191, 0.12);
+    color: #2dd4bf;
+    border: 1px solid rgba(45, 212, 191, 0.2);
+}
+
+.icon-pink {
+    background: rgba(244, 114, 182, 0.12);
+    color: #f472b6;
+    border: 1px solid rgba(244, 114, 182, 0.2);
+}
 
 .card-content {
     flex: 1;
@@ -529,8 +590,13 @@ export default {
 }
 
 @media (max-width: 600px) {
-    .cards-grid { grid-template-columns: 1fr; }
-    .home-header { flex-direction: column; }
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-header {
+        flex-direction: column;
+    }
 }
 
 /* Variante web: borde y hover ligeramente distintos para diferenciarlas */
@@ -538,10 +604,12 @@ export default {
     border-color: rgba(255, 255, 255, 0.05);
     opacity: 0.85;
 }
+
 .nav-card--web:hover {
     border-color: rgba(99, 179, 237, 0.25);
     opacity: 1;
 }
+
 .nav-card--web:hover .card-arrow {
     color: #63b3ed;
     transform: none;
@@ -549,8 +617,11 @@ export default {
 
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
     z-index: 1050;
     display: flex;
