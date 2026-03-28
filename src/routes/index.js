@@ -122,7 +122,7 @@ const routes = [
         component: () => import('../components/admin_src/services/services-crud.vue')
       },
       {
-        path: '',
+        path: 'vehicles',
         name: 'admin.vehicles',
         component: () => import('../components/admin_src/vehicles/admin-vehicles.vue')
       },
@@ -130,6 +130,11 @@ const routes = [
         path: 'categories',
         name: 'admin.categories',
         component: () => import('../components/admin_src/category/category-crud.vue')
+      },
+      {
+        path: 'appointments',
+        name: 'admin.appointments',
+        component: () => import('../components/admin_src/appointments/admin-appointments.vue')
       }
     ]
   },

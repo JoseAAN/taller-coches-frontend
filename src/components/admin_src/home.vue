@@ -158,6 +158,17 @@
                 </div>
                 <span class="material-symbols-outlined card-arrow">chevron_right</span>
             </button>
+
+            <button class="nav-card" @click="goTo('/admin/appointments')">
+                <div class="card-icon icon-pink">
+                    <span class="material-symbols-outlined">edit_calendar</span>
+                </div>
+                <div class="card-content">
+                    <span class="card-title">Citas</span>
+                    <span class="card-desc">Calendario y estados de las citas</span>
+                </div>
+                <span class="material-symbols-outlined card-arrow">chevron_right</span>
+            </button>
         </div>
 
         <!-- Sección: Accesos a la web -->
