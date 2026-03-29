@@ -96,7 +96,7 @@ export default {
                 loaderState.show();
                 const response = await fetch(`${this.$BASE_URL}/v1/categories`);
                 const data = await response.json();
-                this.categories = Array.isArray(data) ? data : [];
+                this.categories = data;
             } catch (error) {
                 console.error('Error al obtener categorías:', error);
             } finally {
