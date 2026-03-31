@@ -3,14 +3,14 @@
         <div class="header-section mb-4">
             <div>
                 <h2 class="section-title d-flex align-items-center gap-2">
-                    <span class="material-symbols-outlined icon-title">home_repair_service</span>
-                    Gestión de Servicios
+                    <span class="material-symbols-outlined icon-title">category</span>
+                    Gestión de Tipos de Servicio
                 </h2>
-                <p class="section-subtitle">Administra los servicios específicos, su precio y duración</p>
+                <p class="section-subtitle">Aquí se podrán gestionar los tipos de servicio del taller</p>
             </div>
-            <button class="btn-create-neon" data-bs-toggle="modal" data-bs-target="#serviceModal" @click="openCreate">
+            <button class="btn-create-neon" data-bs-toggle="modal" data-bs-target="#serviceTypeModal" @click="openCreate">
                 <span class="material-symbols-outlined">add</span>
-                <span class="btn-text">Nuevo Servicio</span>
+                <span class="btn-text">Nuevo Tipo</span>
             </button>
         </div>
 
@@ -18,47 +18,37 @@
             <table class="table table-dark custom-table">
                 <thead>
                     <tr>
-                        <th class="ps-4 col-id">ID</th>
-                        <th class="col-name">Nombre del Servicio</th>
-                        <th class="col-type">Tipo</th>
-                        <th class="col-price">Precio</th>
-                        <th class="col-duration">Duración</th>
-                        <th class="text-end pe-4 col-actions">Acciones</th>
+                        <th class="ps-4" style="width: 15%">ID</th>
+                        <th style="width: 60%">Nombre del Servicio</th>
+                        <th class="text-end pe-4" style="width: 25%">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-if="services.length === 0">
-                        <td colspan="6" class="text-center py-5 text-muted">
+                    <tr v-if="serviceTypes.length === 0">
+                        <td colspan="3" class="text-center py-5 text-muted">
                             <div class="d-flex flex-column align-items-center">
-                                <span class="material-symbols-outlined empty-icon mb-2">home_repair_service</span>
-                                No hay servicios registrados.
+                                <span class="material-symbols-outlined mb-2" style="font-size: 2rem; opacity: 0.5;">category</span>
+                                No hay tipos de servicio registrados.
                             </div>
                         </td>
                     </tr>
-                    <tr v-for="service in services" :key="service.id" class="row-item">
-                        <td class="ps-4 text-id">#{{ service.id }}</td>
+                    <tr v-for="type in serviceTypes" :key="type.id" class="row-item">
+                        <td class="ps-4 text-id">#{{ type.id }}</td>
                         <td class="fw-bold text-white">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="icon-box">
                                     <span class="material-symbols-outlined">build</span>
                                 </div>
-                                <div>
-                                    {{ service.name }}
-                                </div>
+                                {{ type.name }}
                             </div>
                         </td>
-                        <td class="text-white opacity-75">
-                            <span class="badge-type">{{ service.type?.name || '---' }}</span>
-                        </td>
-                        <td class="text-neon-green fw-bold">{{ service.price }} €</td>
-                        <td class="text-white opacity-75">{{ service.average_duration_mins ? service.average_duration_mins + ' min' : 'N/A' }}</td>
                         <td class="text-end pe-4">
                             <div class="action-buttons justify-content-end">
-                                <button class="btn-action btn-edit-neon" data-bs-toggle="modal" data-bs-target="#serviceModal"
-                                    @click="openEdit(service)" title="Editar">
+                                <button class="btn-action btn-edit-neon" data-bs-toggle="modal" data-bs-target="#serviceTypeModal"
+                                    @click="openEdit(type)" title="Editar">
                                     <span class="material-symbols-outlined">edit</span>
                                 </button>
-                                <button class="btn-action btn-delete-neon" @click="deleteService(service.id)" title="Eliminar">
+                                <button class="btn-action btn-delete-neon" @click="deleteType(type.id)" title="Eliminar">
                                     <span class="material-symbols-outlined">delete</span>
                                 </button>
                             </div>
@@ -68,12 +58,11 @@
             </table>
         </div>
 
-        <ServiceCrudModal :selectedService="selectedService" :isEdit="isEdit" @refresh="fetchServices" />
+        <ServiceCrudModal :serviceType="selectedType" :isEdit="isEdit" @refresh="getTypes" />
     </div>
 </template>
-
 <script>
-import ServiceCrudModal from './services-crud-modal.vue';
+import ServiceCrudModal from './service-type-crud-modal.vue';
 import { loaderState } from '@/loaderState';
 
 export default {
@@ -82,100 +71,72 @@ export default {
     },
     data() {
         return {
-            services: [],
+            serviceTypes: [],
             isEdit: false,
-            selectedService: null,
+            selectedType: null,
         };
     },
 
     methods: {
-        fetchServices() {
-            loaderState.show();
-            const token = localStorage.getItem("user_token");
-            fetch(`${this.$BASE_URL}/v1/services`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
-            .then(res => res.json())
-            .then(data => {
-                this.services = data.data || [];
-            })
-            .catch(err => {
+        async getTypes() {
+            try {
+                loaderState.show();
+                const res = await fetch(`${this.$BASE_URL}/v1/serviceType`);
+                const data = await res.json();
+                this.serviceTypes = data.serviceType || [];
+            } catch (err) {
                 console.error(err);
-            })
-            .finally(() => {
+            } finally {
                 loaderState.hide();
-            });
+            }
         },
 
         openCreate() {
             this.isEdit = false;
-            this.selectedService = null;
+            this.selectedType = null;
         },
 
-        openEdit(service) {
+        openEdit(type) {
             this.isEdit = true;
-            this.selectedService = { ...service };
+            this.selectedType = type;
         },
 
-        deleteService(id) {
-            if (!confirm("¿Seguro que quieres eliminar este servicio?")) return;
+        async deleteType(id) {
+            if (!confirm("¿Seguro que quieres eliminar este tipo?")) return;
             const token = localStorage.getItem("user_token");
 
-            loaderState.show();
-            fetch(`${this.$BASE_URL}/v1/services/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-            .then(res => {
+            try {
+                loaderState.show();
+                const res = await fetch(`${this.$BASE_URL}/v1/serviceType/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
                 if (!res.ok) {
-                    return res.json().then(err => { throw err; });
+                    const err = await res.json();
+                    return;
                 }
-                this.fetchServices();
-            })
-            .catch(err => {
+
+                await this.getTypes();
+            } catch (err) {
                 console.error(err);
-            })
-            .finally(() => {
+            } finally {
                 loaderState.hide();
-            });
+            }
         },
     },
 
     mounted() {
-        this.fetchServices();
+        this.getTypes();
     },
 };
 </script>
 
 <style scoped>
-.col-id { 
-    width: 10%; 
-}
-.col-name { 
-    width: 25%; 
-}
-.col-type { 
-    width: 20%; 
-}
-.col-price { 
-    width: 15%; 
-}
-.col-duration { 
-    width: 15%; 
-}
-.col-actions { 
-    width: 15%; 
-}
-
-.empty-icon {
-    font-size: 2rem;
-    opacity: 0.5;
-}
-
 .admin-container {
     background-color: #0f172a;
     min-height: 100vh;
@@ -277,28 +238,6 @@ export default {
     color: #a3e635;
 }
 
-.badge-type {
-    background: rgba(100, 116, 139, 0.2);
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.badge-neon {
-    background: linear-gradient(135deg, rgba(250, 204, 21, 0.2), rgba(250, 204, 21, 0.05));
-    color: #facc15;
-    border: 1px solid rgba(250, 204, 21, 0.4);
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
 .action-buttons {
     display: flex;
     gap: 10px;
@@ -332,6 +271,7 @@ export default {
     transition: all 0.3s;
 }
 
+
 .btn-create-neon:hover {
     background: #a3e635;
     color: #0f172a;
@@ -352,18 +292,6 @@ export default {
     transform: translateY(-2px);
 }
 
-.btn-star-neon {
-    background: rgba(250, 204, 21, 0.1);
-    color: #facc15;
-    border: 1px solid rgba(250, 204, 21, 0.2);
-}
-
-.btn-star-neon:hover, .btn-star-neon.active {
-    background: #facc15;
-    color: #0f172a;
-    box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
-    transform: translateY(-2px);
-}
 
 .btn-delete-neon {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.8), rgba(220, 38, 38, 0.9));
@@ -376,10 +304,6 @@ export default {
     color: white;
     box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
     transform: translateY(-2px);
-}
-
-.text-neon-green {
-    color: #a3e635;
 }
 
 </style>
