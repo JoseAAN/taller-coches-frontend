@@ -255,6 +255,9 @@ export default {
             }
         },
         async submitVehicle() {
+            const token = localStorage.getItem('user_token');
+            if(!token) return this.$router.push('/login');
+
             const { brand, model, color, license_plate, vehicle_type_id } = this.vehicleForm;
             if (!brand || !model || !color || !license_plate || !vehicle_type_id) {
                 this.formError = 'Por favor rellena todos los campos.';
@@ -304,6 +307,8 @@ export default {
             this.vehicleToDeleteIndex = null;
         },
         async deleteVehicle() {
+            const token = localStorage.getItem('user_token');
+            if(!token) return this.$router.push('/login');
             try {
                 this.deleting = true;
                 const token = localStorage.getItem('user_token');
