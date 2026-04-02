@@ -169,6 +169,17 @@
                 </div>
                 <span class="material-symbols-outlined card-arrow">chevron_right</span>
             </button>
+
+            <button class="nav-card" @click="goTo('/admin/invoices')">
+                <div class="card-icon" style="background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.2);">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                </div>
+                <div class="card-content">
+                    <span class="card-title">Facturas</span>
+                    <span class="card-desc">Histórico de facturación general</span>
+                </div>
+                <span class="material-symbols-outlined card-arrow">chevron_right</span>
+            </button>
         </div>
 
         <!-- Sección: Accesos a la web -->

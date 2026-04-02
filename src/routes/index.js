@@ -140,6 +140,11 @@ const routes = [
         path: 'appointments',
         name: 'admin.appointments',
         component: () => import('../components/admin_src/appointments/admin-appointments.vue')
+      },
+      {
+        path: 'invoices',
+        name: 'admin.invoices',
+        component: () => import('../components/admin_src/invoices/admin-invoices.vue')
       }
     ]
   },
