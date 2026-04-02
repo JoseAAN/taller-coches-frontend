@@ -18,15 +18,24 @@
             </div>
         </div>
 
-        <!-- Buscador -->
-        <div class="search-wrapper mb-4" style="background: #1e293b; padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid #334155;">
-            <span class="material-symbols-outlined" style="color: #94a3b8;">search</span>
-            <input
-                v-model="search"
-                type="text"
-                class="form-control custom-search-input bg-transparent text-white border-0 shadow-none p-0"
-                placeholder="Buscar por matrícula, marca, modelo..."
-            />
+        <!-- Filtros -->
+        <div class="d-flex gap-3 mb-4 flex-wrap">
+            <div class="search-wrapper flex-grow-1" style="background: #1e293b; padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid #334155;">
+                <span class="material-symbols-outlined" style="color: #94a3b8;">search</span>
+                <input
+                    v-model="search"
+                    type="text"
+                    class="form-control custom-search-input bg-transparent text-white border-0 shadow-none p-0"
+                    placeholder="Buscar por matrícula, marca, modelo o dueño..."
+                />
+            </div>
+
+            <div style="min-width: 250px;">
+                <select v-model="filterType" class="form-select h-100 shadow-none" style="background: #1e293b; color: #f8fafc; border: 1px solid #334155;">
+                    <option value="">Todos los tipos</option>
+                    <option v-for="t in vehicleTypes" :key="t.id" :value="t.id">{{ t.name }}</option>
+                </select>
+            </div>
         </div>
 
         <!-- Mensaje de carga -->
@@ -140,6 +149,7 @@ export default {
             loading: true,
             saving: false,
             search: '',
+            filterType: '',
             
             showModal: false,
             isEditing: false,
@@ -156,14 +166,24 @@ export default {
     },
     computed: {
         filteredVehicles() {
+            let result = this.vehicles;
+
+            if (this.filterType) {
+                result = result.filter(v => v.vehicle_type_id == this.filterType);
+            }
+
             const q = this.search.toLowerCase().trim();
-            if(!q) return this.vehicles;
-            return this.vehicles.filter(v => 
-                v.license_plate?.toLowerCase().includes(q) ||
-                v.brand?.toLowerCase().includes(q) ||
-                v.model?.toLowerCase().includes(q) ||
-                (v.user && v.user.name?.toLowerCase().includes(q))
-            );
+            if (q) {
+                result = result.filter(v => 
+                    v.license_plate?.toLowerCase().includes(q) ||
+                    v.brand?.toLowerCase().includes(q) ||
+                    v.model?.toLowerCase().includes(q) ||
+                    (v.vehicle_type?.name?.toLowerCase().includes(q)) ||
+                    (v.user && v.user.name?.toLowerCase().includes(q))
+                );
+            }
+
+            return result;
         }
     },
     methods: {

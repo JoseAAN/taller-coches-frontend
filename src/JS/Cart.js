@@ -14,9 +14,79 @@ export const cart = reactive({
     total: 0,
     quantity: 0,
 
-    async loadUserCart() {
+    getGuestCart() {
+        try {
+            const raw = localStorage.getItem('guest_cart');
+            return raw ? JSON.parse(raw) : [];
+        } catch (error) {
+            return [];
+        }
+    },
+
+    saveGuestCart(cartArray) {
+        localStorage.setItem('guest_cart', JSON.stringify(cartArray));
+    },
+
+    async loadGuestCart() {
+        const guestCart = this.getGuestCart();
+        let formattedItems = [];
+        let total = 0;
+
+        for (const item of guestCart) {
+            try {
+                if (item.typeId === ITEM_TYPES.PRODUCT) {
+                    const res = await fetch(`${BASE_URL}/v1/products/${item.targetId}`);
+                    if (res.ok) {
+                        const prodData = await res.json();
+                        const product = prodData.data || prodData;
+
+                        const subtotal = item.quantity * item.price;
+                        total += subtotal;
+
+                        formattedItems.push({
+                            id: item.id,
+                            type: 'PRODUCT',
+                            quantity: item.quantity,
+                            subtotal: subtotal,
+                            details: product
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error('Error fetching guest item:', e);
+            }
+        }
+
+        this.items = formattedItems;
+        this.total = total;
+        this.quantity = this.checkQuantity(formattedItems);
+    },
+
+    async syncGuestCart() {
         const token = localStorage.getItem('user_token');
         if (!token) return;
+
+        const guestCart = this.getGuestCart();
+        if (guestCart.length === 0) return;
+
+        loaderState.show();
+
+
+        for (const item of guestCart) {
+            await this.addToCart(item.typeId, item.targetId, item.quantity, item.price, true);
+        }
+
+        localStorage.removeItem('guest_cart');
+        await this.loadUserCart();
+        loaderState.hide();
+    },
+
+    async loadUserCart() {
+        const token = localStorage.getItem('user_token');
+        if (!token) {
+            await this.loadGuestCart();
+            return;
+        }
 
         try {
             loaderState.show();
@@ -32,8 +102,7 @@ export const cart = reactive({
             }
 
             const data = await response.json();
-            
-            
+
             if (!data.data) {
                 this.id = null;
                 this.items = [];
@@ -49,6 +118,7 @@ export const cart = reactive({
             loaderState.hide();
         } catch (error) {
             console.error('Error loading cart:', error);
+            loaderState.hide();
         }
     },
 
@@ -60,23 +130,30 @@ export const cart = reactive({
         return total;
     },
 
-    async removeItem(itemId,  appointmentId = null) {
+    async removeItem(itemId, appointmentId = null) {
         const token = localStorage.getItem('user_token');
-        if (!token) return;
+
+        if (!token) {
+            let guestCart = this.getGuestCart();
+            guestCart = guestCart.filter(i => i.id !== itemId);
+            this.saveGuestCart(guestCart);
+            await this.loadGuestCart();
+            return;
+        }
 
         try {
             loaderState.show();
 
-              if (appointmentId) {
-            await fetch(`${BASE_URL}/v1/appointment/${appointmentId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-        }
+            if (appointmentId) {
+                await fetch(`${BASE_URL}/v1/appointment/${appointmentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+            }
 
             const response = await fetch(`${BASE_URL}/v1/cart-items/${itemId}`, {
                 method: 'DELETE',
@@ -101,7 +178,17 @@ export const cart = reactive({
 
     async updateQuantity(itemId, quantity) {
         const token = localStorage.getItem('user_token');
-        if (!token) return;
+
+        if (!token) {
+            let guestCart = this.getGuestCart();
+            let item = guestCart.find(i => i.id === itemId);
+            if (item) {
+                item.quantity = quantity;
+                this.saveGuestCart(guestCart);
+                await this.loadGuestCart();
+            }
+            return;
+        }
 
         try {
             loaderState.show();
@@ -135,31 +222,57 @@ export const cart = reactive({
      * @param {number} targetId - ID del producto o ID del appointment
      * @param {number} quantity - Cantidad (siempre 1 para servicios)
      * @param {number} price - Precio unitario en el momento
+     * @param {boolean} skipReload - Omitir reload para sincronización en bloque
      */
-    async addToCart(typeId, targetId, quantity, price) {
+    async addToCart(typeId, targetId, quantity, price, skipReload = false) {
         const token = localStorage.getItem('user_token');
-        if (!token) return { success: false, message: 'No autenticado' };
+
+        if (!token) {
+            if (typeId !== ITEM_TYPES.PRODUCT) {
+                return { success: false, message: 'Inicia sesión para reservar servicios' };
+            }
+
+            let guestCart = this.getGuestCart();
+            let existing = guestCart.find(i => i.typeId === typeId && i.targetId === targetId);
+
+            if (existing) {
+                existing.quantity += quantity;
+            } else {
+                guestCart.push({
+                    id: 'guest_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9),
+                    typeId,
+                    targetId,
+                    quantity,
+                    price
+                });
+            }
+            this.saveGuestCart(guestCart);
+            if (!skipReload) await this.loadGuestCart();
+            return { success: true };
+        }
 
         try {
-            loaderState.show();
-            
+            if (!skipReload) loaderState.show();
+
             if (!this.id) {
-                await this.loadUserCart();
+                const resCart = await fetch(`${BASE_URL}/v1/user-cart`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (resCart.ok) {
+                    const dataCart = await resCart.json();
+                    if (dataCart.data) this.id = dataCart.data.id;
+                }
             }
 
             const payload = {
-                cart_id: this.id,
+                cart_id: this.id, // Si sigue en null, la base de datos lo creará
                 item_type_id: typeId,
                 quantity: quantity,
                 price_at_time: price
             };
 
-            // Según el tipo, asignamos el campo correspondiente
-            if (typeId === ITEM_TYPES.PRODUCT) {
-                payload.product_id = targetId;
-            } else if (typeId === ITEM_TYPES.SERVICE) {
-                payload.appointment_id = targetId;
-            }
+            if (typeId === ITEM_TYPES.PRODUCT) payload.product_id = targetId;
+            else if (typeId === ITEM_TYPES.SERVICE) payload.appointment_id = targetId;
 
             const response = await fetch(`${BASE_URL}/v1/cart-items`, {
                 method: 'POST',
@@ -174,18 +287,19 @@ export const cart = reactive({
             const data = await response.json();
 
             if (!response.ok) {
-                alert(data.message || 'Error al añadir al carrito');
+                // Fallar en silencio si estamos en sync múltiple y el item choca (ej: sin stock)
+                if (!skipReload) alert(data.message || 'Error al añadir al carrito');
                 return { success: false, message: data.message };
             }
 
-            await this.loadUserCart();
+            if (!skipReload) await this.loadUserCart();
             return { success: true };
-            
+
         } catch (error) {
             console.error('Error adding to cart:', error);
             return { success: false, message: 'Error de conexión' };
         } finally {
-            loaderState.hide();
+            if (!skipReload) loaderState.hide();
         }
     },
 
@@ -194,5 +308,6 @@ export const cart = reactive({
         this.items = [];
         this.total = 0;
         this.quantity = 0;
+        localStorage.removeItem('guest_cart');
     }
 });

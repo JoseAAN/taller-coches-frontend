@@ -45,6 +45,7 @@
 <script>
 import InputNumber from 'primevue/inputnumber';
 import { cart, ITEM_TYPES } from '@/JS/Cart.js';
+import { useToast } from "vue-toastification";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default {
@@ -82,13 +83,15 @@ export default {
         },
 
         async addToCart() {
+            const toast = useToast();
             if (this.value > this.availableStock) {
-                alert('No puedes añadir más de ' + this.availableStock + ' unidades.');
+                toast.warning('No puedes añadir más de ' + this.availableStock + ' unidades.');
                 return;
             }
             // Nueva firma: typeId, targetId, quantity, price
             const result = await cart.addToCart(ITEM_TYPES.PRODUCT, this.productId, this.value, this.product.price);
             if (result.success) {
+                toast.success(`Añadido(s) ${this.value} ${this.product.name} al carrito`);
                 this.value = 1; // Reset quantity after successful add
             }
         }

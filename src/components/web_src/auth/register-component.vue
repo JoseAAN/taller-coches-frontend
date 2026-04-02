@@ -143,30 +143,33 @@ export default {
         },
         body: JSON.stringify(this.form)
       })
-      .then(response => {
-        return response.json().then(data => {
-          if (response.status === 422) {
-            this.errors = data.errors;
-          } else if (response.ok) {
-            
-            this.success = true;
-            this.form = { name: '', email: '', password: '', password_confirmation: '' };
-            
-            window.grecaptcha.reset();
-            
-            localStorage.setItem('user_token', data.access_token);
-            localStorage.setItem('user', JSON.stringify(data.user));
+      .then(async response => {
+        const data = await response.json();
+        if (response.status === 422) {
+          this.errors = data.errors;
+        } else if (response.ok) {
+          
+          this.success = true;
+          this.form = { name: '', email: '', password: '', password_confirmation: '' };
+          
+          window.grecaptcha.reset();
+          
+          localStorage.setItem('user_token', data.access_token);
+          localStorage.setItem('user', JSON.stringify(data.user));
 
-            cart.loadUserCart();
-            if (data.user.role === 'admin') {
-              this.$router.push('/admin');
-            } else {
-              this.$router.push('/');
-            }
-          } else {
-            throw new Error('Error de servidor');
+          await cart.syncGuestCart();
+          if(cart.items.length === 0 && !cart.id) {
+             await cart.loadUserCart();
           }
-        })
+
+          if (data.user.role === 'admin') {
+            this.$router.push('/admin');
+          } else {
+            this.$router.push('/');
+          }
+        } else {
+          throw new Error('Error de servidor');
+        }
       })
       .catch(error => {
         this.errors = { general: 'No se pudo conectar con el servidor.' };

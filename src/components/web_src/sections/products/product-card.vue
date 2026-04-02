@@ -50,6 +50,7 @@
 import { loaderState } from '@/loaderState'
 import BasePrice from '../../UI/global-price.vue'
 import { cart, ITEM_TYPES } from '@/JS/Cart.js'
+import { useToast } from "vue-toastification"
 
 export default {
     name: 'ProductCard',
@@ -90,7 +91,11 @@ export default {
 
     methods: {
         async addToCart() {
-            await cart.addToCart(ITEM_TYPES.PRODUCT, this.product.id, 1, this.product.price);
+            const toast = useToast();
+            const result = await cart.addToCart(ITEM_TYPES.PRODUCT, this.product.id, 1, this.product.price);
+            if (result.success) {
+                toast.success(`Añadido al carrito: ${this.product.name}`);
+            }
         },
 
         goToDetails(productId) {

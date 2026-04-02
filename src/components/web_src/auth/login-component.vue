@@ -130,7 +130,8 @@ export default {
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(this.form)
       })
-        .then(response => response.json().then(data => {
+        .then(async response => { 
+          const data = await response.json();
           if (response.status === 422) {
             this.errors = data.errors;
           } else if (response.status === 403 && data.code === 'ACCOUNT_BLOCKED') {
@@ -143,7 +144,14 @@ export default {
             window.grecaptcha.reset();
             localStorage.setItem('user_token', data.access_token);
             fetchUserData();
-            cart.loadUserCart();
+            
+            // Sincroniza posibles carritos de invitado y luego carga el carrito real internamente
+            await cart.syncGuestCart(); 
+            // Si el guest cart estaba vacio, syncGuestCart hace return, así que nos aseguramos de cargarlo.
+            if(cart.items.length === 0 && !cart.id) {
+               await cart.loadUserCart();
+            }
+
             if (data.user.role.name === 'admin') {
               this.$router.push('/admin');
             } else {
@@ -152,7 +160,7 @@ export default {
           } else {
             throw new Error('Error de servidor');
           }
-        }))
+        })
         .catch(error => {
           this.errors = { general: 'No se pudo conectar con el servidor.' };
           console.error(error);

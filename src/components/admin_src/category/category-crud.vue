@@ -1,6 +1,11 @@
 <template>
     <div class="admin-container p-4">
 
+        <button class="btn-back mb-3" @click="$router.push('/admin')">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Panel de administración
+        </button>
+
         <div class="header-section mb-4">
             <div>
                 <h2 class="section-title d-flex align-items-center gap-2">
@@ -159,6 +164,22 @@ export default {
     min-height: 100vh;
     color: #cbd5e1;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.btn-back {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.btn-back:hover {
+    color: #f1f5f9;
 }
 
 .header-section {

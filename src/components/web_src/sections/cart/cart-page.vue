@@ -10,13 +10,7 @@
         </div>
 
         <!-- CARRITO VACÍO -->
-        <div v-if="!isLoggedIn" class="empty-state">
-            <span class="material-symbols-outlined empty-icon">login</span>
-            <p class="empty-title">Inicia sesión para ver tu carrito</p>
-            <router-link to="/login" class="btn-action">Iniciar Sesión</router-link>
-        </div>
-
-        <div v-else-if="cart.items.length === 0" class="empty-state">
+        <div v-if="cart.items.length === 0" class="empty-state">
             <span class="material-symbols-outlined empty-icon">remove_shopping_cart</span>
             <p class="empty-title">Tu carrito está vacío</p>
             <p class="empty-subtitle">Explora nuestros productos y servicios y añade lo que necesites</p>
@@ -166,6 +160,12 @@ export default {
         },
 
         async checkout() {
+            if (!this.isLoggedIn) {
+                alert('Inicia sesión o regístrate para finalizar tu compra.');
+                this.$router.push('/login');
+                return;
+            }
+
             try {
                 this.isProcessing = true;
                 const token = localStorage.getItem('user_token');
