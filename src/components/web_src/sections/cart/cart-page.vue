@@ -148,7 +148,9 @@ export default {
 
     methods: {
         async removeItem(item) {
-            await cart.removeItem(item.id)
+            //comprobamos que tipo de item es para saber si hay que cancelar o no una cita
+             const appointmentId = item.type === 'SERVICE' ? item.details?.id : null
+            await cart.removeItem(item.id, appointmentId)
         },
 
         async increaseQuantity(item) {

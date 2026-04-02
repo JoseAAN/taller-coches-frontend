@@ -169,9 +169,6 @@ export default {
                 this.deleting = true;
                 loaderState.show();
 
-                // 1. Buscamos si la cita tiene un item en el carrito
-                // La cita ya tiene el item_id si la API lo devuelve,
-                // sino buscamos en el carrito del usuario
                 const cartResponse = await fetch(`${this.$BASE_URL}/v1/user-cart`, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -183,13 +180,10 @@ export default {
                 if (cartResponse.ok) {
                     const cartData = await cartResponse.json();
 
-                    // Buscamos dentro de los items del carrito si alguno
-                    // corresponde a esta cita
                     const itemEnCarrito = cartData.items?.find(
                         item => item.itemAppointment?.appointment_id === this.appointmentToDelete.id
                     );
 
-                    // 2. Si existe el item en el carrito, lo borramos primero
                     if (itemEnCarrito) {
                         await fetch(`${this.$BASE_URL}/v1/cart-items/${itemEnCarrito.id}`, {
                             method: 'DELETE',
@@ -202,7 +196,7 @@ export default {
                     }
                 }
 
-                // 3. Borramos la cita
+            
                 const response = await fetch(`${this.$BASE_URL}/v1/appointment/${this.appointmentToDelete.id}`, {
                     method: 'DELETE',
                     headers: {
@@ -216,8 +210,7 @@ export default {
                     console.error('Error al cancelar la cita');
                     return;
                 }
-
-                // 4. La quitamos de la lista visual
+                
                 this.infoAppointments.appointments.splice(this.appointmentToDeleteIndex, 1);
                 this.closeDeleteModal();
 

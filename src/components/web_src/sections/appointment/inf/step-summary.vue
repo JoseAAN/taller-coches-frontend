@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import { cart } from '/src/js/Cart.js' 
+import { cart,ITEM_TYPES } from '/src/js/Cart.js' 
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -133,67 +133,54 @@ export default {
     }
   },
   methods: {
-    async confirmar() {
-      this.loading = true
-      const token = localStorage.getItem('user_token')
+  async confirmar() {
+    this.loading = true
+    const token = localStorage.getItem('user_token')
 
-      try {
-        if (!cart.id) {
-          await cart.loadUserCart()
-        }
+    try {
 
-        const appointmentResponse = await fetch(`${BASE_URL}/v1/appointment`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            vehicle_id: this.vehicle.id,
-            service_id: this.service.id,
-            date: this.date,
-            start_time: this.startTime
-          })
+       await cart.loadUserCart()
+      const appointmentResponse = await fetch(`${BASE_URL}/v1/appointment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          vehicle_id: this.vehicle.id,
+          service_id: this.service.id,
+          date: this.date,
+          start_time: this.startTime
         })
+      })
 
-        if (!appointmentResponse.ok) {
-          alert('Error al crear la cita')
-          return
-        }
-        const appointmentData = await appointmentResponse.json()
-
-        const cartResponse = await fetch(`${BASE_URL}/v1/cart-items`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            cart_id: cart.id,
-            item_type_id: 2,
-            appointment_id: appointmentData.appointment.id,
-            quantity: 1,
-            price_at_time: this.service.price
-          })
-        })
-
-        if (!cartResponse.ok) {
-          alert('La cita se creó pero no se pudo añadir al carrito')
-          return
-        }
-        await cart.loadUserCart()
-        this.$router.push('/cart')
-
-      } catch (e) {
-        console.error(e)
-        alert('Error inesperado, inténtalo de nuevo')
-      } finally {
-        this.loading = false
+      if (!appointmentResponse.ok) {
+        alert('Error al crear la cita')
+        return
       }
+
+      const appointmentData = await appointmentResponse.json()
+
+      const result = await cart.addToCart(
+        ITEM_TYPES.SERVICE,
+        appointmentData.appointment.id,
+        1,
+        this.service.price
+      )
+
+      if (result.success) {
+        this.$router.push('/cart')
+      }
+
+    } catch (e) {
+      console.error(e)
+      alert('Error inesperado, inténtalo de nuevo')
+    } finally {
+      this.loading = false
     }
   }
+}
 }
 </script>
 

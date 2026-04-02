@@ -16,10 +16,10 @@ export const cart = reactive({
 
     async loadUserCart() {
         const token = localStorage.getItem('user_token');
-        
         if (!token) return;
 
         try {
+            loaderState.show();
             const response = await fetch(`${BASE_URL}/v1/user-cart`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -27,13 +27,13 @@ export const cart = reactive({
                     'Authorization': `Bearer ${token}`
                 }
             });
-
             if (!response.ok) {
                 throw new Error('Error fetching cart');
             }
 
             const data = await response.json();
-
+            
+            
             if (!data.data) {
                 this.id = null;
                 this.items = [];
@@ -60,12 +60,24 @@ export const cart = reactive({
         return total;
     },
 
-    async removeItem(itemId) {
+    async removeItem(itemId,  appointmentId = null) {
         const token = localStorage.getItem('user_token');
         if (!token) return;
 
         try {
             loaderState.show();
+
+              if (appointmentId) {
+            await fetch(`${BASE_URL}/v1/appointment/${appointmentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+        }
+
             const response = await fetch(`${BASE_URL}/v1/cart-items/${itemId}`, {
                 method: 'DELETE',
                 headers: {
