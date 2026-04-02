@@ -26,6 +26,8 @@
         </div>
       </section>
 
+      <contact-form />
+
     </main>
   </div>
 </template>
@@ -35,6 +37,7 @@ import HeroComponent from '../sections/home-sections/hero-component.vue';
 import ServiceComponent from '../sections/home-sections/services-components/service-component.vue';
 import SliderComparator from '../UI/slider-comparator.vue';
 import FooterComponent from '../shared/main-footer.vue';
+import ContactForm from '../shared/ContactForm.vue';
 
 import cochelimpio from "@/assets/cochelimpio.jpeg";
 import cochesucio from "@/assets/cochesucio.jpeg";
@@ -44,7 +47,8 @@ export default {
     HeroComponent,
     ServiceComponent,
     SliderComparator,
-    FooterComponent
+    FooterComponent,
+    ContactForm
   },
   data() {
     return {
