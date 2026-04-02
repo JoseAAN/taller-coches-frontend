@@ -38,3 +38,8 @@ Opciones a implementar para evitar que dependa del administrador:
 1. **Sistema de Traspaso:** Botón "Transferir Vehículo" donde introducen el email del nuevo comprador y el coche cambia de dueño automáticamente arrastrando el historial.
 2. **Liberación ("Desvincular"):** Botón "Quitar de mi garaje" que en lugar de eliminar, pone el `user_id = null` liberando el coche para ser reclamado.
 3. **Reclamar con VIN:** Permitir reclamar una matrícula duplicada introduciendo Número de Bastidor.
+
+
+## Bugs encontrados:
+Al reservar cita las horas no aparecen ordenadas. las 8 y 9 am aparecen despues de las 20
+Algun problema relacionado con la asignacion de carritos cuando un usuario completa una compra. No se le asigna un nuevo carrito
