@@ -9,7 +9,18 @@
       </div>
     </div>
 
-    <div v-if="loading" class="loading-state">
+    <!-- SIN SESIÓN INICIADA -->
+    <div v-if="notLoggedIn" class="login-required-state">
+      <span class="material-symbols-outlined login-icon">lock</span>
+      <h3 class="login-title">Inicia sesión para continuar</h3>
+      <p class="login-desc">Necesitas una cuenta para poder seleccionar un vehículo y reservar una cita.</p>
+      <button class="btn-next" @click="$router.push('/login')">
+        <span class="material-symbols-outlined">login</span>
+        Iniciar sesión
+      </button>
+    </div>
+
+    <div v-else-if="loading" class="loading-state">
       <span class="material-symbols-outlined loading-icon">hourglass_empty</span>
       <p class="loading-text">Cargando vehículos...</p>
     </div>
@@ -78,10 +89,16 @@ export default {
       selectedId: null,
       selectedVehicle: null,
       loading: false,
-      error: null
+      error: null,
+      notLoggedIn: false
     }
   },
   async mounted() {
+    const token = localStorage.getItem('user_token')
+    if (!token) {
+      this.notLoggedIn = true
+      return
+    }
     await this.fetchVehicles()
   },
   methods: {
@@ -319,6 +336,38 @@ export default {
   gap: 1rem;
 
   .material-symbols-outlined { font-size: 48px; }
+}
+
+/* ── ESTADO: REQUIERE LOGIN ── */
+.login-required-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 35vh;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.login-icon {
+  font-size: 56px;
+  color: #f59e0b;
+  margin-bottom: 0.5rem;
+}
+
+.login-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--nav-text);
+  margin: 0;
+}
+
+.login-desc {
+  font-size: 0.88rem;
+  color: var(--nav-text);
+  opacity: 0.55;
+  margin: 0 0 1rem 0;
+  max-width: 360px;
 }
 
 /* ── RESPONSIVE ── */
