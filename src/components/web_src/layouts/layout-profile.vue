@@ -1,6 +1,6 @@
 <template>
   <div class="profile-layout">
-    <profileNavComponent />
+    <profileNavComponent @logout="handleLogout" />
 
     <main class="profile-content">
       <router-view
@@ -23,6 +23,7 @@
 <script>
 import profileNavComponent from '../sections/profile/profileNavComponent.vue';
 import { fetchProfile } from '@/Profile';
+import { logout } from '@/JS/Auth.js';
 
 export default {
   components: { profileNavComponent },
@@ -42,8 +43,12 @@ export default {
   },
   methods: {
     actualizarDatosUsuario(nuevosDatos) {
-    Object.assign(this.profileData.infoUser.User, nuevosDatos);
-  }
+      Object.assign(this.profileData.infoUser.User, nuevosDatos);
+    },
+    handleLogout() {
+      logout();
+      this.$router.push('/');
+    }
   }
 }
 </script>
