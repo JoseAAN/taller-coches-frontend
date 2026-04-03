@@ -139,10 +139,12 @@
 </template>
 
 <script>
+import { useToast } from 'vue-toastification';
 export default {
     name: 'AdminVehicles',
     data() {
         return {
+            toast: useToast(),
             vehicles: [],
             usersList: [],
             vehicleTypes: [],
@@ -208,7 +210,7 @@ export default {
 
             } catch (err) {
                 console.error("Error al obtener datos:", err);
-                alert("Error de conexión con el servidor.");
+                this.toast.error("Error de conexión con el servidor.");
             } finally {
                 this.loading = false;
             }
@@ -257,17 +259,17 @@ export default {
 
                 if(!res.ok) {
                     const errorData = await res.json();
-                    alert("Error: " + (errorData.message || JSON.stringify(errorData)));
+                    this.toast.error("Error: " + (errorData.message || JSON.stringify(errorData)));
                     return;
                 }
 
-                alert(this.isEditing ? "Vehículo actualizado" : "Vehículo creado");
+                this.toast.success(this.isEditing ? "Vehículo actualizado" : "Vehículo creado");
                 this.closeModal();
                 this.loading = true;
                 this.fetchAllData();
             } catch (err) {
                 console.error(err);
-                alert("Hubo un error");
+                this.toast.error("Hubo un error");
             } finally {
                 this.saving = false;
             }
@@ -281,13 +283,14 @@ export default {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                if(!res.ok) alert("Error eliminando vehículo");
+                if(!res.ok) this.toast.error("Error eliminando vehículo");
                 else {
                     this.vehicles = this.vehicles.filter(v => v.id !== vehicle.id);
+                    this.toast.success("Vehículo eliminado");
                 }
             } catch (err) {
                 console.error(err);
-                alert("Error de conexión");
+                this.toast.error("Error de conexión");
             }
         }
     },

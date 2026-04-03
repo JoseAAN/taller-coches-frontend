@@ -110,12 +110,14 @@
 
 <script>
 import SidebarConfigurationModal from './sidebar-configuration-modal.vue';
+import { useToast } from 'vue-toastification';
 export default {
     components: {
         SidebarConfigurationModal
     },
     data() {
         return {
+            toast: useToast(),
             services: [],
             isModalOpen: false,
             serviceSelected: {},
@@ -182,7 +184,7 @@ export default {
                     this.isModalOpen = false;
                     window.location.reload()
                 })
-                .catch(err => alert("No se pudo procesar la solicitud"));
+                .catch(err => this.toast.error("No se pudo procesar la solicitud"));
         },
         deleteService(id) {
             if (!confirm("¿Estás seguro de eliminar este módulo?")) return;
@@ -203,7 +205,7 @@ export default {
                     this.getServices();
                     window.location.reload()
                 })
-                .catch(err => alert("No se pudo eliminar el módulo"));
+                .catch(err => this.toast.error("No se pudo eliminar el módulo"));
         },
     },
     mounted() {

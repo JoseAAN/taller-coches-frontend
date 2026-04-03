@@ -66,8 +66,8 @@
         <div class="footer-bottom">
             <p>&copy; 2026 AutoClean. Todos los derechos reservados.</p>
             <div class="legal-links">
-                <a href="#">Privacidad</a>
-                <a href="#">Términos</a>
+                <router-link to="/privacidad">Privacidad</router-link>
+                <router-link to="/terminos">Términos</router-link>
             </div>
         </div>
     </footer>
@@ -97,7 +97,7 @@
 }
 
 .footer-logo span {
-    color: #3b82f6;
+    color: #52b155;
 }
 
 .footer-description {
@@ -119,7 +119,7 @@
     bottom: -8px;
     width: 30px;
     height: 2px;
-    background-color: #3b82f6;
+    background-color: #52b155;
 }
 
 .footer-column ul {
@@ -215,5 +215,10 @@
     color: #666;
     margin-left: 20px;
     text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.legal-links a:hover {
+    color: #52b155;
 }
 </style>

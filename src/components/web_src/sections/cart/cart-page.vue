@@ -122,6 +122,7 @@
 <script>
 import { cart } from '@/JS/Cart.js'
 import BasePrice from '../../UI/global-price.vue'
+import { useToast } from 'vue-toastification'
 
 export default {
     name: 'CartPage',
@@ -130,7 +131,8 @@ export default {
     data() {
         return {
             cart,
-            isProcessing: false
+            isProcessing: false,
+            toast: useToast()
         }
     },
 
@@ -161,7 +163,7 @@ export default {
 
         async checkout() {
             if (!this.isLoggedIn) {
-                alert('Inicia sesión o regístrate para finalizar tu compra.');
+                this.toast.warning('Inicia sesión o regístrate para finalizar tu compra.');
                 this.$router.push('/login');
                 return;
             }
@@ -186,7 +188,7 @@ export default {
                 const data = await res.json();
                 
                 if (!res.ok) {
-                    alert(data.message || 'Error al procesar la compra');
+                    this.toast.error(data.message || 'Error al procesar la compra');
                     return;
                 }
                 
@@ -199,7 +201,7 @@ export default {
                 
             } catch (err) {
                 console.error(err);
-                alert('Error de conexión al finalizar compra');
+                this.toast.error('Error de conexión al finalizar compra');
             } finally {
                 this.isProcessing = false;
             }

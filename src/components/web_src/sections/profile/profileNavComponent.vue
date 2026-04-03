@@ -25,11 +25,11 @@
         <span class="material-symbols-outlined">directions_car</span>
         <span>Vehículos</span>
       </router-link>
-      <router-link class="sidebar-link" to="/profile/Invoices" @click="$emit('close-menu')">
+      <router-link class="sidebar-link" to="/profile/invoices" @click="$emit('close-menu')">
         <span class="material-symbols-outlined">shopping_bag</span>
         <span>Mis compras</span>
       </router-link>
-      <router-link class="sidebar-link" to="/profile/Appointments" @click="$emit('close-menu')">
+      <router-link class="sidebar-link" to="/profile/appointments" @click="$emit('close-menu')">
         <span class="material-symbols-outlined">calendar_month</span>
         <span>Mis citas</span>
       </router-link>

@@ -1,5 +1,6 @@
 import { loaderState } from "@/loaderState";
 import { reactive } from "vue";
+import { notify } from "@/JS/notify.js";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -288,7 +289,7 @@ export const cart = reactive({
 
             if (!response.ok) {
                 // Fallar en silencio si estamos en sync múltiple y el item choca (ej: sin stock)
-                if (!skipReload) alert(data.message || 'Error al añadir al carrito');
+                if (!skipReload) notify.error(data.message || 'Error al añadir al carrito');
                 return { success: false, message: data.message };
             }
 

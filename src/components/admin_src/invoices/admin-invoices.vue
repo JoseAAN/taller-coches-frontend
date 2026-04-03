@@ -102,12 +102,14 @@
 <script>
 import InvoiceModal from './invoice-modal.vue';
 import { loaderState } from '@/loaderState';
+import { useToast } from 'vue-toastification';
 
 export default {
     name: 'AdminInvoices',
     components: { InvoiceModal },
     data() {
         return {
+            toast: useToast(),
             invoices: [],
             meta: null, // Para paginación Laravel
             search: '',
@@ -137,7 +139,7 @@ export default {
                 this.meta = data.meta; // Pagination info
             } catch (e) {
                 console.error(e);
-                alert("Error de conexión al cargar facturas");
+                this.toast.error("Error de conexión al cargar facturas");
             } finally {
                 this.loading = false;
             }
@@ -159,7 +161,7 @@ export default {
 
             } catch (e) {
                 console.error(e);
-                alert("Error visualizando factura");
+                this.toast.error("Error visualizando factura");
             } finally {
                 loaderState.hide();
             }
