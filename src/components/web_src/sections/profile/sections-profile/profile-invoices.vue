@@ -28,7 +28,7 @@
           <div>
             <p class="invoice-number"># {{ invoice.invoiceNumber }}</p>
             <p class="invoice-meta">{{ invoice.created_at }}</p>
-            <p class="invoice-products-count">{{ invoice.items.length }} item{{ invoice.items.length !== 1 ? 's' : '' }}</p>
+            <p class="invoice-products-count">{{ invoice.items?.length || 0 }} item{{ invoice.items?.length !== 1 ? 's' : '' }}</p>
           </div>
         </div>
 
@@ -170,12 +170,12 @@ export default {
     // Filtra solo los items de tipo "product" de la factura seleccionada
     productItems() {
       if (!this.selectedInvoice) return []
-      return this.selectedInvoice.items.filter(item => item.type === 'product')
+      return (this.selectedInvoice.items || []).filter(item => item.type === 'product')
     },
     // Filtra solo los items de tipo "appointment" de la factura seleccionada
     appointmentItems() {
       if (!this.selectedInvoice) return []
-      return this.selectedInvoice.items.filter(item => item.type === 'appointment')
+      return (this.selectedInvoice.items || []).filter(item => item.type === 'appointment')
     }
   },
   methods: {
