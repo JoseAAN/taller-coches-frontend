@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { loaderState } from '../loaderState.js';
+import { authState } from '../JS/Auth.js';
 
 const routes = [
   {
@@ -80,12 +81,12 @@ const routes = [
         component: () => import('../components/web_src/sections/profile/sections-profile/profile-vehicles.vue')
       },
       {
-        path: 'Invoices',
+        path: 'invoices',
         name: 'InvoicesProfile',
         component: () => import('../components/web_src/sections/profile/sections-profile/profile-invoices.vue')
       },
       {
-        path: 'Appointments',
+        path: 'appointments',
         name: 'AppointmentsProfile',
         component: () => import('../components/web_src/sections/profile/sections-profile/profile-appointments.vue')
       }
@@ -140,6 +141,11 @@ const routes = [
         path: 'appointments',
         name: 'admin.appointments',
         component: () => import('../components/admin_src/appointments/admin-appointments.vue')
+      },
+      {
+        path: 'invoices',
+        name: 'admin.invoices',
+        component: () => import('../components/admin_src/invoices/admin-invoices.vue')
       }
     ]
   },
@@ -153,6 +159,16 @@ const routes = [
     name: 'login',
     component: () => import('../components/web_src/auth/login-component.vue')
   },
+  {
+    path: '/privacidad',
+    name: 'Privacidad',
+    component: () => import('../components/web_src/privacidad.vue')
+  },
+  {
+    path: '/terminos',
+    name: 'Terminos',
+    component: () => import('../components/web_src/terminos.vue')
+  },
 ];
 
 const router = createRouter({
@@ -161,49 +177,31 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-
-  //verificacion para saber si la ruta requiere admin o no
-
-  // TODO: tenemos esto de momento pero habría que cambiarlo por:
-  // - Hacer peticion por cada ruta que vaya el cliente (realentiza la página)
-  // - Guardar role en pinia o en app global properties
-
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const requiresAuth  = to.matched.some(record => record.meta.requiresAuth);
 
   loaderState.show();
 
   const token = localStorage.getItem('user_token');
 
   if (requiresAdmin) {
-    if (!token) {
-      return next('/login');
+    // Sin token → login directo.
+    if (!token) return next('/login');
+
+    // Usamos el authState cacheado en memoria (cargado al iniciar la app desde
+    // localStorage). No hace falta un fetch: el backend sigue siendo la barrera
+    // real con su middleware auth.admin.
+    const user = authState.user;
+
+    if (user?.role?.name === 'admin') {
+      return next();
+    } else {
+      // Sin datos de usuario cacheados o rol insuficiente.
+      return next(user ? '/' : '/login');
     }
 
-    return fetch(`${BASE_URL}/user`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-      .then(response => {
-        if (!response.ok) throw new Error('Failed to fetch user data');
-        return response.json();
-      })
-      .then(data => {
-        if (data.role && data.role.name === 'admin') {
-          next();
-        } else {
-          console.error('Usuario sin permisos entro en un área restringida');
-          next('/');
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching user data:', error);
-        next('/login');
-      });
   } else if (requiresAuth) {
-    if (!token) {
-      return next('/login');
-    }
+    if (!token) return next('/login');
     next();
   } else {
     next();

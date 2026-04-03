@@ -1,22 +1,27 @@
 <template>
     <div class="admin-container p-4">
 
-        <!-- Cabecera -->
-        <div class="mb-4">
-            <button class="btn-back mb-3" @click="$router.push('/admin')">
-                <span class="material-symbols-outlined">arrow_back</span>
-                Panel de administración
-            </button>
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="text-white fw-bold h4 m-0">Gestión de Usuarios</h2>
-                    <p class="text-white small mb-0 mt-1">Listado completo de usuarios registrados en la plataforma</p>
+        <div class="mb-4 d-flex justify-content-between align-items-end">
+            <div>
+                <button class="btn-back mb-3" @click="$router.push('/admin')">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    Panel de administración
+                </button>
+                <div class="d-flex align-items-center gap-3">
+                    <div>
+                        <h2 class="text-white fw-bold h4 m-0">Gestión de Usuarios</h2>
+                        <p class="text-white small mb-0 mt-1">Listado completo de usuarios registrados en la plataforma</p>
+                    </div>
+                    <span class="badge-status ms-2">
+                        <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">group</span>
+                        {{ users.length }} usuarios
+                    </span>
                 </div>
-                <span class="badge-status">
-                    <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">group</span>
-                    {{ users.length }} usuarios
-                </span>
             </div>
+            <button class="btn btn-success-solid" @click="showCreateModal = true">
+                <span class="material-symbols-outlined" style="font-size: 20px;">person_add</span>
+                Crear Usuario
+            </button>
         </div>
 
         <!-- Buscador -->
@@ -100,6 +105,7 @@
                                     <span class="material-symbols-outlined">visibility</span>
                                 </button>
                                 <button
+                                    v-if="canBlockUser(user)"
                                     :class="['btn-icon', user.blocked ? 'btn-unblock' : 'btn-block']"
                                     :title="user.blocked ? 'Desbloquear usuario' : 'Bloquear usuario'"
                                     @click="confirmToggleBlock(user)"
@@ -163,6 +169,7 @@
 
                 <div class="modal-footer-custom">
                     <button
+                        v-if="canBlockUser(selectedUser)"
                         :class="['btn', selectedUser.blocked ? 'btn-success-outline' : 'btn-danger-outline']"
                         @click="confirmToggleBlock(selectedUser); closeDetail()"
                     >
@@ -211,6 +218,51 @@
             </div>
         </div>
 
+        <!-- Modal: Crear Usuario -->
+        <div v-if="showCreateModal" class="modal-overlay" @click.self="closeCreateModal">
+            <div class="modal-card">
+                <div class="modal-header-custom">
+                    <h5 class="text-white fw-bold m-0 d-flex align-items-center gap-2">
+                        <span class="material-symbols-outlined text-success">person_add</span>
+                        Crear Nuevo Usuario
+                    </h5>
+                    <button class="btn-close-modal" @click="closeCreateModal">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <form @submit.prevent="doCreateUser">
+                    <div class="modal-body-custom">
+                        <div class="form-group">
+                            <label class="text-white small mb-1">Nombre Completo</label>
+                            <input v-model="newUser.name" type="text" class="form-control bg-dark text-white border-secondary shadow-none" required placeholder="Ej: Administrador Principal" />
+                        </div>
+                        <div class="form-group">
+                            <label class="text-white small mb-1">Correo Electrónico</label>
+                            <input v-model="newUser.email" type="email" class="form-control bg-dark text-white border-secondary shadow-none" required placeholder="admin@email.com" />
+                        </div>
+                        <div class="form-group">
+                            <label class="text-white small mb-1">Contraseña</label>
+                            <input v-model="newUser.password" type="password" class="form-control bg-dark text-white border-secondary shadow-none" required placeholder="Mínimo 8 caracteres" minlength="8" />
+                        </div>
+                        <div class="form-group">
+                            <label class="text-white small mb-1">Rol en el Sistema</label>
+                            <select v-model="newUser.role_id" class="form-select bg-dark text-white border-secondary shadow-none" required>
+                                <option :value="1">Administrador (Acceso total)</option>
+                                <option :value="2">Cliente (Solo panel web)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer-custom">
+                        <button type="button" class="btn btn-secondary-outline" @click="closeCreateModal">Cancelar</button>
+                        <button type="submit" class="btn btn-success-solid" :disabled="creating">
+                            <span v-if="creating" class="spinner-border spinner-border-sm me-1"></span>
+                            Crear Cuenta
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Toast de feedback -->
         <transition name="toast-fade">
             <div v-if="toast.show" :class="['toast-msg', toast.type]">
@@ -235,6 +287,9 @@ export default {
             selectedUser: null,
             userToToggle: null,
             toggling: false,
+            showCreateModal: false,
+            newUser: { name: '', email: '', password: '', role_id: 1 },
+            creating: false,
             toast: { show: false, message: '', type: 'success' }
         }
     },
@@ -311,9 +366,69 @@ export default {
             });
         },
 
+        async doCreateUser() {
+            this.creating = true;
+            try {
+                const token = localStorage.getItem('user_token');
+                const res = await fetch(`${BASE_URL}/v1/admin-users`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify(this.newUser)
+                });
+                
+                if (!res.ok) {
+                   const errData = await res.json();
+                   throw new Error(errData.message || 'Error al crear el usuario');
+                }
+                
+                const created = await res.json();
+                this.showToast('Usuario creado correctamente', 'success');
+                this.users.unshift(created.user);
+                this.closeCreateModal();
+            } catch (err) {
+                console.error(err);
+                this.showToast(err.message, 'error');
+            } finally {
+                this.creating = false;
+            }
+        },
+
+        closeCreateModal() {
+            this.showCreateModal = false;
+            this.newUser = { name: '', email: '', password: '', role_id: 1 };
+        },
+
         getInitials(name) {
             if (!name) return '?';
             return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+        },
+
+        canBlockUser(targetUser) {
+            if (!targetUser) return false;
+            
+            // Obtener al usuario que está logueado actualmente de LocalStorage
+            let currentUser = { id: -1 };
+            try {
+                const storedUser = localStorage.getItem('user');
+                if (storedUser) {
+                    currentUser = JSON.parse(storedUser);
+                }
+            } catch (e) {}
+
+            // Nadie puede bloquear la cuenta original ID_1
+            if (targetUser.id === 1) return false;
+
+            // Si intentan tocar a otro Admin, solo el ID_1 puede hacerlo
+            const isTargetAdmin = targetUser.role?.name === 'admin';
+            if (isTargetAdmin && currentUser.id !== 1) {
+                return false;
+            }
+
+            // En el resto de casos (Ej: administradores tocando clientes), sí pueden
+            return true;
         },
 
         getRoleBadgeClass(role) {

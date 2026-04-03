@@ -79,6 +79,7 @@
 
 <script>
 import { loaderState } from '@/loaderState';
+import { useToast } from 'vue-toastification';
 
 export default {
     name: "ServiceCrudModal",
@@ -90,6 +91,7 @@ export default {
 
     data() {
         return {
+            toast: useToast(),
             form: { 
                 id: null, 
                 name: "", 
@@ -182,7 +184,7 @@ export default {
                 if (btnClose) btnClose.click();
             })
             .catch(err => {
-                alert(err.message || "Ocurrió un error al guardar el servicio.");
+                this.toast.error(err.message || "Ocurrió un error al guardar el servicio.");
                 console.error(err);
             })
             .finally(() => {

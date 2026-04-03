@@ -102,6 +102,7 @@
 
 <script>
 import { cart,ITEM_TYPES } from '/src/js/Cart.js' 
+import { useToast } from 'vue-toastification'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -115,7 +116,8 @@ export default {
   emits: ['confirm', 'back'],
   data() {
     return {
-      loading: false
+      loading: false,
+      toast: useToast()
     }
   },
     computed: {
@@ -156,7 +158,7 @@ export default {
       })
 
       if (!appointmentResponse.ok) {
-        alert('Error al crear la cita')
+        this.toast.error('Error al crear la cita')
         return
       }
 
@@ -175,7 +177,7 @@ export default {
 
     } catch (e) {
       console.error(e)
-      alert('Error inesperado, inténtalo de nuevo')
+      this.toast.error('Error inesperado, inténtalo de nuevo')
     } finally {
       this.loading = false
     }
