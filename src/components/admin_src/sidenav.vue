@@ -59,6 +59,13 @@
         </li>
       </ul>
     </div>
+
+    <div class="sidenav-footer">
+      <a href="#" class="nav-link exit-link" @click.prevent="exitAdmin">
+        <span class="material-symbols-outlined icon">logout</span>
+        <span v-if="open" class="label">Salir del admin</span>
+      </a>
+    </div>
   </aside>
 </template>
 
@@ -84,7 +91,12 @@ export default {
     },
 
     fetchSidebarItems() {
-      fetch(`${this.$BASE_URL}/v1/admin-navigation`)
+      fetch(`${this.$BASE_URL}/v1/admin-navigation`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          Accept: "application/json",
+        }
+      })
         .then(res => res.json())
         .then(res => {
           this.menu = res.data
@@ -99,6 +111,9 @@ export default {
         this.$router.push(route)
         this.closeSidebar()
       }
+    },
+    exitAdmin() {
+      this.$router.push('/');
     }
 
   },
@@ -191,20 +206,43 @@ export default {
   border-radius: 10px;
 }
 
+.sidenav-footer {
+  padding: 1rem 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: auto;
+}
+
+.exit-link {
+  color: #ef4444;
+  margin-bottom: 0;
+}
+
+.exit-link:hover {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.02) 100%);
+  color: #f87171;
+}
+
+.exit-link .icon {
+  color: #ef4444;
+}
+
 .nav-link {
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
   border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-bottom: 0.4rem;
   color: #cbd5e1;
+  text-decoration: none;
+  background: transparent;
 }
 
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
   color: #fff;
+  transform: translateX(3px);
 }
 
 .icon {
@@ -235,7 +273,7 @@ export default {
 .submenu-item {
   display: flex;
   align-items: center;
-  padding: 0.65rem 1rem;
+  margin-bottom: 0.2rem;
   cursor: pointer;
   border-radius: 8px;
   font-size: 0.9rem;
@@ -244,9 +282,18 @@ export default {
   position: relative;
 }
 
+.submenu-item a {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  text-decoration: none;
+  color: inherit;
+}
+
 .submenu-item:hover {
   color: #a3e635;
-  background: rgba(163, 230, 53, 0.05);
+  background: linear-gradient(90deg, rgba(163,230,53,0.08) 0%, rgba(163,230,53,0.01) 100%);
   transform: translateX(4px);
 }
 
@@ -254,15 +301,19 @@ export default {
   content: '';
   position: absolute;
   left: -0.4rem;
-  height: 100%;
+  height: 50%;
+  top: 25%;
   width: 4px;
   background: transparent;
-  border-radius: 2px;
-  transition: background 0.3s ease;
+  border-radius: 4px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .submenu-item:hover::before {
   background: #a3e635;
+  height: 100%;
+  top: 0;
+  box-shadow: 0 0 10px rgba(163, 230, 53, 0.5);
 }
 
 .sub-icon {
@@ -271,9 +322,9 @@ export default {
   transition: color 0.25s ease;
 }
 
-
 .submenu-item:hover .sub-icon {
   color: #a3e635;
+  filter: drop-shadow(0 0 5px rgba(163,230,53,0.4));
 }
 
 .arrow {

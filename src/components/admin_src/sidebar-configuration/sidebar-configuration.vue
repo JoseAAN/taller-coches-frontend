@@ -7,8 +7,8 @@
             </button>
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h2 class="text-white fw-bold h4">Sidebar Configuración</h2>
-                    <button @click="openModal()" class="btn-action btn-create-neon mt-3">
+                    <h2 class="text-white fw-bold h4 text-glow-subtle">Sidebar Configuración</h2>
+                    <button @click="openModal()" class="btn-create-neon mt-3">
                         <span class="material-symbols-outlined">add_circle</span>
                         Nuevo Módulo
                     </button>
@@ -41,7 +41,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td><span class="route-badge">{{ parent.route || '---' }}</span></td>
+                            <td class="text-center"><span class="route-badge">{{ parent.route || '---' }}</span></td>
                             <td class="text-center"><span class="badge-order-highlight">{{ parent.order }}</span></td>
                             <td class="text-center">
                                 <div class="status-container justify-content-center">
@@ -51,7 +51,7 @@
                                         class="small fw-bold">{{ parent.is_active ? 'Activo' : 'Inactivo' }}</span>
                                 </div>
                             </td>
-                            <td class="text-end pe-4">
+                            <td class="text-center">
                                 <div class="action-buttons">
                                     <button @click="openModal(parent)" class="btn-action btn-edit-neon">
                                         <span class="material-symbols-outlined">edit</span>
@@ -75,7 +75,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td><span class="route-badge child-route-color">{{ child.route || '---' }}</span></td>
+                            <td class="text-center"><span class="route-badge child-route-color">{{ child.route || '---' }}</span></td>
                             <td class="text-center"><span class="badge-order-highlight sub-order">{{
                                     child.order}}</span></td>
                             <td class="text-center">
@@ -86,7 +86,7 @@
                                         class="small fw-bold">{{ child.is_active ? 'Activo' : 'Inactivo' }}</span>
                                 </div>
                             </td>
-                            <td class="text-end pe-4">
+                            <td class="text-center">
                                 <div class="action-buttons">
                                     <button @click="openModal(child)" class="btn-action btn-edit-neon">
                                         <span class="material-symbols-outlined">edit</span>
@@ -138,7 +138,11 @@ export default {
             this.serviceSelected = service ? { ...service } : { ...this.emptyForm };
         },
         getServices() {
-            fetch(`${this.$BASE_URL}/v1/admin-navigation`)
+            fetch(`${this.$BASE_URL}/v1/admin-navigation`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('user_token')}`
+                }
+            })
                 .then(res => {
                     if (!res.ok) {
                         throw new Error('La respuesta de la red no fue correcta');
@@ -171,7 +175,7 @@ export default {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('user_token')}`
                 },
                 body: JSON.stringify(this.serviceSelected)
             })
@@ -194,7 +198,7 @@ export default {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('user_token')}`
                 }
             })
                 .then(res => {
@@ -248,6 +252,10 @@ export default {
     font-weight: 800;
 }
 
+.text-glow-subtle {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
 .badge-status {
     background: rgba(163, 230, 53, 0.1);
     color: #a3e635;
@@ -275,11 +283,13 @@ export default {
 
 .row-item {
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    transition: background 0.2s;
+    transition: background 0.3s ease, border-left 0.2s ease;
+    border-left: 2px solid transparent;
 }
 
 .row-item:hover {
-    background: rgba(163, 230, 53, 0.02) !important;
+    background: linear-gradient(90deg, rgba(163, 230, 53, 0.04) 0%, transparent 100%) !important;
+    border-left: 2px solid #a3e635;
 }
 
 .row-child {
@@ -358,10 +368,21 @@ export default {
     margin-right: 8px;
 }
 
+.status-container {
+    background-color: #0f172a;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+}
+
 .action-buttons {
-    display: flex;
-    justify-content: flex-end;
+    display: inline-flex;
+    justify-content: center;
     gap: 8px;
+    background-color: #0f172a;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 8px;
 }
 
 .btn-action {
@@ -371,50 +392,51 @@ export default {
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
     cursor: pointer;
 }
 
 .btn-edit-neon {
-    background: rgba(45, 212, 191, 0.1);
+    background: transparent;
     color: #2dd4bf;
-    border: 1px solid rgba(45, 212, 191, 0.2);
+    border: none;
 }
 
 .btn-edit-neon:hover {
-    background: #2dd4bf;
-    color: #0f172a;
-    box-shadow: 0 0 12px rgba(45, 212, 191, 0.4);
+    color: #14b8a6;
+    transform: translateY(-1px);
 }
 
 .btn-delete-neon {
-    background: rgba(239, 68, 68, 0.1);
+    background: transparent;
     color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    border: none;
 }
 
 .btn-delete-neon:hover {
-    background: #ef4444;
-    color: white;
-    box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+    color: #dc2626;
+    transform: translateY(-1px);
 }
 
 .btn-create-neon {
-    background: rgba(163, 230, 53, 0.15);
+    background: transparent;
     color: #a3e635;
     border: 1px solid #a3e635;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 0.4rem 1rem;
+    padding: 0.5rem 1.2rem;
     font-weight: 700;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .btn-create-neon:hover {
-    background: #a3e635;
-    color: #0f172a;
-    box-shadow: 0 0 15px rgba(163, 230, 53, 0.4);
+    background: rgba(163, 230, 53, 0.1);
+    color: #a3e635;
+    box-shadow: 0 0 12px rgba(163, 230, 53, 0.2);
 }
 
 .btn-action .material-icons {
