@@ -21,20 +21,16 @@
         <div v-else class="cart-content">
 
             <div class="cart-items">
-                <div
-                    v-for="item in cart.items"
-                    :key="item.id"
-                    class="cart-item"
-                >
+                <div v-for="item in cart.items" :key="item.id" class="cart-item">
                     <div class="item-image">
-                        <!-- Imagen genérica si es servicio o no tiene imagen -->
-                        <img :src="item.details.image || (item.type === 'PRODUCT' ? 'https://placehold.co/120x120?text=Producto' : 'https://placehold.co/120x120?text=Servicio')" :alt="item.details.name" />
+                        <img :src="getItemImage(item)" :alt="item.details.name" />
                     </div>
 
                     <div class="item-info">
                         <div class="d-flex align-items-center gap-2">
                             <h4 class="item-name">{{ item.details.name }}</h4>
                         </div>
+
                         <p class="item-price-unit">
                             <BasePrice :amount="item.price_at_time" size="sm" />
                             <span class="unit-label">/ unidad</span>
@@ -54,21 +50,15 @@
 
                     <div class="item-actions">
                         <div class="quantity-control">
-                            <button
-                                class="qty-btn"
-                                @click="decreaseQuantity(item)"
-                                :disabled="item.quantity <= 1 || item.type === 'SERVICE'"
-                            >
+                            <button class="qty-btn" @click="decreaseQuantity(item)"
+                                :disabled="item.quantity <= 1 || item.type === 'SERVICE'">
                                 <span class="material-symbols-outlined">remove</span>
                             </button>
 
                             <span class="qty-value">{{ item.quantity }}</span>
 
-                            <button
-                                class="qty-btn"
-                                @click="increaseQuantity(item)"
-                                :disabled="item.type === 'SERVICE' || (item.type === 'PRODUCT' && item.quantity >= item.details.stock)"
-                            >
+                            <button class="qty-btn" @click="increaseQuantity(item)"
+                                :disabled="item.type === 'SERVICE' || (item.type === 'PRODUCT' && item.quantity >= item.details.stock)">
                                 <span class="material-symbols-outlined">add</span>
                             </button>
                         </div>
@@ -145,7 +135,7 @@ export default {
     methods: {
         async removeItem(item) {
             //comprobamos que tipo de item es para saber si hay que cancelar o no una cita
-             const appointmentId = item.type === 'SERVICE' ? item.details?.id : null
+            const appointmentId = item.type === 'SERVICE' ? item.details?.id : null
             await cart.removeItem(item.id, appointmentId)
         },
 
@@ -171,7 +161,7 @@ export default {
             try {
                 this.isProcessing = true;
                 const token = localStorage.getItem('user_token');
-                
+
                 const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/v1/invoices`, {
                     method: 'POST',
                     headers: {
@@ -184,27 +174,47 @@ export default {
                         cart_id: cart.id
                     })
                 });
-                
+
                 const data = await res.json();
-                
+
                 if (!res.ok) {
                     this.toast.error(data.message || 'Error al procesar la compra');
                     return;
                 }
-                
+
                 // Clear local cart
                 const purchasedCartId = cart.id;
                 cart.clearCart();
 
                 // Redirect to success route
                 this.$router.push({ name: 'CheckoutView', query: { cart_id: purchasedCartId } });
-                
+
             } catch (err) {
                 console.error(err);
                 this.toast.error('Error de conexión al finalizar compra');
             } finally {
                 this.isProcessing = false;
             }
+        },
+        getItemImage(item) {
+            if (item.type === 'SERVICE') {
+                return item.details.image || 'https://placehold.co/120x120?text=Servicio';
+            }
+
+            const images = item.details.images;
+
+            if (!images || images.length === 0) {
+                return 'https://placehold.co/120x120?text=Producto';
+            }
+
+            const mainImage = images.find(img => img.is_primary) || images[0];
+
+            if (mainImage.url.startsWith('http')) {
+                return mainImage.url;
+            }
+
+            // Usamos la misma ruta directa que nos funcionó en el listado de productos
+            return `/src/assets/img-productos/${mainImage.url}`;
         }
     },
 
