@@ -2,7 +2,9 @@
     <div v-if="product" class="product-details">
 
         <div class="product-left">
-            <img :src="product.image || defaultImage" :alt="product.name" class="productImage">
+            <div class="product-image-container">
+                <img :src="getMainImage(product?.images)" :alt="product?.name" class="product-image">
+            </div>
         </div>
 
         <div class="product-right">
@@ -26,10 +28,11 @@
 
             <div class="quantity-selector">
                 <label for="minmax-buttons">Cantidad:</label>
-                <InputNumber v-model="value" inputId="minmax-buttons" mode="decimal" showButtons :min="1" :max="availableStock"
-                    fluid class="quantityInput" :disabled="availableStock <= 0" />
+                <InputNumber v-model="value" inputId="minmax-buttons" mode="decimal" showButtons :min="1"
+                    :max="availableStock" fluid class="quantityInput" :disabled="availableStock <= 0" />
                 <span class="stock-warning" v-if="availableStock <= 0">Máximo alcanzado en carrito</span>
-                <span class="stock-warning" v-else-if="availableStock < product.stock">Tienes {{ cartQuantity }} en el carrito (Máx: {{ product.stock }})</span>
+                <span class="stock-warning" v-else-if="availableStock < product.stock">Tienes {{ cartQuantity }} en el
+                    carrito (Máx: {{ product.stock }})</span>
             </div>
 
             <div class="product-actions">
@@ -73,6 +76,7 @@ export default {
     },
     methods: {
         getProduct() {
+            // Asegúrate de que BASE_URL esté definido o importado en tu componente
             fetch(`${BASE_URL}/v1/products/${this.productId}`)
                 .then(res => {
                     if (!res.ok) throw new Error("Error al recoger los productos");
@@ -93,6 +97,29 @@ export default {
             if (result.success) {
                 toast.success(`Añadido(s) ${this.value} ${this.product.name} al carrito`);
                 this.value = 1; // Reset quantity after successful add
+            }
+        },
+
+        getMainImage(images) {
+            // 1. Si no hay imágenes, placeholder
+            if (!images || images.length === 0) {
+                return 'https://placehold.co/600x700?text=Sin+Imagen';
+            }
+
+            // 2. Buscamos la principal
+            const mainImage = images.find(img => img.is_primary) || images[0];
+
+            // 3. Si es una URL externa (http)
+            if (mainImage.url.startsWith('http')) {
+                return mainImage.url;
+            }
+
+            // 4. La ruta milimétrica para Vite desde la carpeta 'details'
+            try {
+                return new URL(`../../../../../assets/img-productos/${mainImage.url}`, import.meta.url).href;
+            } catch (error) {
+                console.error("Vite no encuentra la imagen:", error);
+                return 'https://placehold.co/600x700?text=Error';
             }
         }
     },
@@ -123,6 +150,29 @@ export default {
     width: 500px;
     border-radius: 8px;
     object-fit: cover;
+}
+
+/* Esta es la "caja" que pone el límite */
+.product-image-container {
+    width: 100%;
+    max-width: 500px; /* <-- Aquí pones el límite máximo de ancho */
+    height: 500px;    /* <-- Y aquí el límite máximo de alto */
+    margin: 0 auto;   /* Para centrar la caja horizontalmente */
+    background-color: #f8fafc; /* Un fondo sutil por si la imagen es transparente */
+    border-radius: 12px; /* Bordes redondeados para que quede profesional */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Esta es la imagen en sí, obedeciendo a su caja */
+.product-image {
+    width: 100%;
+    height: 100%;
+    /* 'contain' hace que la foto se encoja para caber sin recortarse ni deformarse */
+    /* Si prefieres que llene la caja recortando los bordes, usa 'cover' */
+    object-fit: contain; 
 }
 
 .product-right {

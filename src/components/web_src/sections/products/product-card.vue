@@ -2,9 +2,7 @@
     <div class="product-card" @click="goToDetails(product.id)">
 
         <div class="image-wrapper">
-            <img :src="product.image || defaultImage" :alt="product.name" class="product-image" />
-
-
+            <img :src="getMainImage(product.images)" :alt="product.name" class="product-image" />
             <span v-if="product.stock <= 0" class="stock out-stock">
                 Agotado
             </span>
@@ -22,18 +20,9 @@
 
             <div class="product-footer">
 
-                <BasePrice
-                    :amount="product.price"
-                    :locale="locale"
-                    :currency="currency"
-                    size="lg"
-                />
+                <BasePrice :amount="product.price" :locale="locale" :currency="currency" size="lg" />
 
-                <button
-                    class="cart-btn"
-                    @click.stop="addToCart"
-                    :disabled="isOutOfStock"
-                >
+                <button class="cart-btn" @click.stop="addToCart" :disabled="isOutOfStock">
                     <span class="material-symbols-outlined">
                         shopping_cart
                     </span>
@@ -100,7 +89,21 @@ export default {
 
         goToDetails(productId) {
             this.$router.push({ name: 'ProductDetails', params: { id: productId } })
-        }
+        },
+getMainImage(images) {
+    if (!images || images.length === 0) {
+        return this.defaultImage;
+    }
+    
+    const mainImage = images.find(img => img.is_primary) || images[0];
+    
+    if (mainImage.url.startsWith('http')) {
+        return mainImage.url;
+    }
+
+    // Usamos la ruta que te ha funcionado en el navegador
+    return `/src/assets/img-productos/${mainImage.url}`;
+}
     }
 }
 </script>
@@ -120,7 +123,7 @@ export default {
 
 .product-card:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 .image-wrapper {
