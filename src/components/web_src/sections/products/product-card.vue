@@ -1,10 +1,10 @@
 <template>
-    <div class="product-card" @click="goToDetails(product.id)">
+    <div class="product-card" :class="{ 'is-empty': product.stock <= 0 }" @click="goToDetails(product.id)">
 
         <div class="image-wrapper">
             <img :src="getMainImage(product.images)" :alt="product.name" class="product-image" />
             <span v-if="product.stock <= 0" class="stock out-stock">
-                Agotado
+                SIN STOCK
             </span>
         </div>
 
@@ -22,9 +22,16 @@
 
                 <BasePrice :amount="product.price" :locale="locale" :currency="currency" size="lg" />
 
-                <button class="cart-btn" @click.stop="addToCart" :disabled="isOutOfStock">
+                <button v-if="product.stock > 0" class="cart-btn" @click.stop="addToCart" :disabled="isOutOfStock" title="Añadir al carrito">
                     <span class="material-symbols-outlined">
                         shopping_cart
+                    </span>
+                </button>
+
+                <!-- botón por si no hay stock -->
+                <button v-else class="notify-btn" @click.stop="promptRestock" title="Avisarme cuando haya stock">
+                    <span class="material-symbols-outlined">
+                        notifications_active
                     </span>
                 </button>
 
@@ -84,6 +91,48 @@ export default {
             const result = await cart.addToCart(ITEM_TYPES.PRODUCT, this.product.id, 1, this.product.price);
             if (result.success) {
                 toast.success(`Añadido al carrito: ${this.product.name}`);
+            }
+        },
+
+        async promptRestock() {
+            const userString = localStorage.getItem('user');
+            const toast = useToast();
+            let email = '';
+            
+            if (userString) {
+                const userObj = JSON.parse(userString);
+                console.log(userObj);
+                email = userObj.email;
+            } else {
+                email = window.prompt("Introduce tu correo electrónico para avisarte cuando repongamos stock:");
+            }
+            
+            console.log(email);
+            
+            
+            if (!email || !email.includes('@')) {
+                if(email !== null) toast.error("Correo electrónico no válido.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`${this.$BASE_URL}/v1/products/${this.product.id}/restock-subscribe`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+
+                if (res.ok) {
+                    toast.success("¡Perfecto! Te avisaremos por correo.");
+                } else {
+                    toast.error("Hubo un problema al suscribirte. Inténtalo de nuevo.");
+                }
+            } catch (err) {
+                console.error(err);
+                toast.error("Error de conexión externa.");
             }
         },
 
@@ -206,5 +255,56 @@ getMainImage(images) {
 .cart-btn:disabled {
     background: #9ca3af;
     cursor: not-allowed;
+}
+
+/* Modificadores cuando no hay stock */
+
+/* tuve que hacerlo así para para difuminar solo algunas cosas del card */
+.is-empty .image-wrapper,
+.is-empty .product-name,
+.is-empty .product-description {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.is-empty:hover .image-wrapper,
+.is-empty:hover .product-name,
+.is-empty:hover .product-description {
+    opacity: 0.85;
+}
+
+.is-empty .product-image {
+    filter: grayscale(85%); 
+}
+
+.out-stock {
+    background: #1f2937; 
+    color: white;
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.notify-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: #e8ff65; 
+    color: rgb(10, 10, 10);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(218, 229, 70, 0.4); 
+}
+
+.notify-btn:hover {
+    background: #4338ca;
+    transform: scale(1.1) translateY(-2px); 
+    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.5);
 }
 </style>
