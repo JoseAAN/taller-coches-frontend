@@ -2,7 +2,7 @@
   <section class="contact-section">
     <div class="contact-container">
       <div class="section-title-container">
-        <span class="subtitle text-uppercase">¿Dudas o Sugerencias?</span>
+      
         <h2 class="main-title">Contacta con nosotros</h2>
         <p class="section-description">Si tienes alguna pregunta, has encontrado un fallo en la web o necesitas ayuda, escríbenos y te responderemos lo antes posible.</p>
         <div class="title-underline"></div>
@@ -95,8 +95,13 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+/* === SECTION === */
 .contact-section {
   padding-bottom: 5rem;
+  background: linear-gradient(160deg, #071A2E 0%, #0a1f33 55%, #0d2a3e 100%);
+  font-family: 'DM Sans', sans-serif;
 }
 
 .contact-container {
@@ -105,108 +110,179 @@ export default {
   padding: 0 1.5rem;
 }
 
+/* === HEADER === */
 .section-title-container {
   text-align: center;
   margin-top: 4rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .subtitle {
   display: block;
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
   color: #52b155;
-  letter-spacing: 2px;
-  margin-bottom: 0.5rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.75rem;
 }
 
 .main-title {
-  font-size: 2.5rem;
-  font-weight: 850;
-  color: var(--nav-text, #333);
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  color: #fff;
   margin: 0;
-  line-height: 1.2;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 
 .section-description {
-  color: var(--nav-text, #555);
-  opacity: 0.8;
-  max-width: 600px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 560px;
   margin: 1rem auto 0;
-  font-size: 1.1rem;
+  font-size: 0.97rem;
+  line-height: 1.7;
 }
 
 .title-underline {
-  width: 100px;
-  height: 4px;
+  width: 36px;
+  height: 3px;
   background: #52b155;
-  margin: 1.2rem auto 0;
+  margin: 1.25rem auto 0;
   border-radius: 10px;
 }
 
+/* === FORM WRAPPER === */
 .form-wrapper {
-  background: color-mix(in srgb, var(--nav-bg) 75%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius:12px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
   padding: 2.5rem;
-  border: 1px solid color-mix(in srgb, var(--nav-text) 15%, transparent);
-  border-top: 1px solid color-mix(in srgb, var(--nav-text) 25%, transparent);
-  border-left: 1px solid color-mix(in srgb, var(--nav-text) 25%, transparent);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); /* Sombra mucho más reducida y sutil */
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-top-color: rgba(255, 255, 255, 0.13);
+  border-left-color: rgba(255, 255, 255, 0.11);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 }
 
+/* === LABELS === */
 .form-label {
-  color: var(--nav-text);
-  text-shadow: 0 1px 3px color-mix(in srgb, var(--bg-color) 30%, transparent);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
 }
 
+/* === INPUTS === */
 .form-control {
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--nav-text) 20%, transparent);
-  background: color-mix(in srgb, var(--nav-text) 5%, transparent);
-  color: var(--nav-text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 300;
+  border-radius: 12px !important;
+  padding: 14px 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #fff !important;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  box-shadow: none !important;
 }
 
 .form-control::placeholder {
-  color: color-mix(in srgb, var(--nav-text) 50%, transparent);
+  color: rgba(255, 255, 255, 0.25);
+  font-weight: 300;
 }
 
 .form-control:focus {
-  border-color: #52b155;
-  box-shadow: 0 0 0 3px rgba(82, 177, 85, 0.3);
-  background: color-mix(in srgb, var(--nav-bg) 95%, transparent);
-  color: var(--nav-text);
+  border-color: #52b155 !important;
+  box-shadow: 0 0 0 3px rgba(82, 177, 85, 0.2) !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #fff !important;
+  outline: none;
 }
 
+/* Autofill override */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #0d2440 inset !important;
+  -webkit-text-fill-color: #fff !important;
+  caret-color: #fff;
+}
+
+/* === BUTTON === */
 .btn-submit {
-  background: rgba(82, 177, 85, 0.15);
-  color: #52b155;
-  padding: 0.8rem;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  border: 1px solid rgba(82, 177, 85, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  background: #52b155;
+  color: #fff;
+  border: none !important;
+  border-radius: 100px !important;
+  padding: 14px 28px;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-submit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: rgba(82, 177, 85, 0.25);
-  color: #439a46;
+  background: #469c49;
+  color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(82, 177, 85, 0.15);
-  border-color: rgba(82, 177, 85, 0.5);
+  box-shadow: 0 12px 28px rgba(82, 177, 85, 0.35);
 }
 
+.btn-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* === ALERTS === */
+.alert {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 400;
+  border-radius: 12px !important;
+  padding: 14px 18px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid;
+}
+
+.alert-success {
+  background: rgba(82, 177, 85, 0.08) !important;
+  border-color: rgba(82, 177, 85, 0.25) !important;
+  color: #52b155 !important;
+}
+
+.alert-danger {
+  background: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  color: #ef4444 !important;
+}
+
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
-  .main-title {
-    font-size: 1.8rem;
-  }
   .form-wrapper {
     padding: 1.5rem;
   }

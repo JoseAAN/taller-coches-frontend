@@ -94,9 +94,12 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap');
+
 .services-section {
   margin-bottom: 5rem;
 }
+
 .section-title-container {
   text-align: center;
   margin-top: 4rem;
@@ -104,48 +107,62 @@ export default {
   padding: 0 1.5rem;
 }
 
+/* ── Subtítulo ── */
 .subtitle {
   display: block;
-  font-size: 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #52b155;
-  letter-spacing: 2px;
-  margin-bottom: 0.5rem;
+  letter-spacing: 0.18em;
+  margin-bottom: 0.6rem;
+  text-transform: uppercase;
 }
 
+/* ── Título principal ── */
 .main-title {
-  font-size: 2.5rem;
-  font-weight: 850;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 2.6rem;
   color: var(--nav-text);
   margin: 0;
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
+/* ── Descripción ── */
 .section-description {
+  font-family: 'DM Sans', sans-serif;
   color: var(--nav-text);
-  opacity: 0.8;
-  max-width: 600px;
-  margin: 1rem auto 0;
-  font-size: 1.1rem;
+  opacity: 0.75;
+  max-width: 580px;
+  margin: 1.1rem auto 0;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  font-weight: 400;
 }
 
+/* ── Subrayado degradado ── */
 .title-underline {
-  width: 100px;
-  height: 4px;
-  background: #52b155;
-  margin: 1.2rem auto 0;
-  border-radius: 10px;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #52b155 0%, rgba(82, 177, 85, 0.3) 70%, transparent 100%);
+  margin: 1.1rem auto 0;
+  border-radius: 99px;
 }
 
+/* ── Wrapper del comparador ── */
 .comparator-wrapper {
   max-width: 1100px;
-  margin: 0 auto;
+  margin: 2.5rem auto 0;
   padding: 0 1rem 5rem 1rem;
 }
 
+/* ── Responsive ── */
 @media (max-width: 768px) {
   .main-title {
-    font-size: 1.8rem;
+    font-size: 1.85rem;
+    letter-spacing: -0.01em;
   }
 
   .section-title-container {
@@ -153,7 +170,11 @@ export default {
   }
 
   .section-description {
-    font-size: 1rem;
+    font-size: 0.975rem;
+  }
+
+  .comparator-wrapper {
+    margin-top: 1.5rem;
   }
 }
 </style>
