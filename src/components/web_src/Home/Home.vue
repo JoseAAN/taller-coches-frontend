@@ -7,11 +7,12 @@
     <main>
       <section class="services-section mb-5">
         <div class="section-title-container">
-          <h2 class="main-title">Te podría interesar</h2>
+          <h2 class="main-title">Nuestros productos estrella</h2>
           <div class="title-underline"></div>
         </div>
-        <service-component class="mt-4"></service-component>
       </section>
+
+      <service-component class="mt-4"></service-component>
 
       <section class="comparison-section mt-5">
         <div class="section-title-container">
