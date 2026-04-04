@@ -9,6 +9,7 @@
         <div class="section-title-container">
           <h2 class="main-title">Nuestros productos estrella</h2>
           <div class="title-underline"></div>
+          <products-home-component></products-home-component>
         </div>
       </section>
 
@@ -36,6 +37,7 @@
 <script>
 import HeroComponent from '../sections/home-sections/hero-component.vue';
 import ServiceComponent from '../sections/home-sections/services-components/service-component.vue';
+import productsHomeComponents from '../sections/home-sections/products-components/products-home-component.vue';
 import SliderComparator from '../UI/slider-comparator.vue';
 import FooterComponent from '../shared/main-footer.vue';
 import ContactForm from '../shared/ContactForm.vue';
@@ -49,7 +51,8 @@ export default {
     ServiceComponent,
     SliderComparator,
     FooterComponent,
-    ContactForm
+    ContactForm,
+    productsHomeComponents
   },
   data() {
     return {
