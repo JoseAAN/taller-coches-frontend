@@ -194,7 +194,26 @@ export default {
 
         getItemImage(item) {
             if (item.type === 'SERVICE') {
-                return item.details.image || 'https://placehold.co/120x120?text=Servicio';
+                const images = item.details.images || [];
+                const mainImage = images.find(img => img.is_primary) || images[0];
+
+                if (mainImage?.url) {
+                    if (mainImage.url.startsWith('http')) {
+                        return mainImage.url;
+                    }
+
+                    return new URL(`../../../../assets/img-servicios/${mainImage.url}`, import.meta.url).href;
+                }
+
+                if (item.details.image) {
+                    if (item.details.image.startsWith('http')) {
+                        return item.details.image;
+                    }
+
+                    return new URL(`../../../../assets/img-servicios/${item.details.image}`, import.meta.url).href;
+                }
+
+                return 'https://placehold.co/120x120?text=Servicio';
             }
 
             const images = item.details.images;

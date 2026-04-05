@@ -20,7 +20,7 @@
                                 <label class="form-label text-muted small text-uppercase fw-bold mb-2">Nombre del Servicio</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">design_services</span>
-                                    <input v-model="form.name" class="form-control form-control-custom" placeholder="Ej. Cambio de bujías..." required />
+                                    <input v-model="form.name" class="form-control form-control-custom" placeholder="Ej. Cambio de bujias..." required />
                                 </div>
                             </div>
 
@@ -38,7 +38,7 @@
                             </div>
 
                             <div class="col-md-6 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Precio (€)</label>
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Precio (EUR)</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">euro_symbol</span>
                                     <input type="number" step="0.01" min="0" v-model="form.price" class="form-control form-control-custom" placeholder="Ej. 150.00" required />
@@ -46,7 +46,7 @@
                             </div>
 
                             <div class="col-md-6 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Duración aprox. (Minutos)</label>
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Duracion aprox. (Minutos)</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">timer</span>
                                     <input type="number" min="0" v-model="form.average_duration" class="form-control form-control-custom" placeholder="Ej. 60" />
@@ -54,10 +54,18 @@
                             </div>
 
                             <div class="col-12 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Descripción</label>
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Descripcion</label>
                                 <div class="input-group-custom align-items-start pt-2">
                                     <span class="material-symbols-outlined input-icon text-area-icon">description</span>
                                     <textarea v-model="form.description" class="form-control form-control-custom" rows="3" placeholder="Detalles sobre el servicio..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-12 form-group mb-4">
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Imagen</label>
+                                <div class="input-group-custom">
+                                    <span class="material-symbols-outlined input-icon">image</span>
+                                    <input v-model="form.image_url" class="form-control form-control-custom" placeholder="Ej. LavadoAManoBasico.png o https://..." />
                                 </div>
                             </div>
                         </div>
@@ -92,13 +100,14 @@ export default {
     data() {
         return {
             toast: useToast(),
-            form: { 
-                id: null, 
-                name: "", 
-                price: "", 
-                average_duration: "", 
-                description: "", 
-                service_type_id: "" 
+            form: {
+                id: null,
+                name: "",
+                price: "",
+                average_duration: "",
+                description: "",
+                service_type_id: "",
+                image_url: ""
             },
             serviceTypes: []
         };
@@ -109,13 +118,14 @@ export default {
             immediate: true,
             handler(newVal) {
                 if (newVal) {
-                    this.form = { 
-                        id: newVal.id, 
+                    this.form = {
+                        id: newVal.id,
                         name: newVal.name,
                         price: newVal.price,
                         average_duration: newVal.average_duration_mins != null ? newVal.average_duration_mins : "",
                         description: newVal.description || "",
-                        service_type_id: newVal.type?.id || newVal.service_type_id || ""
+                        service_type_id: newVal.type?.id || newVal.service_type_id || "",
+                        image_url: newVal.image || ""
                     };
                 } else {
                     this.resetForm();
@@ -126,19 +136,18 @@ export default {
 
     mounted() {
         this.fetchServiceTypes();
-        
     },
 
     methods: {
         fetchServiceTypes() {
             fetch(`${this.$BASE_URL}/v1/serviceType`)
-            .then(res => res.json())
-            .then(data => {
-                this.serviceTypes = data.serviceType || [];
-            })
-            .catch(err => {
-                console.error("Error fetching service types:", err);
-            });
+                .then(res => res.json())
+                .then(data => {
+                    this.serviceTypes = data.serviceType || [];
+                })
+                .catch(err => {
+                    console.error("Error fetching service types:", err);
+                });
         },
 
         submit() {
@@ -157,9 +166,9 @@ export default {
                 service_type_id: this.form.service_type_id,
             };
 
-            //chequeamos si averrage duration y description no estan vacios para añadirlos al payload
             if (this.form.average_duration) payload.average_duration = parseInt(this.form.average_duration);
             if (this.form.description) payload.description = this.form.description;
+            if (this.form.image_url !== "") payload.image_url = this.form.image_url;
 
             fetch(url, {
                 method,
@@ -170,36 +179,37 @@ export default {
                 },
                 body: JSON.stringify(payload),
             })
-            .then(res => {
-                if (!res.ok) {
-                    return res.json().then(error => { throw error; });
-                }
-                return res.json();
-            })
-            .then(() => {
-                this.$emit("refresh");
-                this.resetForm();
-                
-                const btnClose = document.querySelector("#serviceModal .btn-close");
-                if (btnClose) btnClose.click();
-            })
-            .catch(err => {
-                this.toast.error(err.message || "Ocurrió un error al guardar el servicio.");
-                console.error(err);
-            })
-            .finally(() => {
-                loaderState.hide();
-            });
+                .then(res => {
+                    if (!res.ok) {
+                        return res.json().then(error => { throw error; });
+                    }
+                    return res.json();
+                })
+                .then(() => {
+                    this.$emit("refresh");
+                    this.resetForm();
+
+                    const btnClose = document.querySelector("#serviceModal .btn-close");
+                    if (btnClose) btnClose.click();
+                })
+                .catch(err => {
+                    this.toast.error(err.message || "Ocurrio un error al guardar el servicio.");
+                    console.error(err);
+                })
+                .finally(() => {
+                    loaderState.hide();
+                });
         },
 
         resetForm() {
-            this.form = { 
-                id: null, 
-                name: "", 
-                price: "", 
-                average_duration: "", 
-                description: "", 
-                service_type_id: "" 
+            this.form = {
+                id: null,
+                name: "",
+                price: "",
+                average_duration: "",
+                description: "",
+                service_type_id: "",
+                image_url: ""
             };
         },
     },
@@ -265,8 +275,8 @@ export default {
 }
 
 .form-control-custom:-webkit-autofill,
-.form-control-custom:-webkit-autofill:hover, 
-.form-control-custom:-webkit-autofill:focus, 
+.form-control-custom:-webkit-autofill:hover,
+.form-control-custom:-webkit-autofill:focus,
 .form-control-custom:-webkit-autofill:active{
     -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
     -webkit-text-fill-color: white !important;
