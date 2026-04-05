@@ -60,6 +60,26 @@ Fecha: 2026-04-05
 - Riesgo: falsa sensacion de soporte para facturacion de citas directas; el dato se pierde silenciosamente.
 - Recomendacion: o bien eliminar ese input de la API, o bien añadir columna, relacion y logica completa.
 
+11. Cancelar cita desde perfil no elimina correctamente el item del carrito
+- Archivo: `taller-coches-frontend/src/components/web_src/sections/profile/sections-profile/profile-appointments.vue`
+- Problema: al pedir `/v1/user-cart` se usa `cartData.items?.find(...)`, pero esa API devuelve los items dentro de `cartData.data.items`.
+- Impacto: el item del carrito no se encuentra nunca, así que la cita puede borrarse sin limpiar su linea del carrito. Con el estado actual del backend eso facilita dejar items huerfanos.
+
+12. El calendario de citas del admin pide filtro por mes que el backend no usa
+- Archivo: `taller-coches-frontend/src/components/admin_src/appointments/admin-appointments.vue`
+- Problema: `cargarCitas()` llama a `/v1/appointments/all?month=YYYY-MM`, pero el backend solo filtra por `date` y `status`.
+- Impacto: el calendario puede pintar citas de otros meses y el contador por dia deja de representar el mes visible de forma fiable.
+
+13. Paso de seleccion de servicio no valida respuestas fallidas de la API
+- Archivo: `taller-coches-frontend/src/components/web_src/sections/appointment/inf/step-service.vue`
+- Problema: tras el fetch se hace `this.services = data.data` sin comprobar `response.ok` ni que `data.data` sea un array.
+- Impacto: si la API devuelve un error JSON, `services` puede quedar `undefined` y `groupedServices()` rompe al hacer `reduce`.
+
+14. Pantalla de checkout muestra mensaje incorrecto cuando falla la carga del carrito o factura
+- Archivo: `taller-coches-frontend/src/components/web_src/sections/cart/checkout-success.vue`
+- Problema: cualquier error de fetch termina mostrando "No tienes facturas recientes", aunque el caso real sea 401, 403, 404 del carrito o error de red.
+- Impacto: dificulta diagnosticar problemas reales y confunde al usuario tras pagar.
+
 
 ## Nota
 
