@@ -17,7 +17,7 @@
           <span class="material-symbols-outlined">directions_car</span>
         </div>
         <div class="summary-info">
-          <p class="summary-label">Vehículo</p>
+          <p class="summary-label">Vehiculo</p>
           <p class="summary-value">{{ vehicle.brand }} {{ vehicle.model }}</p>
           <div class="summary-tags">
             <span class="summary-tag">{{ vehicle.license_plate }}</span>
@@ -45,7 +45,7 @@
             </span>
           </div>
         </div>
-        <span class="summary-price">{{ service.price }} €</span>
+        <span class="summary-price">{{ service.price }} EUR</span>
       </div>
 
       <div class="summary-divider"></div>
@@ -75,14 +75,14 @@
 
       <div class="summary-total">
         <span class="summary-total-label">Total</span>
-        <span class="summary-total-value">{{ service.price }} €</span>
+        <span class="summary-total-value">{{ service.price }} EUR</span>
       </div>
 
     </div>
 
     <div class="summary-notice">
       <span class="material-symbols-outlined">info</span>
-      <p>Al confirmar, la cita se añadirá a tu carrito y podrás completar el pago desde allí.</p>
+      <p>Al confirmar, la cita se anadira a tu carrito y podras completar el pago desde alli.</p>
     </div>
 
     <div class="step-actions">
@@ -93,7 +93,7 @@
       <button class="btn-confirm" :disabled="loading" @click="confirmar">
         <span v-if="loading" class="material-symbols-outlined rotating">progress_activity</span>
         <span v-else class="material-symbols-outlined">shopping_cart</span>
-        {{ loading ? 'Añadiendo...' : 'Añadir al carrito' }}
+        {{ loading ? 'Anadiendo...' : 'Anadir al carrito' }}
       </button>
     </div>
 
@@ -101,16 +101,16 @@
 </template>
 
 <script>
-import { cart,ITEM_TYPES } from '/src/js/Cart.js' 
+import { cart, ITEM_TYPES } from '@/JS/Cart.js'
 import { useToast } from 'vue-toastification'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export default {
   props: {
-    vehicle:   { type: Object, required: true },
-    service:   { type: Object, required: true },
-    date:      { type: String, required: true },
+    vehicle: { type: Object, required: true },
+    service: { type: Object, required: true },
+    date: { type: String, required: true },
     startTime: { type: String, required: true }
   },
   emits: ['confirm', 'back'],
@@ -120,7 +120,7 @@ export default {
       toast: useToast()
     }
   },
-    computed: {
+  computed: {
     endTime() {
       if (!this.startTime || !this.service.average_duration_mins) return null
       const [hours, minutes] = this.startTime.split(':').map(Number)
@@ -135,53 +135,52 @@ export default {
     }
   },
   methods: {
-  async confirmar() {
-    this.loading = true
-    const token = localStorage.getItem('user_token')
+    async confirmar() {
+      this.loading = true
+      const token = localStorage.getItem('user_token')
 
-    try {
+      try {
+        await cart.loadUserCart()
 
-       await cart.loadUserCart()
-      const appointmentResponse = await fetch(`${BASE_URL}/v1/appointment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          vehicle_id: this.vehicle.id,
-          service_id: this.service.id,
-          date: this.date,
-          start_time: this.startTime
+        const appointmentResponse = await fetch(`${BASE_URL}/v1/appointment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            vehicle_id: this.vehicle.id,
+            service_id: this.service.id,
+            date: this.date,
+            start_time: this.startTime
+          })
         })
-      })
 
-      if (!appointmentResponse.ok) {
-        this.toast.error('Error al crear la cita')
-        return
+        if (!appointmentResponse.ok) {
+          this.toast.error('Error al crear la cita')
+          return
+        }
+
+        const appointmentData = await appointmentResponse.json()
+
+        const result = await cart.addToCart(
+          ITEM_TYPES.SERVICE,
+          appointmentData.appointment.id,
+          1,
+          this.service.price
+        )
+
+        if (result.success) {
+          this.$router.push('/cart')
+        }
+      } catch (e) {
+        this.toast.error('Error inesperado, intentalo de nuevo')
+      } finally {
+        this.loading = false
       }
-
-      const appointmentData = await appointmentResponse.json()
-
-      const result = await cart.addToCart(
-        ITEM_TYPES.SERVICE,
-        appointmentData.appointment.id,
-        1,
-        this.service.price
-      )
-
-      if (result.success) {
-        this.$router.push('/cart')
-      }
-
-    } catch (e) {
-      this.toast.error('Error inesperado, inténtalo de nuevo')
-    } finally {
-      this.loading = false
     }
   }
-}
 }
 </script>
 
@@ -420,7 +419,7 @@ export default {
   animation: spin 1s linear infinite;
 }
 
-/* ── RESPONSIVE ── */
+/* RESPONSIVE */
 @media (max-width: 576px) {
   .step-wrapper { padding: 0 1rem; }
 }
