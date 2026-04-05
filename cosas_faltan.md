@@ -60,28 +60,6 @@ Fecha: 2026-04-05
 - Riesgo: falsa sensacion de soporte para facturacion de citas directas; el dato se pierde silenciosamente.
 - Recomendacion: o bien eliminar ese input de la API, o bien añadir columna, relacion y logica completa.
 
-## Medios
-
-8. Los huecos cancelados siguen bloqueando la agenda
-- Archivo: `taller-coches-backend/backend/app/Http/Controllers/AppointmentController.php`
-- Lineas: 35-42
-- Problema: el calculo de disponibilidad usa todas las citas del dia sin excluir `cancelled`.
-- Riesgo: se pierden slots disponibles y parece que no hay hueco cuando si lo hay.
-- Recomendacion: filtrar por estados activos, por ejemplo `pending` y quizá `completed` solo si ya han ocurrido.
-
-9. `store()` de citas no valida horario laboral, `update()` si
-- Archivo: `taller-coches-backend/backend/app/Http/Controllers/AppointmentController.php`
-- Lineas: 90-138 y 199-204
-- Problema: al crear cita no se comprueba el rango 08:00-21:00, pero al editar si.
-- Riesgo: se pueden insertar citas fuera de horario llamando a la API directamente.
-- Recomendacion: reutilizar la misma validacion horaria en ambos flujos.
-
-10. Import con mayusculas/minusculas incorrectas en resumen de cita
-- Archivo: `taller-coches-frontend/src/components/web_src/sections/appointment/inf/step-summary.vue`
-- Linea: 104
-- Problema: importa `/src/js/Cart.js`, pero el archivo real es `src/JS/Cart.js`.
-- Riesgo: en Windows suele funcionar; en Linux/CI puede romper el build.
-- Recomendacion: unificar rutas e imports respetando exactamente el casing real.
 
 ## Nota
 
