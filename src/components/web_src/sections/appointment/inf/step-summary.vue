@@ -176,7 +176,6 @@ export default {
       }
 
     } catch (e) {
-      console.error(e)
       this.toast.error('Error inesperado, inténtalo de nuevo')
     } finally {
       this.loading = false

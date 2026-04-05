@@ -1,41 +1,21 @@
 <template>
   <div>
-    <StepVehicle
-      v-if="paso === 1"
-      @select="seleccionarVehiculo"
-    />
-    
-    <StepService
-      v-if="paso === 2"
-      :preselectedId="data.service_Id"
-      @select="seleccionarServicio"
-      @back="paso--"
-    />
+    <StepVehicle v-if="paso === 1" @select="seleccionarVehiculo" />
 
-    <StepDateTime
-      v-if="paso === 3"
-      :serviceId="data.service_Id"
-      @select="seleccionarSlot"
-      @back="paso--"
-    />
+    <StepService v-if="paso === 2" :preselectedId="data.service_Id" @select="seleccionarServicio" @back="paso--" />
 
-    <StepSummary
-      v-if="paso === 4"
-      :vehicle="data.vehicle"
-      :service="data.service"
-      :date="data.date"
-      :startTime="data.start_time"
-      @confirm="confirmar"
-      @back="paso--"
-    />
+    <StepDateTime v-if="paso === 3" :serviceId="data.service_Id" @select="seleccionarSlot" @back="paso--" />
+
+    <StepSummary v-if="paso === 4" :vehicle="data.vehicle" :service="data.service" :date="data.date"
+      :startTime="data.start_time" @confirm="confirmar" @back="paso--" />
   </div>
 </template>
 
 <script>
-import StepVehicle  from './step-vehicle.vue'
-import StepService  from './step-service.vue'
+import StepVehicle from './step-vehicle.vue'
+import StepService from './step-service.vue'
 import StepDateTime from './step-date-time.vue'
-import StepSummary  from './step-summary.vue'
+import StepSummary from './step-summary.vue'
 
 export default {
   components: { StepVehicle, StepService, StepDateTime, StepSummary },
@@ -52,7 +32,7 @@ export default {
         service: null,
       }
     }
-  }, 
+  },
   mounted() {
     const serviceId = this.$route.query.service_id
     if (serviceId) {
@@ -62,7 +42,7 @@ export default {
   methods: {
     seleccionarVehiculo(vehicle) {
       this.data.vehicle_Id = vehicle.id
-      this.data.vehicle = vehicle       
+      this.data.vehicle = vehicle
       this.paso = 2
     },
     seleccionarServicio(service) {
@@ -74,26 +54,7 @@ export default {
       this.data.date = date
       this.data.start_time = start_time
       this.paso = 4
-    },
-    async confirmar() {
-      const token = localStorage.getItem('user_token')
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/v1/appointment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          vehicle_id: this.data.vehicle_Id,
-          service_id: this.data.service_Id,
-          date: this.data.date,
-          start_time: this.data.start_time
-        })
-      })
-      if (response.ok) {
-        this.$router.push('/cart')
-      }
     }
-  }
+  },
 }
 </script>

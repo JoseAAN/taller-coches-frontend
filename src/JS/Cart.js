@@ -1,4 +1,3 @@
-import { loaderState } from "@/loaderState";
 import { reactive } from "vue";
 import { notify } from "@/JS/notify.js";
 
@@ -70,16 +69,12 @@ export const cart = reactive({
         const guestCart = this.getGuestCart();
         if (guestCart.length === 0) return;
 
-        loaderState.show();
-
-
         for (const item of guestCart) {
             await this.addToCart(item.typeId, item.targetId, item.quantity, item.price, true);
         }
 
         localStorage.removeItem('guest_cart');
         await this.loadUserCart();
-        loaderState.hide();
     },
 
     async loadUserCart() {
@@ -90,7 +85,6 @@ export const cart = reactive({
         }
 
         try {
-            loaderState.show();
             const response = await fetch(`${BASE_URL}/v1/user-cart`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -116,10 +110,8 @@ export const cart = reactive({
             this.items = data.data.items || [];
             this.total = data.data.price;
             this.quantity = this.checkQuantity(data.data.items || []);
-            loaderState.hide();
         } catch (error) {
             console.error('Error loading cart:', error);
-            loaderState.hide();
         }
     },
 
@@ -143,8 +135,6 @@ export const cart = reactive({
         }
 
         try {
-            loaderState.show();
-
             if (appointmentId) {
                 await fetch(`${BASE_URL}/v1/appointment/${appointmentId}`, {
                     method: 'DELETE',
@@ -172,8 +162,6 @@ export const cart = reactive({
             await this.loadUserCart();
         } catch (error) {
             console.error('Error removing item:', error);
-        } finally {
-            loaderState.hide();
         }
     },
 
@@ -192,7 +180,6 @@ export const cart = reactive({
         }
 
         try {
-            loaderState.show();
             const response = await fetch(`${BASE_URL}/v1/cart-items/${itemId}`, {
                 method: 'PUT',
                 headers: {
@@ -212,8 +199,6 @@ export const cart = reactive({
             await this.loadUserCart();
         } catch (error) {
             console.error('Error updating quantity:', error);
-        } finally {
-            loaderState.hide();
         }
     },
 
@@ -253,8 +238,6 @@ export const cart = reactive({
         }
 
         try {
-            if (!skipReload) loaderState.show();
-
             if (!this.id) {
                 const resCart = await fetch(`${BASE_URL}/v1/user-cart`, {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -266,7 +249,7 @@ export const cart = reactive({
             }
 
             const payload = {
-                cart_id: this.id, // Si sigue en null, la base de datos lo creará
+                cart_id: this.id,
                 item_type_id: typeId,
                 quantity: quantity,
                 price_at_time: price
@@ -288,7 +271,6 @@ export const cart = reactive({
             const data = await response.json();
 
             if (!response.ok) {
-                // Fallar en silencio si estamos en sync múltiple y el item choca (ej: sin stock)
                 if (!skipReload) notify.error(data.message || 'Error al añadir al carrito');
                 return { success: false, message: data.message };
             }
@@ -299,8 +281,6 @@ export const cart = reactive({
         } catch (error) {
             console.error('Error adding to cart:', error);
             return { success: false, message: 'Error de conexión' };
-        } finally {
-            if (!skipReload) loaderState.hide();
         }
     },
 
