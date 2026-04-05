@@ -1,17 +1,88 @@
 # Cosas que faltan en el proyecto
 
-## Bugs encontrados:
-Al reservar cita las horas no aparecen ordenadas. las 8 y 9 am aparecen despues de las 20
-Algun problema relacionado con la asignacion de carritos cuando un usuario completa una compra. No se le asigna un nuevo carrito
+# Auditoria rapida de errores
 
-## Hallazgos
+Fecha: 2026-04-05
 
-[P0] Un cliente puede crear o reasignar citas sobre vehículos ajenos. En AppointmentController.php (line 90), store() acepta cualquier vehicle_id y nunca comprueba que pertenezca al usuario autenticado. En AppointmentController.php (line 175), update() valida que el usuario sea dueño de la cita actual, pero luego permite cambiar vehicle_id a otro vehículo cualquiera. Esto es un IDOR serio y debería bloquearse como hiciste con carritos.
+## Criticos
 
-[P0] Las facturas siguen expuestas a acceso indebido y manipulación de stock. En InvoiceController.php (line 46), store() permite facturar cualquier cart_id existente sin comprobar propiedad, y además descuenta stock de los productos de ese carrito. En InvoiceController.php (line 105), show() devuelve cualquier factura autenticada sin verificar si es del usuario o de un admin. Es otra brecha clara de autorización.
+1. Facturacion manipulable desde cliente
+- Archivo: `taller-coches-backend/backend/app/Http/Controllers/InvoiceController.php`
+- Lineas: 48-57
+- Problema: `store()` acepta `total` directamente desde la request y crea la factura con ese valor sin recalcularlo a partir del carrito o de la cita real.
+- Riesgo: cualquier cliente autenticado puede pagar menos enviando un `total` alterado.
+- Recomendacion: ignorar el `total` recibido y recalcularlo en servidor desde `cart.items` o desde la entidad facturada.
 
-[P1] Los tokens de acceso se guardan y validan en texto plano. En AuthController.php (line 75) y UserController.php (line 47) se genera un token aleatorio y se persiste directamente en users.api_token; luego el middleware lo compara tal cual en EnsureTokenIsValid.php (line 20). Si alguien accede a la base de datos, puede reutilizar sesiones activas inmediatamente. Aquí conviene migrar a Sanctum o, como mínimo, almacenar hashes de token.
+2. Se puede facturar el carrito de otro usuario
+- Archivo: `taller-coches-backend/backend/app/Http/Controllers/InvoiceController.php`
+- Lineas: 50-80
+- Problema: se valida que `cart_id` exista, pero no que pertenezca al usuario autenticado.
+- Riesgo: un usuario podria generar factura sobre un carrito ajeno y además descontar stock de productos que no son suyos.
+- Recomendacion: cargar el carrito y validar `cart.user_id === request()->user()->id`, salvo admin si el negocio lo permite.
 
-[P1] El proyecto está versionando una clave de aplicación real en el ejemplo de entorno. En .env.example (line 3) hay un APP_KEY concreto en lugar de dejarlo vacío. Aunque sea “example”, es mala práctica porque normaliza compartir secretos y puede llevar a despliegues repetidos con la misma clave.
+3. Cualquier usuario autenticado puede ver facturas ajenas por ID
+- Archivo: `taller-coches-backend/backend/app/Http/Controllers/InvoiceController.php`
+- Lineas: 105-111
+- Problema: `show()` no hace comprobacion de propiedad ni de rol.
+- Riesgo: fuga de datos personales y comerciales.
+- Recomendacion: aplicar la misma politica que en carrito/citas y bloquear acceso a facturas de otros usuarios.
 
-[P2] Varias respuestas de error filtran detalles internos al cliente. En VehicleController.php (line 32), VehicleController.php (line 75), VehicleController.php (line 147) y otros puntos se devuelve $e->getMessage() en JSON. Eso puede exponer estructura de BD, nombres de columnas o validaciones internas.
+4. El backend permite reservar citas usando vehiculos de otros usuarios
+- Archivo: `taller-coches-backend/backend/app/Http/Controllers/AppointmentController.php`
+- Lineas: 92-128 y 177-222
+- Problema: en `store()` y en `update()` se acepta `vehicle_id` sin validar propiedad del vehiculo nuevo.
+- Riesgo: un usuario puede crear o mover citas sobre coches ajenos.
+- Recomendacion: validar que el vehiculo pertenece al usuario autenticado antes de crear o actualizar.
+
+## Altos
+
+5. La creacion de cita y el alta en carrito no son atomicas
+- Archivo: `taller-coches-frontend/src/components/web_src/sections/appointment/inf/step-summary.vue`
+- Lineas: 145-172
+- Problema: primero se crea la cita y luego se llama a `cart.addToCart()`. Si el segundo paso falla, la cita queda creada pero fuera del carrito.
+- Riesgo: citas huerfanas, huecos bloqueados en agenda y datos inconsistentes para el usuario.
+- Recomendacion: mover el flujo a backend en una transaccion unica o compensar borrando la cita si falla la insercion en carrito.
+
+6. El borrado de servicios desde carrito puede dejar items huerfanos
+- Archivo: `taller-coches-frontend/src/JS/Cart.js`
+- Lineas: 137-160
+- Problema: para servicios se borra primero la cita y luego el item del carrito en otra request distinta.
+- Riesgo: si la segunda request falla, queda un `item` sin `item_appointment`, y el carrito puede devolver lineas sin `details`.
+- Recomendacion: exponer un endpoint backend unico para "eliminar servicio del carrito" y ejecutar todo en transaccion.
+
+7. El backend admite `appointment_id` en factura, pero ni la tabla ni el modelo lo soportan
+- Archivos:
+- `taller-coches-backend/backend/app/Http/Controllers/InvoiceController.php`
+- `taller-coches-backend/backend/app/Models/Invoice.php`
+- `taller-coches-backend/backend/database/migrations/2026_03_17_152008_create_unified_invoices_table.php`
+- Lineas: controller 48-52, modelo 14-19, migracion 14-20
+- Problema: se valida `appointment_id`, pero no existe columna ni `fillable` para persistirlo.
+- Riesgo: falsa sensacion de soporte para facturacion de citas directas; el dato se pierde silenciosamente.
+- Recomendacion: o bien eliminar ese input de la API, o bien añadir columna, relacion y logica completa.
+
+## Medios
+
+8. Los huecos cancelados siguen bloqueando la agenda
+- Archivo: `taller-coches-backend/backend/app/Http/Controllers/AppointmentController.php`
+- Lineas: 35-42
+- Problema: el calculo de disponibilidad usa todas las citas del dia sin excluir `cancelled`.
+- Riesgo: se pierden slots disponibles y parece que no hay hueco cuando si lo hay.
+- Recomendacion: filtrar por estados activos, por ejemplo `pending` y quizá `completed` solo si ya han ocurrido.
+
+9. `store()` de citas no valida horario laboral, `update()` si
+- Archivo: `taller-coches-backend/backend/app/Http/Controllers/AppointmentController.php`
+- Lineas: 90-138 y 199-204
+- Problema: al crear cita no se comprueba el rango 08:00-21:00, pero al editar si.
+- Riesgo: se pueden insertar citas fuera de horario llamando a la API directamente.
+- Recomendacion: reutilizar la misma validacion horaria en ambos flujos.
+
+10. Import con mayusculas/minusculas incorrectas en resumen de cita
+- Archivo: `taller-coches-frontend/src/components/web_src/sections/appointment/inf/step-summary.vue`
+- Linea: 104
+- Problema: importa `/src/js/Cart.js`, pero el archivo real es `src/JS/Cart.js`.
+- Riesgo: en Windows suele funcionar; en Linux/CI puede romper el build.
+- Recomendacion: unificar rutas e imports respetando exactamente el casing real.
+
+## Nota
+
+Esta auditoria es una pasada rapida orientada a errores funcionales y de seguridad evidentes. No sustituye una revision completa de permisos, validaciones, tests ni consistencia de datos.
