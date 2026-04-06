@@ -98,7 +98,7 @@ export default {
     //agrupo los servicios por nombre
     groupedServices() {
       return this.services.reduce((groups, service) => {
-        const typeName = service.type.name
+        const typeName = service?.type?.name || 'Otros'
         if (!groups[typeName]) {
           groups[typeName] = []
         }
@@ -118,6 +118,8 @@ export default {
   methods: {
     async fetchServices() {
       this.loading = true
+      this.error = null
+      this.services = []
       try {
         const token = localStorage.getItem('user_token')
         const response = await fetch(`${BASE_URL}/v1/services`, {
@@ -126,7 +128,18 @@ export default {
             'Accept': 'application/json'
           }
         })
-        const data = await response.json()
+
+        const data = await response.json().catch(() => null)
+        if (!response.ok) {
+          this.error = data?.message || 'No se pudieron cargar los servicios'
+          return
+        }
+
+        if (!Array.isArray(data?.data)) {
+          this.error = 'La lista de servicios no tiene un formato valido'
+          return
+        }
+
         this.services = data.data
       } catch (e) {
         this.error = 'No se pudieron cargar los servicios'

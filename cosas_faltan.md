@@ -33,15 +33,6 @@ Fecha: 2026-04-05
 - Problema: `cargarCitas()` llama a `/v1/appointments/all?month=YYYY-MM`, pero el backend solo filtra por `date` y `status`.
 - Impacto: el calendario puede pintar citas de otros meses y el contador por dia deja de representar el mes visible de forma fiable.
 
-13. Paso de seleccion de servicio no valida respuestas fallidas de la API
-- Archivo: `taller-coches-frontend/src/components/web_src/sections/appointment/inf/step-service.vue`
-- Problema: tras el fetch se hace `this.services = data.data` sin comprobar `response.ok` ni que `data.data` sea un array.
-- Impacto: si la API devuelve un error JSON, `services` puede quedar `undefined` y `groupedServices()` rompe al hacer `reduce`.
-
-14. Pantalla de checkout muestra mensaje incorrecto cuando falla la carga del carrito o factura
-- Archivo: `taller-coches-frontend/src/components/web_src/sections/cart/checkout-success.vue`
-- Problema: cualquier error de fetch termina mostrando "No tienes facturas recientes", aunque el caso real sea 401, 403, 404 del carrito o error de red.
-- Impacto: dificulta diagnosticar problemas reales y confunde al usuario tras pagar.
 
 
 ## Nota
