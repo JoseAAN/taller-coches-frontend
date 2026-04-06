@@ -1,0 +1,360 @@
+<template>
+    <div class="admin-container p-4">
+        <div class="header-section mb-4">
+            <div>
+                <h2 class="section-title d-flex align-items-center gap-2">
+                    <span class="material-symbols-outlined icon-title">inventory_2</span>
+                    Gestión de Productos
+                </h2>
+                <p class="section-subtitle">Administra tu catálogo de productos, precios y niveles de stock</p>
+            </div>
+            <button class="btn-create-neon" data-bs-toggle="modal" data-bs-target="#productModal" @click="openCreate">
+                <span class="material-symbols-outlined">add</span>
+                <span class="btn-text">Nuevo Producto</span>
+            </button>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="table table-dark custom-table">
+                <thead>
+                    <tr>
+                        <th class="ps-4 col-id">ID</th>
+                        <th class="col-name">Producto</th>
+                        <th class="col-type">Categoría</th>
+                        <th class="col-price">Precio</th>
+                        <th class="col-stock">Stock</th>
+                        <th class="text-end pe-4 col-actions">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-if="products.length === 0">
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <div class="d-flex flex-column align-items-center">
+                                <span class="material-symbols-outlined empty-icon mb-2">inventory_2</span>
+                                No hay productos registrados en el catálogo.
+                            </div>
+                        </td>
+                    </tr>
+                    <tr v-for="product in products" :key="product.id" class="row-item">
+                        <td class="ps-4 text-id">#{{ product.id }}</td>
+                        <td class="fw-bold text-white">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="icon-box" :style="product.images && product.images.length ? `background-image: url(${getImageUrl(product.images[0].url)}); background-size: cover; background-position: center;` : ''">
+                                    <span v-if="!product.images || !product.images.length" class="material-symbols-outlined">category</span>
+                                </div>
+                                <div class="text-truncate" style="max-width: 250px;" :title="product.name">
+                                    {{ product.name }}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-white opacity-75">
+                            <span class="badge-type">{{ product.category?.name || 'Sin Categoría' }}</span>
+                        </td>
+                        <td class="text-neon-green fw-bold">{{ product.price }} €</td>
+                        <td class="text-white">
+                            <span class="badge" :class="product.stock > 5 ? 'bg-success bg-opacity-25 text-success' : (product.stock > 0 ? 'bg-warning bg-opacity-25 text-warning' : 'bg-danger bg-opacity-25 text-danger')">
+                                {{ product.stock }} ud.
+                            </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="action-buttons justify-content-end">
+                                <button class="btn-action btn-edit-neon" data-bs-toggle="modal" data-bs-target="#productModal"
+                                    @click="openEdit(product)" title="Editar">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                                <button class="btn-action btn-delete-neon" @click="deleteProduct(product.id)" title="Eliminar">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <ProductsCrudModal :selectedProduct="selectedProduct" :isEdit="isEdit" @refresh="fetchProducts" />
+    </div>
+</template>
+
+<script>
+import ProductsCrudModal from './products-crud-modal.vue';
+import { loaderState } from '@/loaderState';
+
+export default {
+    name: 'AdminProducts',
+    components: {
+        ProductsCrudModal,
+    },
+    data() {
+        return {
+            products: [],
+            isEdit: false,
+            selectedProduct: null,
+        };
+    },
+
+    methods: {
+        fetchProducts() {
+            loaderState.show();
+            // Asumimos que esta ruta pública/protegida devuelve los productos
+            fetch(`${this.$BASE_URL}/v1/products`)
+            .then(res => res.json())
+            .then(data => {
+                // Dependiendo de tu API Resource, puede ser data.data o directamente data
+                this.products = data.data || data || [];
+            })
+            .catch(err => {
+                console.error("Error obteniendo productos:", err);
+            })
+            .finally(() => {
+                loaderState.hide();
+            });
+        },
+
+        openCreate() {
+            this.isEdit = false;
+            this.selectedProduct = null;
+        },
+
+        openEdit(product) {
+            this.isEdit = true;
+            this.selectedProduct = { ...product };
+        },
+
+        deleteProduct(id) {
+            if (!confirm("¿Seguro que quieres eliminar este producto? Esta acción no se puede deshacer.")) return;
+            const token = localStorage.getItem("user_token");
+
+            loaderState.show();
+            fetch(`${this.$BASE_URL}/v1/products/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(err => { throw err; });
+                }
+                this.fetchProducts();
+            })
+            .catch(err => {
+                console.error("Error al eliminar producto:", err);
+            })
+            .finally(() => {
+                loaderState.hide();
+            });
+        },
+        
+        // Método auxiliar para construir la URL de la imagen si tu backend no manda ruta completa
+        getImageUrl(url) {
+            if (!url) return '';
+            if (url.startsWith('http')) return url;
+            return `/src/assets/img-productos/${url}`; 
+        }
+    },
+
+    mounted() {
+        this.fetchProducts();
+    },
+};
+</script>
+
+<style scoped>
+/* Los estilos se mantienen exactamente iguales al panel de servicios 
+   para conservar la consistencia visual */
+
+.col-id { width: 10%; }
+.col-name { width: 25%; }
+.col-type { width: 20%; }
+.col-price { width: 15%; }
+.col-stock { width: 15%; } /* Cambiado de col-duration a col-stock */
+.col-actions { width: 15%; }
+
+.empty-icon {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+.admin-container {
+    background-color: #0f172a;
+    min-height: 100vh;
+    color: #cbd5e1;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.4) 100%);
+    padding: 1.5rem 2rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.section-title {
+    color: #f8fafc;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.icon-title {
+    color: #f97316; /* Color naranja para diferenciarlo del verde de servicios */
+    font-size: 1.8rem;
+    filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.4));
+}
+
+.section-subtitle {
+    color: #94a3b8;
+    margin: 0.5rem 0 0 0;
+    font-size: 0.9rem;
+}
+
+.table-wrapper {
+    background: #1e293b;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.custom-table {
+    margin: 0;
+    --bs-table-bg: transparent;
+    --bs-table-color: #cbd5e1;
+}
+
+.custom-table thead th {
+    background: rgba(15, 23, 42, 0.6);
+    color: #94a3b8;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    padding: 1.2rem 1rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+}
+
+.row-item {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.row-item td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.row-item:hover {
+    background: rgba(249, 115, 22, 0.03);
+    transform: translateY(-1px);
+}
+
+.text-id {
+    color: #64748b;
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+}
+
+.icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    transition: all 0.3s;
+}
+
+.row-item:hover .icon-box {
+    background: rgba(249, 115, 22, 0.1);
+    color: #f97316;
+}
+
+.badge-type {
+    background: rgba(100, 116, 139, 0.2);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-action .material-symbols-outlined {
+    font-size: 1.1rem;
+}
+
+.btn-create-neon {
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(249, 115, 22, 0.05));
+    color: #f97316;
+    border: 1px solid rgba(249, 115, 22, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.btn-create-neon:hover {
+    background: #f97316;
+    color: #0f172a;
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-edit-neon {
+    background: rgba(45, 212, 191, 0.1);
+    color: #2dd4bf;
+    border: 1px solid rgba(45, 212, 191, 0.2);
+}
+
+.btn-edit-neon:hover {
+    background: #2dd4bf;
+    color: #0f172a;
+    box-shadow: 0 0 15px rgba(45, 212, 191, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-delete-neon {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.8), rgba(220, 38, 38, 0.9));
+    color: white;
+    border: 1px solid #ef4444;
+}
+
+.btn-delete-neon:hover {
+    background: #dc2626;
+    color: white;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+    transform: translateY(-2px);
+}
+
+.text-neon-green {
+    color: #a3e635;
+}
+</style>

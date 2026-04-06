@@ -101,6 +101,7 @@
 
         <!-- Sección: Gestión del admin -->
         <h6 class="section-label mb-3">Gestión</h6>
+        <h6 class="section-label mb-3">Gestión</h6>
         <div class="cards-grid mb-5">
 
             <button class="nav-card" @click="goTo('/admin/users')">
@@ -110,6 +111,39 @@
                 <div class="card-content">
                     <span class="card-title">Usuarios</span>
                     <span class="card-desc">Listado y gestión de usuarios</span>
+                </div>
+                <span class="material-symbols-outlined card-arrow">chevron_right</span>
+            </button>
+
+            <button class="nav-card" @click="goTo('/admin/products')">
+                <div class="card-icon icon-orange">
+                    <span class="material-symbols-outlined">inventory_2</span>
+                </div>
+                <div class="card-content">
+                    <span class="card-title">Productos</span>
+                    <span class="card-desc">Gestión del catálogo y stock</span>
+                </div>
+                <span class="material-symbols-outlined card-arrow">chevron_right</span>
+            </button>
+
+            <button class="nav-card" @click="goTo('/admin/services')">
+                <div class="card-icon icon-teal">
+                    <span class="material-symbols-outlined">local_car_wash</span>
+                </div>
+                <div class="card-content">
+                    <span class="card-title">Servicios</span>
+                    <span class="card-desc">Gestión de los servicios</span>
+                </div>
+                <span class="material-symbols-outlined card-arrow">chevron_right</span>
+            </button>
+
+            <button class="nav-card" @click="goTo('/admin/categories')">
+                <div class="card-icon icon-teal">
+                    <span class="material-symbols-outlined">label</span>
+                </div>
+                <div class="card-content">
+                    <span class="card-title">Categorías</span>
+                    <span class="card-desc">Gestionar categorías del sistema</span>
                 </div>
                 <span class="material-symbols-outlined card-arrow">chevron_right</span>
             </button>
@@ -148,17 +182,6 @@
                 <span class="material-symbols-outlined card-arrow">chevron_right</span>
             </button>
 
-            <button class="nav-card" @click="goTo('/admin/categories')">
-                <div class="card-icon icon-teal">
-                    <span class="material-symbols-outlined">label</span>
-                </div>
-                <div class="card-content">
-                    <span class="card-title">Categorías</span>
-                    <span class="card-desc">Gestionar categorías del sistema</span>
-                </div>
-                <span class="material-symbols-outlined card-arrow">chevron_right</span>
-            </button>
-
             <button class="nav-card" @click="goTo('/admin/appointments')">
                 <div class="card-icon icon-pink">
                     <span class="material-symbols-outlined">edit_calendar</span>
@@ -171,7 +194,8 @@
             </button>
 
             <button class="nav-card" @click="goTo('/admin/invoices')">
-                <div class="card-icon" style="background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.2);">
+                <div class="card-icon"
+                    style="background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.2);">
                     <span class="material-symbols-outlined">receipt_long</span>
                 </div>
                 <div class="card-content">
