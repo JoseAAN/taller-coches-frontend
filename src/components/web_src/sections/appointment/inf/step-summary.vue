@@ -138,6 +138,7 @@ export default {
     async confirmar() {
       this.loading = true
       const token = localStorage.getItem('user_token')
+      let appointmentId = null
 
       try {
         await cart.loadUserCart()
@@ -162,22 +163,58 @@ export default {
           return
         }
 
+        // Añadimos la cita al carrito y luego la borramos si falla.
+        // De esta manera si falla la insercion en carrito, la cita se borra.
         const appointmentData = await appointmentResponse.json()
+        appointmentId = appointmentData.appointment?.id
+
+        if (!appointmentId) {
+          this.toast.error('No se pudo completar la reserva')
+          return
+        }
 
         const result = await cart.addToCart(
           ITEM_TYPES.SERVICE,
-          appointmentData.appointment.id,
+          appointmentId,
           1,
-          this.service.price
+          this.service.price,
+          true
         )
 
         if (result.success) {
+          await cart.loadUserCart()
           this.$router.push('/cart')
+          return
         }
+        
+        await this.deleteAppointment(token, appointmentId)
+        this.toast.error(result.message || 'No se pudo anadir la cita al carrito')
       } catch (e) {
+        if (appointmentId) {
+          await this.deleteAppointment(token, appointmentId)
+        }
         this.toast.error('Error inesperado, intentalo de nuevo')
       } finally {
         this.loading = false
+      }
+    },
+    // Si también falla la reversión, el usuario recibe un aviso explícito de que la cita quedó creada pero no se pudo limpiar automáticamente.
+    async deleteAppointment(token, appointmentId) {
+      try {
+        const response = await fetch(`${BASE_URL}/v1/appointment/${appointmentId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        })
+    
+        if (!response.ok) {
+          this.toast.warning('La cita se creo, pero no se pudo revertir automaticamente')
+        }
+      } catch (error) {
+        this.toast.warning('La cita se creo, pero no se pudo revertir automaticamente')
       }
     }
   }
