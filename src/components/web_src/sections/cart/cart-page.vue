@@ -96,10 +96,15 @@
                     </div>
 
                     <button class="btn-checkout" @click="checkout" :disabled="cart.items.length === 0 || isProcessing">
-                        <span class="material-symbols-outlined" v-if="!isProcessing">shopping_bag</span>
+                        <span class="material-symbols-outlined" v-if="!isProcessing">lock</span>
                         <span v-else class="material-symbols-outlined loader-spin">sync</span>
-                        {{ isProcessing ? 'Procesando...' : 'Finalizar compra' }}
+                        {{ isProcessing ? 'Procesando...' : 'Pagar de forma segura' }}
                     </button>
+
+                    <div class="stripe-badge" v-if="cart.items.length > 0">
+                        <span class="material-symbols-outlined" style="font-size: 16px;">verified_user</span>
+                        Pagos seguros mediante Stripe
+                    </div>
                 </div>
             </div>
 
@@ -160,35 +165,77 @@ export default {
                 this.isProcessing = true;
                 const token = localStorage.getItem('user_token');
 
-                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/v1/invoices`, {
+                this.toast.info('Redirigiendo a pasarela segura de Stripe...', { timeout: 1500 });
+                
+                const stripeRes = await fetch(`${this.$BASE_URL}/v1/checkout/stripe`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        total: cart.total,
-                        cart_id: cart.id
-                    })
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ cart_id: cart.id })
                 });
-
-                const data = await res.json();
-
-                if (!res.ok) {
-                    this.toast.error(data.message || 'Error al procesar la compra');
-                    return;
+                
+                const stripeData = await stripeRes.json();
+                
+                if (stripeData.url) {
+                    window.location.href = stripeData.url; //redirige al checkout mediante Stripe
+                } else {
+                    this.toast.error(stripeData.message || 'Error al iniciar Stripe');
+                    this.isProcessing = false;
                 }
-
-                const purchasedCartId = cart.id;
-                cart.clearCart();
-                this.$router.push({ name: 'CheckoutView', query: { cart_id: purchasedCartId } });
 
             } catch (err) {
                 console.error(err);
                 this.toast.error('Error de conexión al finalizar compra');
-            } finally {
                 this.isProcessing = false;
+            }
+        },
+
+        async checkStripeRedirect() {
+            //usamos URLSearchParams para obtener los parámetros de la URL
+            const params = new URLSearchParams(window.location.search);
+            
+            if (params.get('stripe_success') === 'true') {
+                this.toast.success('Pago autorizado por Stripe. Generando tu comprobante...');
+                this.isProcessing = true;
+                
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                const token = localStorage.getItem('user_token');
+                
+                try {
+                    const res = await fetch(`${this.$BASE_URL}/v1/invoices`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            total: cart.total,
+                            cart_id: params.get('cart_id') || cart.id,
+                            stripe_session_id: params.get('session_id')
+                        })
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        this.toast.error(data.message || 'Error al generar comprobante post-pago');
+                        this.isProcessing = false;
+                        return;
+                    }
+
+                    const purchasedCartId = cart.id;
+                    cart.clearCart();
+                    this.$router.push({ name: 'CheckoutView', query: { cart_id: purchasedCartId } });
+
+                } catch (err) {
+                    console.error(err);
+                    this.toast.error('Error de conexión post-pago');
+                    this.isProcessing = false;
+                }
+            } else if (params.get('stripe_cancel') === 'true') {
+                 this.toast.info('Se canceló el pago. Tu carrito sigue guardado y puedes intentarlo de nuevo.');
+                 window.history.replaceState({}, document.title, window.location.pathname);
             }
         },
 
@@ -232,8 +279,9 @@ export default {
         }
     },
 
-    mounted() {
-        cart.loadUserCart()
+    async mounted() {
+        await cart.loadUserCart()
+        this.checkStripeRedirect()
     }
 }
 </script>
@@ -651,6 +699,24 @@ export default {
 
 .btn-checkout .material-symbols-outlined {
     font-size: 18px;
+}
+
+.stripe-badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--nav-text, #0a1f33);
+    opacity: 0.6;
+}
+
+.stripe-badge .material-symbols-outlined {
+    color: #635bff;
+    opacity: 1;
 }
 
 /* ─── RESPONSIVE 900px ───────────────────────────────────── */
