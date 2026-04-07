@@ -5,30 +5,36 @@
 
                 <div class="modal-header modal-header-custom border-0 pb-0">
                     <h5 class="modal-title d-flex align-items-center gap-2 fw-bold text-white">
-                        <span class="material-symbols-outlined icon-modal" :class="isEdit ? 'text-neon-teal' : 'text-neon-green'">
+                        <span class="material-symbols-outlined icon-modal"
+                            :class="isEdit ? 'text-neon-teal' : 'text-neon-green'">
                             {{ isEdit ? 'edit_square' : 'add_circle' }}
                         </span>
                         {{ isEdit ? "Editar Servicio" : "Crear Servicio" }}
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
 
                 <div class="modal-body modal-body-custom pt-4">
                     <form @submit.prevent="submit">
                         <div class="row">
                             <div class="col-md-6 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Nombre del Servicio</label>
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Nombre del
+                                    Servicio</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">design_services</span>
-                                    <input v-model="form.name" class="form-control form-control-custom" placeholder="Ej. Cambio de bujias..." required />
+                                    <input v-model="form.name" class="form-control form-control-custom"
+                                        placeholder="Ej. Cambio de bujias..." required />
                                 </div>
                             </div>
 
                             <div class="col-md-6 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Tipo de Servicio</label>
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Tipo de
+                                    Servicio</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">category</span>
-                                    <select v-model="form.service_type_id" class="form-select form-control-custom select-custom" required>
+                                    <select v-model="form.service_type_id"
+                                        class="form-select form-control-custom select-custom" required>
                                         <option value="" disabled selected>Selecciona un tipo...</option>
                                         <option v-for="type in serviceTypes" :key="type.id" :value="type.id">
                                             {{ type.name }}
@@ -38,26 +44,32 @@
                             </div>
 
                             <div class="col-md-6 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Precio (EUR)</label>
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Precio
+                                    (EUR)</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">euro_symbol</span>
-                                    <input type="number" step="0.01" min="0" v-model="form.price" class="form-control form-control-custom" placeholder="Ej. 150.00" required />
+                                    <input type="number" step="0.01" min="0" v-model="form.price"
+                                        class="form-control form-control-custom" placeholder="Ej. 150.00" required />
                                 </div>
                             </div>
 
                             <div class="col-md-6 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Duracion aprox. (Minutos)</label>
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Duracion aprox.
+                                    (Minutos)</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">timer</span>
-                                    <input type="number" min="0" v-model="form.average_duration" class="form-control form-control-custom" placeholder="Ej. 60" />
+                                    <input type="number" min="0" v-model="form.average_duration"
+                                        class="form-control form-control-custom" placeholder="Ej. 60" />
                                 </div>
                             </div>
 
                             <div class="col-12 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Descripcion</label>
+                                <label
+                                    class="form-label text-muted small text-uppercase fw-bold mb-2">Descripcion</label>
                                 <div class="input-group-custom align-items-start pt-2">
                                     <span class="material-symbols-outlined input-icon text-area-icon">description</span>
-                                    <textarea v-model="form.description" class="form-control form-control-custom" rows="3" placeholder="Detalles sobre el servicio..."></textarea>
+                                    <textarea v-model="form.description" class="form-control form-control-custom"
+                                        rows="3" placeholder="Detalles sobre el servicio..."></textarea>
                                 </div>
                             </div>
 
@@ -65,7 +77,8 @@
                                 <label class="form-label text-muted small text-uppercase fw-bold mb-2">Imagen</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">image</span>
-                                    <input v-model="form.image_url" class="form-control form-control-custom" placeholder="Ej. LavadoAManoBasico.png o https://..." />
+                                    <input v-model="form.image_url" class="form-control form-control-custom"
+                                        placeholder="Ej. LavadoAManoBasico.png o https://..." />
                                 </div>
                             </div>
                         </div>
@@ -74,7 +87,8 @@
                             <button type="button" class="btn btn-secondary-neon" data-bs-dismiss="modal">
                                 Cancelar
                             </button>
-                            <button type="submit" class="btn" :class="isEdit ? 'btn-edit-neon-filled' : 'btn-create-neon'">
+                            <button type="submit" class="btn"
+                                :class="isEdit ? 'btn-edit-neon-filled' : 'btn-create-neon'">
                                 {{ isEdit ? "Guardar Cambios" : "Crear Servicio" }}
                             </button>
                         </div>
@@ -234,8 +248,9 @@ export default {
     padding: 1.5rem 2rem 1rem;
 }
 
-.modal-body-custom {
-    padding: 1rem 2rem;
+.modal-body-custom .text-muted {
+    color: #cbd5e1 !important;
+    letter-spacing: 0.5px;
 }
 
 .modal-footer-custom {
@@ -245,8 +260,13 @@ export default {
     gap: 12px;
 }
 
-.text-neon-green { color: #a3e635; }
-.text-neon-teal { color: #2dd4bf; }
+.text-neon-green {
+    color: #a3e635;
+}
+
+.text-neon-teal {
+    color: #2dd4bf;
+}
 
 .input-group-custom {
     position: relative;
@@ -267,7 +287,7 @@ export default {
 .form-control-custom {
     background: rgba(15, 23, 42, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
+    color: #ffffff !important;
     padding: 0.8rem 1rem 0.8rem 3rem;
     border-radius: 12px;
     width: 100%;
@@ -277,7 +297,7 @@ export default {
 .form-control-custom:-webkit-autofill,
 .form-control-custom:-webkit-autofill:hover,
 .form-control-custom:-webkit-autofill:focus,
-.form-control-custom:-webkit-autofill:active{
+.form-control-custom:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
     -webkit-text-fill-color: white !important;
     transition: background-color 5000s ease-in-out 0s;
@@ -292,6 +312,7 @@ export default {
 }
 
 .select-custom {
+    color: #ffffff !important;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -310,8 +331,9 @@ export default {
     color: #a3e635;
 }
 
-::placeholder {
-    color: #475569;
+.form-control-custom::placeholder {
+    color: #94a3b8 !important;
+    opacity: 0.8;
 }
 
 .btn-create-neon {

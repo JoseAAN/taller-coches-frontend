@@ -5,22 +5,26 @@
 
                 <div class="modal-header modal-header-custom border-0 pb-0">
                     <h5 class="modal-title d-flex align-items-center gap-2 fw-bold text-white">
-                        <span class="material-symbols-outlined icon-modal" :class="isEdit ? 'text-neon-teal' : 'text-neon-green'">
+                        <span class="material-symbols-outlined icon-modal"
+                            :class="isEdit ? 'text-neon-teal' : 'text-neon-green'">
                             {{ isEdit ? 'edit_square' : 'add_circle' }}
                         </span>
                         {{ isEdit ? "Editar Tipo de Servicio" : "Crear Tipo de Servicio" }}
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
 
                 <div class="modal-body modal-body-custom pt-4">
                     <form @submit.prevent="submit">
 
                         <div class="form-group mb-4">
-                            <label class="form-label text-muted small text-uppercase fw-bold mb-2">Nombre del Tipo</label>
+                            <label class="form-label text-muted small text-uppercase fw-bold mb-2">Nombre del
+                                Tipo</label>
                             <div class="input-group-custom">
                                 <span class="material-symbols-outlined input-icon">badge</span>
-                                <input v-model="form.name" class="form-control form-control-custom" placeholder="Ej. Cambio de Aceite..." required />
+                                <input v-model="form.name" class="form-control form-control-custom"
+                                    placeholder="Ej. Cambio de Aceite..." required />
                             </div>
                         </div>
 
@@ -28,7 +32,8 @@
                             <button type="button" class="btn btn-secondary-neon" data-bs-dismiss="modal">
                                 Cancelar
                             </button>
-                            <button type="submit" class="btn" :class="isEdit ? 'btn-edit-neon-filled' : 'btn-create-neon'">
+                            <button type="submit" class="btn"
+                                :class="isEdit ? 'btn-edit-neon-filled' : 'btn-create-neon'">
                                 {{ isEdit ? "Guardar Cambios" : "Crear Tipo" }}
                             </button>
                         </div>
@@ -101,7 +106,7 @@ export default {
 
                 this.$emit("refresh");
                 this.resetForm();
-                
+
                 const btnClose = document.querySelector("#serviceTypeModal .btn-close");
                 if (btnClose) btnClose.click();
 
@@ -133,8 +138,9 @@ export default {
     padding: 1.5rem 2rem 1rem;
 }
 
-.modal-body-custom {
-    padding: 1rem 2rem;
+.modal-body-custom .text-muted {
+    color: #cbd5e1 !important;
+    letter-spacing: 0.5px;
 }
 
 .modal-footer-custom {
@@ -144,8 +150,13 @@ export default {
     gap: 12px;
 }
 
-.text-neon-green { color: #a3e635; }
-.text-neon-teal { color: #2dd4bf; }
+.text-neon-green {
+    color: #a3e635;
+}
+
+.text-neon-teal {
+    color: #2dd4bf;
+}
 
 .input-group-custom {
     position: relative;
@@ -166,7 +177,7 @@ export default {
 .form-control-custom {
     background: rgba(15, 23, 42, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
+    color: #ffffff !important;
     padding: 0.8rem 1rem 0.8rem 3rem;
     border-radius: 12px;
     width: 100%;
@@ -185,8 +196,9 @@ export default {
     color: #a3e635;
 }
 
-::placeholder {
-    color: #475569;
+.form-control-custom::placeholder {
+    color: #94a3b8 !important;
+    opacity: 0.8;
 }
 
 .btn-create-neon {

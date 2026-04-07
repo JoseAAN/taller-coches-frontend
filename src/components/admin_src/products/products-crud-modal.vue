@@ -5,22 +5,26 @@
 
                 <div class="modal-header modal-header-custom border-0 pb-0">
                     <h5 class="modal-title d-flex align-items-center gap-2 fw-bold text-white">
-                        <span class="material-symbols-outlined icon-modal" :class="isEdit ? 'text-neon-teal' : 'text-neon-orange'">
+                        <span class="material-symbols-outlined icon-modal"
+                            :class="isEdit ? 'text-neon-teal' : 'text-neon-orange'">
                             {{ isEdit ? 'edit_square' : 'add_circle' }}
                         </span>
                         {{ isEdit ? "Editar Producto" : "Crear Producto" }}
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
 
                 <div class="modal-body modal-body-custom pt-4">
                     <form @submit.prevent="submit">
                         <div class="row">
                             <div class="col-md-6 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Nombre del Producto</label>
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Nombre del
+                                    Producto</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">inventory_2</span>
-                                    <input v-model="form.name" class="form-control form-control-custom" placeholder="Ej. Champú especial..." required />
+                                    <input v-model="form.name" class="form-control form-control-custom"
+                                        placeholder="Ej. Champú especial..." required />
                                 </div>
                             </div>
 
@@ -28,7 +32,8 @@
                                 <label class="form-label text-muted small text-uppercase fw-bold mb-2">Categoría</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">category</span>
-                                    <select v-model="form.category_id" class="form-select form-control-custom select-custom" required>
+                                    <select v-model="form.category_id"
+                                        class="form-select form-control-custom select-custom" required>
                                         <option value="" disabled selected>Selecciona una categoría...</option>
                                         <option v-for="cat in categories" :key="cat.id" :value="cat.id">
                                             {{ cat.name }}
@@ -38,34 +43,43 @@
                             </div>
 
                             <div class="col-md-6 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Precio (EUR)</label>
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Precio
+                                    (EUR)</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">euro_symbol</span>
-                                    <input type="number" step="0.01" min="0" v-model="form.price" class="form-control form-control-custom" placeholder="Ej. 24.50" required />
+                                    <input type="number" step="0.01" min="0" v-model="form.price"
+                                        class="form-control form-control-custom" placeholder="Ej. 24.50" required />
                                 </div>
                             </div>
 
                             <div class="col-md-6 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Stock Disponible</label>
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Stock
+                                    Disponible</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">conveyor_belt</span>
-                                    <input type="number" min="0" v-model="form.stock" class="form-control form-control-custom" placeholder="Ej. 50" required />
+                                    <input type="number" min="0" v-model="form.stock"
+                                        class="form-control form-control-custom" placeholder="Ej. 50" required />
                                 </div>
                             </div>
 
                             <div class="col-12 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Descripción</label>
+                                <label
+                                    class="form-label text-muted small text-uppercase fw-bold mb-2">Descripción</label>
                                 <div class="input-group-custom align-items-start pt-2">
                                     <span class="material-symbols-outlined input-icon text-area-icon">description</span>
-                                    <textarea v-model="form.description" class="form-control form-control-custom" rows="3" placeholder="Detalles, características o uso del producto..."></textarea>
+                                    <textarea v-model="form.description" class="form-control form-control-custom"
+                                        rows="3"
+                                        placeholder="Detalles, características o uso del producto..."></textarea>
                                 </div>
                             </div>
 
                             <div class="col-12 form-group mb-4">
-                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Imagen (URL o Archivo)</label>
+                                <label class="form-label text-muted small text-uppercase fw-bold mb-2">Imagen (URL o
+                                    Archivo)</label>
                                 <div class="input-group-custom">
                                     <span class="material-symbols-outlined input-icon">image</span>
-                                    <input v-model="form.image_url" class="form-control form-control-custom" placeholder="Ej. ChampuBrillo.png o https://..." />
+                                    <input v-model="form.image_url" class="form-control form-control-custom"
+                                        placeholder="Ej. ChampuBrillo.png o https://..." />
                                 </div>
                             </div>
                         </div>
@@ -74,7 +88,8 @@
                             <button type="button" class="btn btn-secondary-neon" data-bs-dismiss="modal">
                                 Cancelar
                             </button>
-                            <button type="submit" class="btn" :class="isEdit ? 'btn-edit-neon-filled' : 'btn-create-neon'">
+                            <button type="submit" class="btn"
+                                :class="isEdit ? 'btn-edit-neon-filled' : 'btn-create-neon'">
                                 {{ isEdit ? "Guardar Cambios" : "Crear Producto" }}
                             </button>
                         </div>
@@ -238,8 +253,9 @@ export default {
     padding: 1.5rem 2rem 1rem;
 }
 
-.modal-body-custom {
-    padding: 1rem 2rem;
+.modal-body-custom .text-muted {
+    color: #cbd5e1 !important;
+    letter-spacing: 0.5px;
 }
 
 .modal-footer-custom {
@@ -249,8 +265,13 @@ export default {
     gap: 12px;
 }
 
-.text-neon-orange { color: #f97316; }
-.text-neon-teal { color: #2dd4bf; }
+.text-neon-orange {
+    color: #f97316;
+}
+
+.text-neon-teal {
+    color: #2dd4bf;
+}
 
 .input-group-custom {
     position: relative;
@@ -271,7 +292,7 @@ export default {
 .form-control-custom {
     background: rgba(15, 23, 42, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
+    color: #ffffff !important;
     padding: 0.8rem 1rem 0.8rem 3rem;
     border-radius: 12px;
     width: 100%;
@@ -281,7 +302,7 @@ export default {
 .form-control-custom:-webkit-autofill,
 .form-control-custom:-webkit-autofill:hover,
 .form-control-custom:-webkit-autofill:focus,
-.form-control-custom:-webkit-autofill:active{
+.form-control-custom:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
     -webkit-text-fill-color: white !important;
     transition: background-color 5000s ease-in-out 0s;
@@ -296,6 +317,7 @@ export default {
 }
 
 .select-custom {
+    color: #ffffff !important;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -314,8 +336,9 @@ export default {
     color: #f97316;
 }
 
-::placeholder {
-    color: #475569;
+.form-control-custom::placeholder {
+    color: #94a3b8 !important;
+    opacity: 0.8;
 }
 
 .btn-create-neon {
