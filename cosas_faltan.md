@@ -4,6 +4,16 @@
 
 Fecha: 2026-04-05
 
+## Stripe
+
+He encontrado 3 problemas importantes en la integración de Stripe.
+
+En InvoiceController.php (line 57) se acepta cualquier sesión de Stripe que esté pagada, pero no se comprueba que el session_id pertenezca a ese carrito ni que el importe pagado coincida con el total real. Eso permite facturar un carrito más caro reutilizando el pago de otro más barato del mismo usuario.
+
+En InvoiceController.php (line 50) la sesión pagada se puede reutilizar varias veces: no guardáis el identificador del pago, no la marcáis como consumida y la tabla invoices tampoco impide varias facturas para el mismo carrito en 2026_03_17_152008_create_unified_invoices_table.php (line 20). El efecto es factura duplicada y descuento de stock repetido.
+
+En InvoiceController.php (line 86) el stock se valida solo al generar la factura, es decir, después de pagar en Stripe. Si el stock cambia entre la creación de la sesión y la vuelta del usuario, podéis capturar el cobro y luego devolver 409 sin crear pedido ni lanzar reembolso.
+
 ## Altos
 
 6. El borrado de servicios desde carrito puede dejar items huerfanos
