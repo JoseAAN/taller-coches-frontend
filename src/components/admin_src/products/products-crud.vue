@@ -39,8 +39,10 @@
                         <td class="ps-4 text-id">#{{ product.id }}</td>
                         <td class="fw-bold text-white">
                             <div class="d-flex align-items-center gap-3">
-                                <div class="icon-box" :style="product.images && product.images.length ? `background-image: url(${getImageUrl(product.images[0].url)}); background-size: cover; background-position: center;` : ''">
-                                    <span v-if="!product.images || !product.images.length" class="material-symbols-outlined">category</span>
+                                <div class="icon-box"
+                                    :style="product.images && product.images.length ? `background-image: url(${getImageUrl(product.images[0].url)}); background-size: cover; background-position: center;` : ''">
+                                    <span v-if="!product.images || !product.images.length"
+                                        class="material-symbols-outlined">category</span>
                                 </div>
                                 <div class="text-truncate" style="max-width: 250px;" :title="product.name">
                                     {{ product.name }}
@@ -52,17 +54,19 @@
                         </td>
                         <td class="text-neon-green fw-bold">{{ product.price }} €</td>
                         <td class="text-white">
-                            <span class="badge" :class="product.stock > 5 ? 'bg-success bg-opacity-25 text-success' : (product.stock > 0 ? 'bg-warning bg-opacity-25 text-warning' : 'bg-danger bg-opacity-25 text-danger')">
+                            <span class="badge"
+                                :class="product.stock > 5 ? 'bg-success bg-opacity-25 text-success' : (product.stock > 0 ? 'bg-warning bg-opacity-25 text-warning' : 'bg-danger bg-opacity-25 text-danger')">
                                 {{ product.stock }} ud.
                             </span>
                         </td>
                         <td class="text-end pe-4">
                             <div class="action-buttons justify-content-end">
-                                <button class="btn-action btn-edit-neon" data-bs-toggle="modal" data-bs-target="#productModal"
-                                    @click="openEdit(product)" title="Editar">
+                                <button class="btn-action btn-edit-neon" data-bs-toggle="modal"
+                                    data-bs-target="#productModal" @click="openEdit(product)" title="Editar">
                                     <span class="material-symbols-outlined">edit</span>
                                 </button>
-                                <button class="btn-action btn-delete-neon" @click="deleteProduct(product.id)" title="Eliminar">
+                                <button class="btn-action btn-delete-neon" @click="deleteProduct(product.id)"
+                                    title="Eliminar">
                                     <span class="material-symbols-outlined">delete</span>
                                 </button>
                             </div>
@@ -70,6 +74,34 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="pagination-container mt-5 d-flex flex-column align-items-center gap-3" v-if="lastPage > 1">
+
+            <ul class="pagination pagination-custom mb-0">
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <button class="page-link" @click="fetchProducts(currentPage - 1)">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">chevron_left</span>
+                    </button>
+                </li>
+
+                <li class="page-item" v-for="page in visiblePages" :key="page"
+                    :class="{ active: currentPage === page }">
+                    <button class="page-link" @click="fetchProducts(page)">{{ page }}</button>
+                </li>
+
+                <li class="page-item" :class="{ disabled: currentPage === lastPage }">
+                    <button class="page-link" @click="fetchProducts(currentPage + 1)">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">chevron_right</span>
+                    </button>
+                </li>
+            </ul>
+
+            <div class="pagination-info text-center" style="color: #cbd5e1; font-size: 0.85rem; letter-spacing: 0.3px;">
+                Mostrando página <span class="text-white fw-bold mx-1">{{ currentPage }}</span> de <span
+                    class="text-white fw-bold mx-1">{{ lastPage }}</span>
+                <span style="color: #94a3b8;" class="ms-1">({{ totalProducts }} productos en total)</span>
+            </div>
+
         </div>
 
         <ProductsCrudModal :selectedProduct="selectedProduct" :isEdit="isEdit" @refresh="fetchProducts" />
@@ -90,25 +122,52 @@ export default {
             products: [],
             isEdit: false,
             selectedProduct: null,
+            currentPage: 1,
+            lastPage: 1,
+            totalProducts: 0,
         };
     },
 
+    computed: {
+        visiblePages() {
+            let pages = [];
+            let start = Math.max(1, this.currentPage - 2);
+            let end = Math.min(this.lastPage, this.currentPage + 2);
+
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+            return pages;
+        }
+    },
+
     methods: {
-        fetchProducts() {
+        fetchProducts(page = 1) {
+            // Evitar peticiones fuera de rango
+            if (page < 1 || (this.lastPage && page > this.lastPage)) return;
+
             loaderState.show();
-            // Asumimos que esta ruta pública/protegida devuelve los productos
-            fetch(`${this.$BASE_URL}/v1/products`)
-            .then(res => res.json())
-            .then(data => {
-                // Dependiendo de tu API Resource, puede ser data.data o directamente data
-                this.products = data.data || data || [];
-            })
-            .catch(err => {
-                console.error("Error obteniendo productos:", err);
-            })
-            .finally(() => {
-                loaderState.hide();
-            });
+            fetch(`${this.$BASE_URL}/v1/products?page=${page}`)
+                .then(res => res.json())
+                .then(data => {
+                    this.products = data.data || [];
+
+                    if (data.meta) {
+                        this.currentPage = data.meta.current_page;
+                        this.lastPage = data.meta.last_page;
+                        this.totalProducts = data.meta.total;
+                    } else if (data.current_page !== undefined) {
+                        this.currentPage = data.current_page;
+                        this.lastPage = data.last_page;
+                        this.totalProducts = data.total;
+                    }
+                })
+                .catch(err => {
+                    console.error("Error obteniendo productos:", err);
+                })
+                .finally(() => {
+                    loaderState.hide();
+                });
         },
 
         openCreate() {
@@ -134,25 +193,19 @@ export default {
                     Authorization: `Bearer ${token}`,
                 },
             })
-            .then(res => {
-                if (!res.ok) {
-                    return res.json().then(err => { throw err; });
-                }
-                this.fetchProducts();
-            })
-            .catch(err => {
-                console.error("Error al eliminar producto:", err);
-            })
-            .finally(() => {
-                loaderState.hide();
-            });
+                .then(res => {
+                    if (!res.ok) return res.json().then(err => { throw err; });
+                    // Al borrar, recargamos la PÁGINA ACTUAL para no volver a la 1
+                    this.fetchProducts(this.currentPage);
+                })
+                .catch(err => console.error("Error al eliminar producto:", err))
+                .finally(() => loaderState.hide());
         },
-        
-        // Método auxiliar para construir la URL de la imagen si tu backend no manda ruta completa
+
         getImageUrl(url) {
             if (!url) return '';
             if (url.startsWith('http')) return url;
-            return `/src/assets/img-productos/${url}`; 
+            return `/src/assets/img-productos/${url}`;
         }
     },
 
@@ -163,15 +216,29 @@ export default {
 </script>
 
 <style scoped>
-/* Los estilos se mantienen exactamente iguales al panel de servicios 
-   para conservar la consistencia visual */
+.col-id {
+    width: 10%;
+}
 
-.col-id { width: 10%; }
-.col-name { width: 25%; }
-.col-type { width: 20%; }
-.col-price { width: 15%; }
-.col-stock { width: 15%; } /* Cambiado de col-duration a col-stock */
-.col-actions { width: 15%; }
+.col-name {
+    width: 25%;
+}
+
+.col-type {
+    width: 20%;
+}
+
+.col-price {
+    width: 15%;
+}
+
+.col-stock {
+    width: 15%;
+}
+
+.col-actions {
+    width: 15%;
+}
 
 .empty-icon {
     font-size: 2rem;
@@ -205,7 +272,7 @@ export default {
 }
 
 .icon-title {
-    color: #f97316; /* Color naranja para diferenciarlo del verde de servicios */
+    color: #f97316;
     font-size: 1.8rem;
     filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.4));
 }
@@ -356,5 +423,41 @@ export default {
 
 .text-neon-green {
     color: #a3e635;
+}
+
+/* --- ESTILOS DE PAGINACIÓN --- */
+.pagination-custom .page-link {
+    background-color: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    min-width: 38px;
+    margin: 0 4px;
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+}
+
+.pagination-custom .page-item.active .page-link {
+    background-color: #f97316;
+    border-color: #f97316;
+    color: #0f172a;
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+}
+
+.pagination-custom .page-item:not(.active):not(.disabled) .page-link:hover {
+    background-color: rgba(249, 115, 22, 0.1);
+    color: #f97316;
+    border-color: rgba(249, 115, 22, 0.3);
+    transform: translateY(-2px);
+}
+
+.pagination-custom .page-item.disabled .page-link {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background-color: rgba(15, 23, 42, 0.3);
 }
 </style>
