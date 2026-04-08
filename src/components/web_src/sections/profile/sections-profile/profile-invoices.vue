@@ -16,7 +16,6 @@
 
     <div class="controls-wrapper">
 
-      <!-- Buscador -->
       <div class="search-row">
         <span class="material-symbols-outlined search-icon">search</span>
         <input
@@ -30,7 +29,6 @@
         </button>
       </div>
 
-      <!--filtro por tipo -->
       <div class="filter-row">
         <button
           v-for="chip in filterChips"
@@ -46,18 +44,15 @@
 
     </div>
 
-    <!-- Meta de resultados -->
     <p v-if="searchQuery || activeFilter !== 'all'" class="results-meta">
       {{ filteredInvoices.length }} resultado{{ filteredInvoices.length !== 1 ? 's' : '' }} encontrado{{ filteredInvoices.length !== 1 ? 's' : '' }}
     </p>
 
-    <!-- Sin resultados -->
     <div v-if="!filteredInvoices.length" class="no-results">
       <span class="material-symbols-outlined">search_off</span>
       <p>No se encontraron facturas con los filtros aplicados.</p>
     </div>
 
-    <!-- LISTADO FACTURAS -->
     <div v-else class="invoices-list">
       <div
         v-for="(invoice, index) in filteredInvoices"
@@ -72,7 +67,6 @@
           <div>
             <p class="invoice-number"># {{ invoice.invoiceNumber }}</p>
             <p class="invoice-meta">{{ invoice.created_at }}</p>
-            <!-- Tags de tipo de contenido -->
             <div class="type-tags">
               <span v-if="hasType(invoice, 'product')" class="type-tag type-tag--product">
                 <span class="material-symbols-outlined">inventory_2</span>
@@ -131,9 +125,19 @@
                 class="product-row"
               >
                 <div class="product-row-left">
+
+                  <!-- ── IMAGEN O ICONO FALLBACK ── -->
                   <div class="product-icon-wrap product-icon-wrap--product">
-                    <span class="material-symbols-outlined">inventory_2</span>
+                    <img
+                      v-if="product.image_url"
+                      :src="getProductImage(product.image_url)"
+                      :alt="product.name"
+                      class="product-img"
+                      @error="onImgError"
+                    />
+                    <span v-else class="material-symbols-outlined">inventory_2</span>
                   </div>
+
                   <div>
                     <p class="product-name">{{ product.name }}</p>
                     <div class="product-tags">
@@ -166,9 +170,19 @@
                 class="product-row product-row--appointment"
               >
                 <div class="product-row-left">
+
+                  <!-- ── IMAGEN O ICONO FALLBACK ── -->
                   <div class="product-icon-wrap product-icon-wrap--appointment">
-                    <span class="material-symbols-outlined">home_repair_service</span>
+                    <img
+                      v-if="appt.image_url"
+                      :src="getServiceImage(appt.image_url)"
+                      :alt="appt.service"
+                      class="product-img"
+                      @error="onImgError"
+                    />
+                    <span v-else class="material-symbols-outlined">home_repair_service</span>
                   </div>
+
                   <div class="appt-info">
                     <p class="product-name">{{ appt.service }}</p>
                     <div class="appointment-detail">
@@ -222,9 +236,9 @@ export default {
       searchQuery: '',
       activeFilter: 'all',
       filterChips: [
-        { value: 'all',     label: 'Todas',          color: 'neutral' },
-        { value: 'product', label: 'Con productos',   color: 'green'   },
-        { value: 'service', label: 'Con servicios',   color: 'blue'    },
+        { value: 'all',     label: 'Todas',        color: 'neutral' },
+        { value: 'product', label: 'Con productos', color: 'green'   },
+        { value: 'service', label: 'Con servicios', color: 'blue'    },
       ]
     }
   },
@@ -232,18 +246,16 @@ export default {
   computed: {
     filteredInvoices() {
       return this.infoInvoices.filter(invoice => {
-        //Filtro texto
         const term = this.searchQuery.trim().toLowerCase()
         const matchesSearch = !term
           || invoice.invoiceNumber?.toLowerCase().includes(term)
           || invoice.created_at?.toLowerCase().includes(term)
           || invoice.total?.toString().includes(term)
 
-        // Filtro por tipo 
         const matchesType =
           this.activeFilter === 'all'
-          || (this.activeFilter === 'product'  && this.hasType(invoice, 'product'))
-          || (this.activeFilter === 'service'  && this.hasType(invoice, 'appointment'))
+          || (this.activeFilter === 'product' && this.hasType(invoice, 'product'))
+          || (this.activeFilter === 'service' && this.hasType(invoice, 'appointment'))
 
         return matchesSearch && matchesType
       })
@@ -261,7 +273,6 @@ export default {
   },
 
   methods: {
-    //Comprueba si una factura tiene items de un tipo dado
     hasType(invoice, type) {
       if (!invoice.items?.length) return false
       return invoice.items.some(item => item.type === type)
@@ -275,6 +286,18 @@ export default {
     closeModal() {
       this.showModal = false
       this.selectedInvoice = null
+    },
+
+    getProductImage(filename) {
+      return new URL(`../../../../../assets/img-productos/${filename}`, import.meta.url).href
+    },
+
+    getServiceImage(filename) {
+      return new URL(`../../../../../assets/img-servicios/${filename}`, import.meta.url).href
+    },
+
+    onImgError(e) {
+      e.target.style.display = 'none'
     }
   }
 }
@@ -287,7 +310,6 @@ export default {
   margin: 0 auto;
 }
 
-/* ── HEADER ── */
 .page-header {
   display: flex;
   align-items: center;
@@ -315,7 +337,6 @@ export default {
   border-radius: 20px;
 }
 
-/* ── CONTROLES ── */
 .controls-wrapper {
   display: flex;
   flex-direction: column;
@@ -373,7 +394,6 @@ export default {
   &:hover { opacity: 1; }
 }
 
-/* ── CHIPS DE FILTRO ── */
 .filter-row {
   display: flex;
   gap: 8px;
@@ -399,7 +419,6 @@ export default {
 
   &.active {
     opacity: 1;
-
     &--neutral { border-color: var(--nav-text); }
     &--green   { border-color: #52b155; color: #52b155; background: rgba(82, 177, 85, 0.08); }
     &--blue    { border-color: #5b8fd4; color: #5b8fd4; background: rgba(91, 143, 212, 0.08); }
@@ -417,7 +436,6 @@ export default {
   &--blue    { background: #5b8fd4; }
 }
 
-/* ── META RESULTADOS ── */
 .results-meta {
   font-size: 0.8rem;
   color: var(--nav-text);
@@ -425,7 +443,6 @@ export default {
   margin-bottom: 1rem;
 }
 
-/* ── SIN RESULTADOS ── */
 .no-results {
   display: flex;
   flex-direction: column;
@@ -440,7 +457,6 @@ export default {
   p { font-size: 0.9rem; font-weight: 500; margin: 0; }
 }
 
-/* ── LISTA ── */
 .invoices-list {
   display: flex;
   flex-direction: column;
@@ -456,7 +472,6 @@ export default {
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  // Animación de entrada escalonada
   animation: cardSlideIn 0.22s ease both;
   transition: border-color 0.2s ease, transform 0.18s ease, box-shadow 0.18s ease;
 
@@ -505,7 +520,6 @@ export default {
   margin: 0 0 6px 0;
 }
 
-/* ── TAGS DE TIPO ── */
 .type-tags {
   display: flex;
   gap: 5px;
@@ -523,15 +537,8 @@ export default {
 
   .material-symbols-outlined { font-size: 13px; }
 
-  &--product {
-    background: rgba(82, 177, 85, 0.1);
-    color: #3b6d11;
-  }
-
-  &--service {
-    background: rgba(91, 143, 212, 0.12);
-    color: #185fa5;
-  }
+  &--product { background: rgba(82, 177, 85, 0.1);    color: #3b6d11; }
+  &--service  { background: rgba(91, 143, 212, 0.12); color: #185fa5; }
 }
 
 .invoice-card-right {
@@ -676,15 +683,17 @@ export default {
   margin-right: 12px;
 }
 
+/* ── ICONO / IMAGEN PRODUCTO ── */
 .product-icon-wrap {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   margin-top: 2px;
+  overflow: hidden;
 
   .material-symbols-outlined { font-size: 20px; }
 
@@ -697,6 +706,12 @@ export default {
     background-color: rgba(91, 143, 212, 0.12);
     .material-symbols-outlined { color: #5b8fd4; }
   }
+}
+
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .product-name {
@@ -818,7 +833,6 @@ export default {
   &:hover { background-color: var(--nav-border, #f0f0f0); }
 }
 
-/* ── LOADING ── */
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -832,11 +846,9 @@ export default {
 .loading-icon { font-size: 52px; color: #52b155; margin-bottom: 1rem; }
 .loading-text { font-weight: 600; }
 
-/* ── ANIMACIÓN MODAL ── */
 .modal-enter-active, .modal-leave-active { transition: all 0.25s ease; }
 .modal-enter-from, .modal-leave-to { opacity: 0; transform: scale(0.95); }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 576px) {
   .invoices-wrapper { padding: 1rem; }
   .invoice-card { flex-direction: column; align-items: flex-start; gap: 1rem; }
