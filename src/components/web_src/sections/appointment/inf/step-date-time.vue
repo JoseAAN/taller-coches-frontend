@@ -57,7 +57,8 @@
             <p class="slots-hour-label">{{ hour }}h</p>
             <div class="slots-grid">
               <button v-for="slot in group" :key="slot.start" class="slot-btn"
-                :class="{ selected: selectedSlot?.start === slot.start }" @click="selectSlot(slot)">
+                :class="{ selected: selectedSlot?.start === slot.start }" :disabled="isSlotDisabled(slot)"
+                @click="selectSlot(slot)">
                 {{ slot.start }}
               </button>
             </div>
@@ -139,6 +140,25 @@ export default {
     },
     selectSlot(slot) {
       this.selectedSlot = slot
+    },
+    //Metodo para bloquear horas del día de hoy si son anteriores a la hora actual.
+    isSlotDisabled(slot) {
+      // Si la fecha elegida no es hoy, no bloqueamos nada
+      if (this.selectedDate !== this.today) return false;
+
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+
+      const [slotHour, slotMinute] = slot.start.split(':').map(Number);
+
+      // Si la hora del slot es menor a la actual, la bloquea
+      if (slotHour < currentHour) return true;
+
+      // Si estamos en la misma hora, comprueba los minutos
+      if (slotHour === currentHour && slotMinute <= currentMinute) return true;
+
+      return false;
     },
     confirm() {
       if (!this.selectedSlot) return
@@ -314,7 +334,7 @@ export default {
   cursor: pointer;
   transition: all 0.15s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     border-color: #52b155;
     color: #52b155;
   }
@@ -323,6 +343,14 @@ export default {
     background-color: #52b155;
     border-color: #52b155;
     color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: var(--nav-border, #ddd);
+    color: var(--nav-text);
   }
 }
 
