@@ -143,7 +143,7 @@ export default {
             this.form = { email: '', password: '' };
             window.grecaptcha.reset();
             localStorage.setItem('user_token', data.access_token);
-            fetchUserData();
+            await fetchUserData();
             
             // Sincroniza posibles carritos de invitado y luego carga el carrito real internamente
             await cart.syncGuestCart(); 
@@ -151,7 +151,7 @@ export default {
             if(cart.items.length === 0 && !cart.id) {
                await cart.loadUserCart();
             }
-
+            
             if (data.user.role.name === 'admin') {
               this.$router.push('/admin');
             } else {
