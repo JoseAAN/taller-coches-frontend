@@ -11,15 +11,59 @@
         <span class="material-symbols-outlined header-icon">shopping_bag</span>
         <h4 class="page-title">Mis Compras</h4>
       </div>
-      <span class="invoice-count">{{ infoInvoices.length }} factura{{ infoInvoices.length !== 1 ? 's' : '' }}</span>
+      <span class="invoice-count">{{ filteredInvoices.length }} de {{ infoInvoices.length }} factura{{ infoInvoices.length !== 1 ? 's' : '' }}</span>
+    </div>
+
+    <div class="controls-wrapper">
+
+      <!-- Buscador -->
+      <div class="search-row">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input
+          v-model="searchQuery"
+          type="text"
+          class="search-input"
+          placeholder="Buscar por número, fecha o importe…"
+        />
+        <button v-if="searchQuery" @click="searchQuery = ''" class="btn-clear-search">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!--filtro por tipo -->
+      <div class="filter-row">
+        <button
+          v-for="chip in filterChips"
+          :key="chip.value"
+          class="filter-chip"
+          :class="{ active: activeFilter === chip.value, [`active--${chip.color}`]: activeFilter === chip.value }"
+          @click="activeFilter = chip.value"
+        >
+          <span class="chip-dot" :class="`chip-dot--${chip.color}`"></span>
+          {{ chip.label }}
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Meta de resultados -->
+    <p v-if="searchQuery || activeFilter !== 'all'" class="results-meta">
+      {{ filteredInvoices.length }} resultado{{ filteredInvoices.length !== 1 ? 's' : '' }} encontrado{{ filteredInvoices.length !== 1 ? 's' : '' }}
+    </p>
+
+    <!-- Sin resultados -->
+    <div v-if="!filteredInvoices.length" class="no-results">
+      <span class="material-symbols-outlined">search_off</span>
+      <p>No se encontraron facturas con los filtros aplicados.</p>
     </div>
 
     <!-- LISTADO FACTURAS -->
-    <div class="invoices-list">
+    <div v-else class="invoices-list">
       <div
-        v-for="(invoice, index) in infoInvoices"
-        :key="index"
+        v-for="(invoice, index) in filteredInvoices"
+        :key="invoice.id"
         class="invoice-card"
+        :style="{ animationDelay: `${index * 55}ms` }"
       >
         <div class="invoice-card-left">
           <div class="invoice-icon-wrap">
@@ -28,7 +72,17 @@
           <div>
             <p class="invoice-number"># {{ invoice.invoiceNumber }}</p>
             <p class="invoice-meta">{{ invoice.created_at }}</p>
-            <p class="invoice-products-count">{{ invoice.items?.length || 0 }} item{{ invoice.items?.length !== 1 ? 's' : '' }}</p>
+            <!-- Tags de tipo de contenido -->
+            <div class="type-tags">
+              <span v-if="hasType(invoice, 'product')" class="type-tag type-tag--product">
+                <span class="material-symbols-outlined">inventory_2</span>
+                Productos
+              </span>
+              <span v-if="hasType(invoice, 'appointment')" class="type-tag type-tag--service">
+                <span class="material-symbols-outlined">home_repair_service</span>
+                Servicios
+              </span>
+            </div>
           </div>
         </div>
 
@@ -160,29 +214,64 @@ export default {
     infoInvoices: { type: Array, default: () => [] }
   },
   emits: ['infoUser-update'],
+
   data() {
     return {
       showModal: false,
-      selectedInvoice: null
+      selectedInvoice: null,
+      searchQuery: '',
+      activeFilter: 'all',
+      filterChips: [
+        { value: 'all',     label: 'Todas',          color: 'neutral' },
+        { value: 'product', label: 'Con productos',   color: 'green'   },
+        { value: 'service', label: 'Con servicios',   color: 'blue'    },
+      ]
     }
   },
+
   computed: {
-    // Filtra solo los items de tipo "product" de la factura seleccionada
+    filteredInvoices() {
+      return this.infoInvoices.filter(invoice => {
+        //Filtro texto
+        const term = this.searchQuery.trim().toLowerCase()
+        const matchesSearch = !term
+          || invoice.invoiceNumber?.toLowerCase().includes(term)
+          || invoice.created_at?.toLowerCase().includes(term)
+          || invoice.total?.toString().includes(term)
+
+        // Filtro por tipo 
+        const matchesType =
+          this.activeFilter === 'all'
+          || (this.activeFilter === 'product'  && this.hasType(invoice, 'product'))
+          || (this.activeFilter === 'service'  && this.hasType(invoice, 'appointment'))
+
+        return matchesSearch && matchesType
+      })
+    },
+
     productItems() {
       if (!this.selectedInvoice) return []
       return (this.selectedInvoice.items || []).filter(item => item.type === 'product')
     },
-    // Filtra solo los items de tipo "appointment" de la factura seleccionada
+
     appointmentItems() {
       if (!this.selectedInvoice) return []
       return (this.selectedInvoice.items || []).filter(item => item.type === 'appointment')
     }
   },
+
   methods: {
+    //Comprueba si una factura tiene items de un tipo dado
+    hasType(invoice, type) {
+      if (!invoice.items?.length) return false
+      return invoice.items.some(item => item.type === type)
+    },
+
     openInvoice(invoice) {
       this.selectedInvoice = invoice
       this.showModal = true
     },
+
     closeModal() {
       this.showModal = false
       this.selectedInvoice = null
@@ -226,6 +315,131 @@ export default {
   border-radius: 20px;
 }
 
+/* ── CONTROLES ── */
+.controls-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+
+.search-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 20px;
+  color: var(--nav-text);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 44px;
+  border-radius: 10px;
+  border: 1.5px solid var(--nav-border, #ddd);
+  background-color: var(--nav-bg);
+  color: var(--nav-text);
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &::placeholder { opacity: 0.4; }
+
+  &:focus {
+    outline: none;
+    border-color: #52b155;
+    box-shadow: 0 0 0 3px rgba(82, 177, 85, 0.12);
+  }
+}
+
+.btn-clear-search {
+  position: absolute;
+  right: 10px;
+  border: none;
+  background: transparent;
+  color: var(--nav-text);
+  opacity: 0.4;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s;
+
+  .material-symbols-outlined { font-size: 18px; }
+  &:hover { opacity: 1; }
+}
+
+/* ── CHIPS DE FILTRO ── */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--nav-border, #ddd);
+  background: transparent;
+  color: var(--nav-text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+
+  &:hover { opacity: 1; border-color: currentColor; }
+
+  &.active {
+    opacity: 1;
+
+    &--neutral { border-color: var(--nav-text); }
+    &--green   { border-color: #52b155; color: #52b155; background: rgba(82, 177, 85, 0.08); }
+    &--blue    { border-color: #5b8fd4; color: #5b8fd4; background: rgba(91, 143, 212, 0.08); }
+  }
+}
+
+.chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--neutral { background: var(--nav-text); opacity: 0.5; }
+  &--green   { background: #52b155; }
+  &--blue    { background: #5b8fd4; }
+}
+
+/* ── META RESULTADOS ── */
+.results-meta {
+  font-size: 0.8rem;
+  color: var(--nav-text);
+  opacity: 0.45;
+  margin-bottom: 1rem;
+}
+
+/* ── SIN RESULTADOS ── */
+.no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 3rem 1rem;
+  color: var(--nav-text);
+  opacity: 0.5;
+  text-align: center;
+
+  .material-symbols-outlined { font-size: 48px; color: #52b155; }
+  p { font-size: 0.9rem; font-weight: 500; margin: 0; }
+}
+
 /* ── LISTA ── */
 .invoices-list {
   display: flex;
@@ -241,13 +455,21 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: all 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  // Animación de entrada escalonada
+  animation: cardSlideIn 0.22s ease both;
+  transition: border-color 0.2s ease, transform 0.18s ease, box-shadow 0.18s ease;
 
   &:hover {
     border-color: #52b155;
     box-shadow: 0 4px 12px rgba(82, 177, 85, 0.12);
+    transform: translateY(-1px);
   }
+}
+
+@keyframes cardSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .invoice-card-left {
@@ -280,14 +502,36 @@ export default {
   font-size: 0.78rem;
   color: var(--nav-text);
   opacity: 0.4;
-  margin: 0 0 2px 0;
+  margin: 0 0 6px 0;
 }
 
-.invoice-products-count {
-  font-size: 0.82rem;
-  color: var(--nav-text);
-  opacity: 0.5;
-  margin: 0;
+/* ── TAGS DE TIPO ── */
+.type-tags {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.type-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+
+  .material-symbols-outlined { font-size: 13px; }
+
+  &--product {
+    background: rgba(82, 177, 85, 0.1);
+    color: #3b6d11;
+  }
+
+  &--service {
+    background: rgba(91, 143, 212, 0.12);
+    color: #185fa5;
+  }
 }
 
 .invoice-card-right {
@@ -403,7 +647,6 @@ export default {
 
 .section-icon { font-size: 16px; }
 
-/* ── ITEMS EN MODAL ── */
 .product-list {
   display: flex;
   flex-direction: column;
@@ -421,8 +664,6 @@ export default {
   transition: border-color 0.2s ease;
 
   &:hover { border-color: #52b155; }
-
-  // Las citas tienen un toque azulado al hover
   &--appointment:hover { border-color: #5b8fd4; }
 }
 
@@ -489,7 +730,6 @@ export default {
   margin: 0;
 }
 
-/* Detalles de cita (fecha, matrícula) */
 .appt-info {
   display: flex;
   flex-direction: column;
@@ -529,7 +769,6 @@ export default {
   padding-top: 2px;
 }
 
-/* ── TOTAL ── */
 .modal-total {
   display: flex;
   align-items: center;
