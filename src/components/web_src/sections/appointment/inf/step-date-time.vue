@@ -17,13 +17,7 @@
           <span class="material-symbols-outlined">calendar_today</span>
           Fecha
         </p>
-        <input
-          type="date"
-          class="date-input"
-          v-model="selectedDate"
-          :min="today"
-          @change="fetchSlots"
-        />
+        <input type="date" class="date-input" v-model="selectedDate" :min="today" @change="fetchSlots" />
 
         <!-- INFO SERVICIO -->
         <div class="service-info-box" v-if="serviceDuration">
@@ -59,20 +53,11 @@
 
         <!-- SLOTS AGRUPADOS POR HORA -->
         <div v-else class="slots-groups">
-          <div
-            v-for="(group, hour) in groupedSlots"
-            :key="hour"
-            class="slots-hour-group"
-          >
+          <div v-for="(group, hour) in groupedSlots" :key="hour" class="slots-hour-group">
             <p class="slots-hour-label">{{ hour }}h</p>
             <div class="slots-grid">
-              <button
-                v-for="slot in group"
-                :key="slot.start"
-                class="slot-btn"
-                :class="{ selected: selectedSlot?.start === slot.start }"
-                @click="selectSlot(slot)"
-              >
+              <button v-for="slot in group" :key="slot.start" class="slot-btn"
+                :class="{ selected: selectedSlot?.start === slot.start }" @click="selectSlot(slot)">
                 {{ slot.start }}
               </button>
             </div>
@@ -116,10 +101,10 @@ export default {
     }
   },
   computed: {
-    // Agrupo las horas por las horas a las que empiezan las de las 10:00 las de las 11:00 etc..
     groupedSlots() {
       return this.slots.reduce((groups, slot) => {
-        const hour = slot.start.split(':')[0] 
+        const hour = parseInt(slot.start.split(':')[0], 10)
+
         if (!groups[hour]) groups[hour] = []
         groups[hour].push(slot)
         return groups
@@ -222,7 +207,9 @@ export default {
   opacity: 0.5;
   margin-bottom: 1rem;
 
-  .material-symbols-outlined { font-size: 16px; }
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
 }
 
 /* ── COLUMNA FECHA ── */
@@ -279,8 +266,14 @@ export default {
   border: 2px dashed var(--nav-border, #ddd);
   border-radius: 14px;
 
-  .material-symbols-outlined { font-size: 40px; }
-  p { font-weight: 600; margin: 0; }
+  .material-symbols-outlined {
+    font-size: 40px;
+  }
+
+  p {
+    font-weight: 600;
+    margin: 0;
+  }
 }
 
 .slots-groups {
@@ -354,8 +347,13 @@ export default {
   cursor: pointer;
   transition: all 0.2s ease;
 
-  .material-symbols-outlined { font-size: 20px; }
-  &:hover { background-color: var(--nav-border, #f0f0f0); }
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background-color: var(--nav-border, #f0f0f0);
+  }
 }
 
 .btn-next {
@@ -372,7 +370,9 @@ export default {
   cursor: pointer;
   transition: all 0.2s ease;
 
-  .material-symbols-outlined { font-size: 20px; }
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
 
   &:hover {
     background-color: #469c49;
@@ -398,8 +398,14 @@ export default {
   gap: 1rem;
 }
 
-.loading-icon { font-size: 48px; color: #52b155; }
-.loading-text { font-weight: 600; }
+.loading-icon {
+  font-size: 48px;
+  color: #52b155;
+}
+
+.loading-text {
+  font-weight: 600;
+}
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
@@ -409,6 +415,8 @@ export default {
 }
 
 @media (max-width: 576px) {
-  .step-wrapper { padding: 0 1rem; }
+  .step-wrapper {
+    padding: 0 1rem;
+  }
 }
 </style>
