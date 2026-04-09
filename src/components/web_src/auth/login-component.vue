@@ -55,7 +55,7 @@
             {{ lockedMessage }}
           </div>
 
-          <Button :label="loading ? 'Iniciando...' : 'Iniciar Sesión'" :disabled="loading"
+          <Button :label="loading ? 'Iniciando...' : 'Iniciar Sesión'" :disabled="loading || !captchaResolved"
             class="btn-register w-100 fw-bold py-3 mt-2" @click.prevent="iniciarSesion" />
           <div class="text-center ">
             <router-link to="/" class="d-inline-block text-secondary text-decoration-none fw-semibold border border-2 border-secondary rounded-pill px-8 py-2" style="transition: color 0.3s ease;">
@@ -102,6 +102,7 @@ export default {
       success: false,
       blockedMessage: '',
       lockedMessage: '',
+      captchaResolved: false,
     }
   },
 
@@ -142,6 +143,7 @@ export default {
             this.success = true;
             this.form = { email: '', password: '' };
             window.grecaptcha.reset();
+            this.captchaResolved = false;
             localStorage.setItem('user_token', data.access_token);
             await fetchUserData();
             
@@ -194,9 +196,17 @@ export default {
   },
 
   mounted() {
-    if (window.grecaptcha) {
-      window.grecaptcha.render(this.$refs.recaptcha, { sitekey: '6LcA8mIsAAAAAL1hrZC4H9GamA3rqF_PFZQbjaME' });
-    }
+    const renderRecaptcha = setInterval(() => {
+      if (window.grecaptcha && window.grecaptcha.render) {
+        clearInterval(renderRecaptcha);
+        this.$refs.recaptcha.innerHTML = '';
+        window.grecaptcha.render(this.$refs.recaptcha, { 
+          sitekey: '6LcA8mIsAAAAAL1hrZC4H9GamA3rqF_PFZQbjaME',
+          callback: () => { this.captchaResolved = true; },
+          'expired-callback': () => { this.captchaResolved = false; }
+        });
+      }
+    }, 100);
   },
 }
 </script>

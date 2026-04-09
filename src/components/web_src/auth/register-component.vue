@@ -47,7 +47,7 @@
             {{ errors.general || 'Registro fallido, rellene todos los campos' }}
           </div>
 
-          <Button :label="loading ? 'Registrando...' : 'Registrarse'" :disabled="loading"
+          <Button :label="loading ? 'Registrando...' : 'Registrarse'" :disabled="loading || !captchaResolved"
             class="btn-register w-100 fw-bold py-3 mt-2" @click.prevent="registrar" />
 
           <Message v-if="success" severity="success">Usuario creado correctamente</Message>
@@ -76,13 +76,22 @@ export default {
       form: { name: '', email: '', password: '', password_confirmation: '' },
       loading: false,
       errors: {},
-      success: false
+      success: false,
+      captchaResolved: false
     }
   },
   mounted() {
-    if (window.grecaptcha) {
-      window.grecaptcha.render(this.$refs.recaptcha, { sitekey: '6LcA8mIsAAAAAL1hrZC4H9GamA3rqF_PFZQbjaME' });
-    }
+    const renderRecaptcha = setInterval(() => {
+      if (window.grecaptcha && window.grecaptcha.render) {
+        clearInterval(renderRecaptcha);
+        this.$refs.recaptcha.innerHTML = '';
+        window.grecaptcha.render(this.$refs.recaptcha, { 
+          sitekey: '6LcA8mIsAAAAAL1hrZC4H9GamA3rqF_PFZQbjaME',
+          callback: () => { this.captchaResolved = true; },
+          'expired-callback': () => { this.captchaResolved = false; }
+        });
+      }
+    }, 100);
   },
   methods: {
     clearError(campo) {
@@ -153,6 +162,7 @@ export default {
           this.form = { name: '', email: '', password: '', password_confirmation: '' };
           
           window.grecaptcha.reset();
+          this.captchaResolved = false;
           
           localStorage.setItem('user_token', data.access_token);
           localStorage.setItem('user', JSON.stringify(data.user));
