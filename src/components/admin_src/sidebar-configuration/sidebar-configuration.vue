@@ -140,7 +140,7 @@ export default {
         getServices() {
             fetch(`${this.$BASE_URL}/v1/admin-navigation`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('user_token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('user')}`
                 }
             })
                 .then(res => {
@@ -175,7 +175,7 @@ export default {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('user_token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('user')}`
                 },
                 body: JSON.stringify(this.serviceSelected)
             })
@@ -198,7 +198,7 @@ export default {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('user_token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('user')}`
                 }
             })
                 .then(res => {

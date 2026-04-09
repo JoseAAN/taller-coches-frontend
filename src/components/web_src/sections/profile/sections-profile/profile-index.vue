@@ -220,7 +220,7 @@ export default {
     }
 
       try {
-        const token = localStorage.getItem('user_token');
+        const token = localStorage.getItem('user');
         const response = await fetch(`${BASE_URL}/v1/profile`, {
           method: 'PUT',
           headers: {

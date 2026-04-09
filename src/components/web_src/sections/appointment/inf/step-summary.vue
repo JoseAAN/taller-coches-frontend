@@ -137,7 +137,7 @@ export default {
   methods: {
     async confirmar() {
       this.loading = true
-      const token = localStorage.getItem('user_token')
+      const token = localStorage.getItem('user')
       let appointmentId = null
 
       try {

@@ -7,21 +7,15 @@ import { reactive } from "vue";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const authState = reactive({
-    user: localStorage.getItem("user_token")
+    user: localStorage.getItem("user")
         ? JSON.parse(localStorage.getItem("user"))
         : null,
 });
 
 export const fetchUserData = async () => {
-    const token = localStorage.getItem("user_token");
-    if (!token) {
-        return;
-    }
-    
     try {
         const response = await fetch(`${BASE_URL}/user`, {
             headers: {
-                Authorization: `Bearer ${token}`,
                 Accept: "application/json",
             },
         });
@@ -30,10 +24,13 @@ export const fetchUserData = async () => {
             const data = await response.json();
             localStorage.setItem("user", JSON.stringify(data));
             authState.user = data;
+        } else {
+            localStorage.removeItem("user");
+            authState.user = null;
         }
     } catch (error) {
         console.error("Error validando usuario:", error);
-        localStorage.removeItem("user_token");
+        localStorage.removeItem("user");
         authState.user = null;
     }
 };
@@ -41,17 +38,14 @@ export const fetchUserData = async () => {
 export const logout = () => {
     fetch(`${BASE_URL}/v1/logout`, {
         method: "POST",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("user_token")}`,
-        },
     })
     .then((response) => {
         if (!response.ok) {
             console.error("Error al cerrar sesión en el servidor");
         }
         authState.user = null;
-        localStorage.removeItem("user_token");
         localStorage.removeItem("user");
+        window.location.reload(); // Para que todo resete su estado
     })
     .catch((error) => {
         console.error("Error al cerrar sesión:", error);

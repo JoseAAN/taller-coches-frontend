@@ -93,7 +93,7 @@ export default {
     fetchSidebarItems() {
       fetch(`${this.$BASE_URL}/v1/admin-navigation`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("user_token")}`,
+          Authorization: `Bearer ${localStorage.getItem("user")}`,
           Accept: "application/json",
         }
       })

@@ -169,7 +169,7 @@ export default {
 
         submit() {
             loaderState.show();
-            const token = localStorage.getItem("user_token");
+            const token = localStorage.getItem("user");
 
             const url = this.isEdit
                 ? `${this.$BASE_URL}/v1/products/${this.form.id}`

@@ -63,7 +63,7 @@ export const cart = reactive({
     },
 
     async syncGuestCart() {
-        const token = localStorage.getItem('user_token');
+        const token = localStorage.getItem('user');
         if (!token) return;
 
         const guestCart = this.getGuestCart();
@@ -78,7 +78,7 @@ export const cart = reactive({
     },
 
     async loadUserCart() {
-        const token = localStorage.getItem('user_token');
+        const token = localStorage.getItem('user');
         if (!token) {
             await this.loadGuestCart();
             return;
@@ -124,7 +124,7 @@ export const cart = reactive({
     },
 
     async removeItem(itemId, appointmentId = null) {
-        const token = localStorage.getItem('user_token');
+        const token = localStorage.getItem('user');
 
         if (!token) {
             let guestCart = this.getGuestCart();
@@ -166,7 +166,7 @@ export const cart = reactive({
     },
 
     async updateQuantity(itemId, quantity) {
-        const token = localStorage.getItem('user_token');
+        const token = localStorage.getItem('user');
 
         if (!token) {
             let guestCart = this.getGuestCart();
@@ -211,7 +211,7 @@ export const cart = reactive({
      * @param {boolean} skipReload - Omitir reload para sincronización en bloque
      */
     async addToCart(typeId, targetId, quantity, price, skipReload = false) {
-        const token = localStorage.getItem('user_token');
+        const token = localStorage.getItem('user');
 
         if (!token) {
             if (typeId !== ITEM_TYPES.PRODUCT) {

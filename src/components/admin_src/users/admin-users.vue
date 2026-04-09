@@ -340,7 +340,7 @@ export default {
         doToggleBlock() {
             if (!this.userToToggle) return;
             this.toggling = true;
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             fetch(`${BASE_URL}/v1/users/${this.userToToggle.id}/toggle-block`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -369,7 +369,7 @@ export default {
         async doCreateUser() {
             this.creating = true;
             try {
-                const token = localStorage.getItem('user_token');
+                const token = localStorage.getItem('user');
                 const res = await fetch(`${BASE_URL}/v1/admin-users`, {
                     method: 'POST',
                     headers: { 

@@ -187,26 +187,21 @@ router.beforeEach((to, from, next) => {
 
   loaderState.show();
 
-  const token = localStorage.getItem('user_token');
+  const hasSession = localStorage.getItem('user');
 
   if (requiresAdmin) {
-    // Sin token → login directo.
-    if (!token) return next('/login');
+    if (!hasSession) return next('/login');
 
-    // Usamos el authState cacheado en memoria (cargado al iniciar la app desde
-    // localStorage). No hace falta un fetch: el backend sigue siendo la barrera
-    // real con su middleware auth.admin.
     const user = authState.user;
 
     if (user?.role?.name === 'admin') {
       return next();
     } else {
-      // Sin datos de usuario cacheados o rol insuficiente.
       return next(user ? '/' : '/login');
     }
 
   } else if (requiresAuth) {
-    if (!token) return next('/login');
+    if (!hasSession) return next('/login');
     next();
   } else {
     next();

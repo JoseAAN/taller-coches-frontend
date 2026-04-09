@@ -329,7 +329,7 @@ export default {
 
         async cargarCitas() {
             this.cargando = true
-            const token   = localStorage.getItem('user_token')
+            const token   = localStorage.getItem('user')
             const mesStr  = `${this.anio}-${String(this.mes + 1).padStart(2, '0')}`
 
             try {
@@ -350,7 +350,7 @@ export default {
             const verbo = nuevoEstado === 'completed' ? 'completar' : 'cancelar'
             if (!confirm(`¿Seguro que deseas ${verbo} esta cita?`)) return
 
-            const token = localStorage.getItem('user_token')
+            const token = localStorage.getItem('user')
             try {
                 const res = await fetch(`${this.$BASE_URL}/v1/appointments/${cita.id}/status`, {
                     method:  'PATCH',
@@ -373,7 +373,7 @@ export default {
         async eliminarCita(cita) {
             if (!confirm('¿Eliminar esta cita permanentemente?')) return
 
-            const token = localStorage.getItem('user_token')
+            const token = localStorage.getItem('user')
             try {
                 const res = await fetch(`${this.$BASE_URL}/v1/appointment/${cita.id}`, {
                     method:  'DELETE',
@@ -423,7 +423,7 @@ export default {
 
         async guardarReagenda() {
             this.guardando = true
-            const token    = localStorage.getItem('user_token')
+            const token    = localStorage.getItem('user')
 
             try {
                 const res  = await fetch(`${this.$BASE_URL}/v1/appointment/${this.formulario.id}`, {

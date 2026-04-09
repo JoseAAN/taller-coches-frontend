@@ -121,7 +121,7 @@ export default {
       this.error = null
       this.services = []
       try {
-        const token = localStorage.getItem('user_token')
+        const token = localStorage.getItem('user')
         const response = await fetch(`${BASE_URL}/v1/services`, {
           headers: {
             'Authorization': `Bearer ${token}`,

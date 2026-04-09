@@ -3,7 +3,7 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const fetchProfile = async () => {
-    const token = localStorage.getItem('user_token');
+    const token = localStorage.getItem('user');
     try {
       const response = await fetch(`${BASE_URL}/v1/profile`, {
             headers: {

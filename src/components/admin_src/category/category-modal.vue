@@ -100,7 +100,7 @@ export default {
         },
 
         async create() {
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             this.loading = true;
 
             try {
@@ -131,7 +131,7 @@ export default {
         },
         async update() {
 
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             this.loading = true;
 
             try {

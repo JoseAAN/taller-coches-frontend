@@ -5,10 +5,9 @@
     <div class="form-section">
       <div class="register-card">
         <div class="text-end mb-4">
-          <div class="logo-container">
-            <div class="logo-icon"></div>
-            <span class="logo-text">LOGASO</span>
-          </div>
+          <router-link to="/">
+            <div class="logo-container"></div>
+          </router-link>
         </div>
 
         <h2 class="fw-bold mb-1 register-title">Crear Cuenta</h2>
@@ -67,6 +66,7 @@ import Button from 'primevue/button'
 import Message from 'primevue/message'
 import {loaderState} from '@/loaderState';
 import { cart } from '@/JS/Cart.js';
+import { fetchUserData } from '@/JS/Auth.js';
 
 export default {
   name: 'RegisterComponent',
@@ -164,15 +164,14 @@ export default {
           window.grecaptcha.reset();
           this.captchaResolved = false;
           
-          localStorage.setItem('user_token', data.access_token);
-          localStorage.setItem('user', JSON.stringify(data.user));
-
+          await fetchUserData(); // Asegurarnos de que el estado global de Vue reactive la sesión
+          
           await cart.syncGuestCart();
           if(cart.items.length === 0 && !cart.id) {
              await cart.loadUserCart();
           }
 
-          if (data.user.role === 'admin') {
+          if (data.user?.role?.name === 'admin') {
             this.$router.push('/admin');
           } else {
             this.$router.push('/');
@@ -223,16 +222,18 @@ export default {
 }
 
 .logo-container {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-end;
+  width: 150px;
+  height: 60px;
+  background-image: url('@/assets/LogoModoClaro.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right center;
+  display: inline-block;
+  transition: transform 0.3s ease;
 }
 
-.logo-text {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: #333;
+.logo-container:hover {
+  transform: scale(1.05);
 }
 
 .custom-error-alert {

@@ -162,7 +162,7 @@ export default {
         },
 
         async cancelarCita() {
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             if (!token) return this.$router.push('/login');
 
             try {

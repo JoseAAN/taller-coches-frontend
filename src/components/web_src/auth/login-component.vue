@@ -5,10 +5,9 @@
     <div class="form-section">
       <div class="register-card">
         <div class="text-end mb-4">
-          <div class="logo-container">
-            <div class="logo-icon"></div>
-            <span class="logo-text">LOGASO</span>
-          </div>
+          <router-link to="/">
+            <div class="logo-container"></div>
+          </router-link>
         </div>
 
         <h2 class="fw-bold mb-1 register-title">Inicio de Sesión</h2>
@@ -144,7 +143,6 @@ export default {
             this.form = { email: '', password: '' };
             window.grecaptcha.reset();
             this.captchaResolved = false;
-            localStorage.setItem('user_token', data.access_token);
             await fetchUserData();
             
             // Sincroniza posibles carritos de invitado y luego carga el carrito real internamente
@@ -240,16 +238,18 @@ export default {
 }
 
 .logo-container {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-end;
+  width: 150px;
+  height: 60px;
+  background-image: url('@/assets/LogoModoClaro.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right center;
+  display: inline-block;
+  transition: transform 0.3s ease;
 }
 
-.logo-text {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: #333;
+.logo-container:hover {
+  transform: scale(1.05);
 }
 
 .custom-error-alert {

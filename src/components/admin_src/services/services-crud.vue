@@ -91,7 +91,7 @@ export default {
     methods: {
         fetchServices() {
             loaderState.show();
-            const token = localStorage.getItem("user_token");
+            const token = localStorage.getItem("user");
             fetch(`${this.$BASE_URL}/v1/services`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
@@ -119,7 +119,7 @@ export default {
 
         deleteService(id) {
             if (!confirm("¿Seguro que quieres eliminar este servicio?")) return;
-            const token = localStorage.getItem("user_token");
+            const token = localStorage.getItem("user");
 
             loaderState.show();
             fetch(`${this.$BASE_URL}/v1/services/${id}`, {

@@ -331,7 +331,7 @@ export default {
             });
         },
         fetchStats() {
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             fetch(`${this.$BASE_URL}/v1/dashboard-stats`, {
                 headers: {
                     'Authorization': `Bearer ${token}`

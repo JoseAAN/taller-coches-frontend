@@ -182,7 +182,7 @@ export default {
 
         deleteProduct(id) {
             if (!confirm("¿Seguro que quieres eliminar este producto? Esta acción no se puede deshacer.")) return;
-            const token = localStorage.getItem("user_token");
+            const token = localStorage.getItem("user");
 
             loaderState.show();
             fetch(`${this.$BASE_URL}/v1/products/${id}`, {

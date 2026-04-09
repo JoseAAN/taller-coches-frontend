@@ -103,7 +103,7 @@ export default {
 
         async deleteType(id) {
             if (!confirm("¿Seguro que quieres eliminar este tipo?")) return;
-            const token = localStorage.getItem("user_token");
+            const token = localStorage.getItem("user");
 
             try {
                 loaderState.show();

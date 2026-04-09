@@ -190,7 +190,7 @@ export default {
     },
     methods: {
         async fetchAllData() {
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             const headers = { 'Authorization': `Bearer ${token}` };
             try {
                 // Fetch vehicles
@@ -239,7 +239,7 @@ export default {
         },
         async saveVehicle() {
             this.saving = true;
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             const url = this.isEditing 
                 ? `${this.$BASE_URL}/v1/vehicles/${this.currentId}`
                 : `${this.$BASE_URL}/v1/vehicles`;
@@ -277,7 +277,7 @@ export default {
         async confirmDelete(vehicle) {
             if(!confirm(`¿Seguro que quieres eliminar el vehículo ${vehicle.license_plate}?`)) return;
             
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             try {
                 const res = await fetch(`${this.$BASE_URL}/v1/vehicles/${vehicle.id}`, {
                     method: 'DELETE',

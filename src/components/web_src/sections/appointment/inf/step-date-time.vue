@@ -119,7 +119,7 @@ export default {
       this.slots = []
       this.loading = true
       try {
-        const token = localStorage.getItem('user_token')
+        const token = localStorage.getItem('user')
         const response = await fetch(
           `${BASE_URL}/v1/appointment?service_id=${this.serviceId}&date=${this.selectedDate}`,
           {

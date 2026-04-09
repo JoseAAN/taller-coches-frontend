@@ -80,7 +80,7 @@ export default {
         async submit() {
             try {
                 loaderState.show();
-                const token = localStorage.getItem("user_token");
+                const token = localStorage.getItem("user");
                 // esto simplemente comprueba si estamos editando o creando para saber que uri usar
                 const url = this.isEdit
                     ? `${this.$BASE_URL}/v1/serviceType/${this.form.id}`

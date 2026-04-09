@@ -121,7 +121,7 @@ export default {
     methods: {
         async fetchInvoices(page = 1) {
             this.loading = true;
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             try {
                 let url = `${this.$BASE_URL}/v1/invoices?page=${page}`;
                 if (this.search.trim() !== '') {
@@ -146,7 +146,7 @@ export default {
         },
         async viewDetails(invoiceId) {
             loaderState.show();
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             try {
                 // Hacer fetch de la factura entera con sus items 
                 const res = await fetch(`${this.$BASE_URL}/v1/invoices/${invoiceId}`, {

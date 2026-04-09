@@ -132,7 +132,7 @@ export default {
 
     computed: {
         isLoggedIn() {
-            return !!localStorage.getItem('user_token')
+            return !!localStorage.getItem('user')
         }
     },
 
@@ -163,7 +163,7 @@ export default {
 
             try {
                 this.isProcessing = true;
-                const token = localStorage.getItem('user_token');
+                const token = localStorage.getItem('user');
 
                 this.toast.info('Redirigiendo a pasarela segura de Stripe...', { timeout: 1500 });
                 
@@ -199,7 +199,7 @@ export default {
                 
                 window.history.replaceState({}, document.title, window.location.pathname);
                 
-                const token = localStorage.getItem('user_token');
+                const token = localStorage.getItem('user');
                 
                 try {
                     const res = await fetch(`${this.$BASE_URL}/v1/invoices`, {

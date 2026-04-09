@@ -4,7 +4,7 @@ export default class User {
         this.name = data.name || 'Invitado';
         this.email = data.email || '';
         this.role = data.role || { name: 'guest' };
-        this.token = data.token || localStorage.getItem('user_token');
+        this.token = data.token || localStorage.getItem('user');
     }
 
     get isAdmin() {
@@ -17,12 +17,12 @@ export default class User {
         this.name = userData.name;
         this.email = userData.email;
         this.role = userData.role;
-        localStorage.setItem('user_token', token);
+        localStorage.setItem('user', token);
         localStorage.setItem('user', JSON.stringify(userData));
     }
 
     logout() {
-        localStorage.removeItem('user_token');
+        localStorage.removeItem('user');
         localStorage.removeItem('user');
         window.location.href = '/login';
     }

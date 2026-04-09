@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     checkUser() {
-      const token = localStorage.getItem('user_token');
+      const token = localStorage.getItem('user');
       if (token) {
         fetch(`${this.$BASE_URL}/user`, {
           headers: {
@@ -82,7 +82,7 @@ export default {
           })
           .catch(() => {
             this.user_verfied = false;
-            localStorage.removeItem('user_token');
+            localStorage.removeItem('user');
           });
       }
     }

@@ -240,7 +240,7 @@ export default {
         },
         async loadVehicleTypes() {
             try {
-                const token = localStorage.getItem('user_token');
+                const token = localStorage.getItem('user');
                 const response = await fetch(`${BASE_URL}/v1/vehicleType`, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -255,7 +255,7 @@ export default {
             }
         },
         async submitVehicle() {
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             if(!token) return this.$router.push('/login');
 
             const { brand, model, color, license_plate, vehicle_type_id } = this.vehicleForm;
@@ -267,7 +267,7 @@ export default {
             try {
                 this.saving = true;
                 this.formError = null;
-                const token = localStorage.getItem('user_token');
+                const token = localStorage.getItem('user');
 
                 const response = await fetch(`${BASE_URL}/v1/vehicles`, {
                     method: 'POST',
@@ -307,11 +307,11 @@ export default {
             this.vehicleToDeleteIndex = null;
         },
         async deleteVehicle() {
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
             if(!token) return this.$router.push('/login');
             try {
                 this.deleting = true;
-                const token = localStorage.getItem('user_token');
+                const token = localStorage.getItem('user');
             
                 const response = await fetch(`${BASE_URL}/v1/vehicles/${this.vehicleToDelete.id}`, {
                     method: 'DELETE',

@@ -129,7 +129,7 @@ export default {
         },
         toggleHomeStatus(service) {
             const activeShowOnHome = !service.show_on_home;
-            let token = localStorage.getItem('user_token'); 
+            let token = localStorage.getItem('user'); 
             fetch(`${this.$BASE_URL}/v1/services/${service.id}/toggle-home`, {
                 method: 'POST',
                 headers: {

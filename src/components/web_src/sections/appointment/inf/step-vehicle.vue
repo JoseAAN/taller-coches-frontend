@@ -94,7 +94,7 @@ export default {
     }
   },
   async mounted() {
-    const token = localStorage.getItem('user_token')
+    const token = localStorage.getItem('user')
     if (!token) {
       this.notLoggedIn = true
       return
@@ -105,7 +105,7 @@ export default {
     async fetchVehicles() {
       this.loading = true
       try {
-        const token = localStorage.getItem('user_token')
+        const token = localStorage.getItem('user')
         const response = await fetch(`${BASE_URL}/v1/vehicles`, {
           headers: {
             'Authorization': `Bearer ${token}`,

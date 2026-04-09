@@ -124,7 +124,7 @@ export default {
         async deleteCategory(id,name) {
             if (!confirm('¿Seguro que quieres eliminar la categoría de ' +  name + '?')) return;
 
-            const token = localStorage.getItem('user_token');
+            const token = localStorage.getItem('user');
 
             try {
                 loaderState.show();
