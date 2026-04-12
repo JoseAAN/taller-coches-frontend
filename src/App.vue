@@ -7,12 +7,17 @@
 <script>
 import Loader from './components/web_src/shared/loader.vue';
 import { cart } from '@/JS/Cart.js';
+import { authState, fetchUserData } from '@/JS/Auth.js';
+
 export default {
   components: {
     Loader
   },
 
-  mounted() {
+  async mounted() {
+    if (!authState.user) {
+      await fetchUserData();
+    }
     cart.loadUserCart();
   }
 }

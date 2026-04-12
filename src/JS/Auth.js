@@ -19,19 +19,22 @@ export const fetchUserData = async () => {
                 Accept: "application/json",
             },
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem("user", JSON.stringify(data));
             authState.user = data;
+            return true;
         } else {
             localStorage.removeItem("user");
             authState.user = null;
+            return false;
         }
     } catch (error) {
         console.error("Error validando usuario:", error);
         localStorage.removeItem("user");
         authState.user = null;
+        return false;
     }
 };
 
@@ -39,15 +42,15 @@ export const logout = () => {
     fetch(`${BASE_URL}/v1/logout`, {
         method: "POST",
     })
-    .then((response) => {
-        if (!response.ok) {
-            console.error("Error al cerrar sesión en el servidor");
-        }
-        authState.user = null;
-        localStorage.removeItem("user");
-        window.location.reload(); // Para que todo resete su estado
-    })
-    .catch((error) => {
-        console.error("Error al cerrar sesión:", error);
-    });
+        .then((response) => {
+            if (!response.ok) {
+                console.error("Error al cerrar sesión en el servidor");
+            }
+            authState.user = null;
+            localStorage.removeItem("user");
+            window.location.reload(); // Para que todo resete su estado
+        })
+        .catch((error) => {
+            console.error("Error al cerrar sesión:", error);
+        });
 };

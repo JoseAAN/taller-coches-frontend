@@ -64,6 +64,20 @@
 
           <Message v-if="success" severity="success">Sesión iniciada correctamente</Message>
 
+          <div class="text-center mt-4 mb-3">
+            <div class="d-flex align-items-center mb-3">
+              <div class="flex-grow-1 border-top border-secondary opacity-25"></div>
+              <span class="mx-3 text-secondary" style="font-size: 0.85rem">o</span>
+              <div class="flex-grow-1 border-top border-secondary opacity-25"></div>
+            </div>
+            
+            <a :href="`${$BASE_URL}/google-auth/redirect`" class="btn-google d-flex align-items-center justify-content-center w-100 text-decoration-none">
+              <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" class="google-icon" />
+              <span>Continuar con Google</span>
+            </a>
+
+          </div>
+
           <div class="text-center mt-3">
             <span class="text-secondary">¿No tienes cuenta? </span>
             <router-link to="/register" class=" text-decoration-none fw-semibold">
@@ -84,7 +98,7 @@ import Button from 'primevue/button'
 import Message from 'primevue/message'
 import { loaderState } from '@/loaderState';
 import { cart } from '@/JS/Cart.js';
-import { fetchUserData } from '@/JS/Auth.js';
+import { fetchUserData, authState } from '@/JS/Auth.js';
 
 export default {
   name: 'login-component',
@@ -193,7 +207,29 @@ export default {
     },
   },
 
-  mounted() {
+ async mounted() {
+    if (this.$route.query.google === 'success') {
+      this.loading = true;
+      try {
+        await fetchUserData();
+        await cart.syncGuestCart(); 
+        if (cart.items.length === 0 && !cart.id) {
+           await cart.loadUserCart();
+        }
+        
+        if (authState.user && authState.user.role.name === 'admin') {
+          this.$router.push('/admin');
+        } else {
+          this.$router.push('/');
+        }
+      } catch (error) {
+         console.error("Error validando el logueo de Google", error);
+         this.errors = { general: 'No se pudo completar el login con Google.' };
+      } finally {
+        this.loading = false;
+      }
+      return; 
+    }
     const renderRecaptcha = setInterval(() => {
       if (window.grecaptcha && window.grecaptcha.render) {
         clearInterval(renderRecaptcha);
@@ -287,6 +323,28 @@ export default {
 
 .btn-register:hover {
   background-color: #2563eb;
+}
+
+.btn-google {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  color: #374151;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-google:hover {
+  background-color: #f9fafb;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
 }
 
 .p-error {
