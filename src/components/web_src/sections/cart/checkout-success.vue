@@ -92,10 +92,10 @@ export default {
                     return
                 }
 
-                const token = localStorage.getItem('user')
                 const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/v1/invoices/by-cart/${cartId}`, {
+                    credentials: 'include',
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Accept: 'application/json'
                     }
                 })
 
@@ -123,10 +123,10 @@ export default {
         },
         async fetchCartDetails(cartId) {
             try {
-                const token = localStorage.getItem('user')
                 const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/v1/carts/${cartId}`, {
+                    credentials: 'include',
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Accept: 'application/json'
                     }
                 })
 

@@ -208,6 +208,20 @@ export default {
   },
 
  async mounted() {
+    const oauthErrors = {
+      google_auth_failed: 'No se pudo completar la autenticación con Google. Inténtalo de nuevo.',
+      google_invalid_state: 'La autenticación con Google ha caducado o no es válida. Vuelve a intentarlo.',
+      google_account_mismatch: 'Esta cuenta de Google no coincide con la que estaba enlazada a este usuario.',
+      account_blocked: 'Tu cuenta está bloqueada y no puede iniciar sesión con Google.',
+      too_many_attempts: 'Tu cuenta sigue temporalmente bloqueada. Espera antes de volver a intentarlo.',
+      role_not_configured: 'No se pudo completar el acceso con Google por un problema de configuración interna.',
+      google_email_missing: 'Google no devolvió un correo válido para completar el acceso.',
+    };
+
+    if (this.$route.query.error && oauthErrors[this.$route.query.error]) {
+      this.errors = { general: oauthErrors[this.$route.query.error] };
+    }
+
     if (this.$route.query.google === 'success') {
       this.loading = true;
       try {

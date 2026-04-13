@@ -163,13 +163,13 @@ export default {
 
             try {
                 this.isProcessing = true;
-                const token = localStorage.getItem('user');
 
                 this.toast.info('Redirigiendo a pasarela segura de Stripe...', { timeout: 1500 });
                 
                 const stripeRes = await fetch(`${this.$BASE_URL}/v1/checkout/stripe`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({ cart_id: cart.id })
                 });
                 
@@ -198,16 +198,14 @@ export default {
                 this.isProcessing = true;
                 
                 window.history.replaceState({}, document.title, window.location.pathname);
-                
-                const token = localStorage.getItem('user');
-                
+
                 try {
                     const res = await fetch(`${this.$BASE_URL}/v1/invoices`, {
                         method: 'POST',
+                        credentials: 'include',
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
-                            'Authorization': `Bearer ${token}`
                         },
                         body: JSON.stringify({
                             total: cart.total,
@@ -224,7 +222,7 @@ export default {
                         return;
                     }
 
-                    const purchasedCartId = cart.id;
+                    const purchasedCartId = params.get('cart_id') || cart.id;
                     cart.clearCart();
                     this.$router.push({ name: 'CheckoutView', query: { cart_id: purchasedCartId } });
 
