@@ -37,7 +37,7 @@
 <script>
 import HeroComponent from '../sections/home-sections/hero-component.vue';
 import ServiceComponent from '../sections/home-sections/services-components/service-component.vue';
-import productsHomeComponents from '../sections/home-sections/products-components/products-home-component.vue';
+import ProductsHomeComponent from '../sections/home-sections/products-components/products-home-component.vue';
 import SliderComparator from '../UI/slider-comparator.vue';
 import FooterComponent from '../shared/main-footer.vue';
 import ContactForm from '../shared/ContactForm.vue';
@@ -52,7 +52,7 @@ export default {
     SliderComparator,
     FooterComponent,
     ContactForm,
-    productsHomeComponents
+    ProductsHomeComponent
   },
   data() {
     return {
@@ -107,7 +107,6 @@ export default {
   padding: 0 1.5rem;
 }
 
-/* ── Subtítulo ── */
 .subtitle {
   display: block;
   font-family: 'DM Sans', sans-serif;
@@ -119,7 +118,6 @@ export default {
   text-transform: uppercase;
 }
 
-/* ── Título principal ── */
 .main-title {
   font-family: 'Syne', sans-serif;
   font-weight: 800;
@@ -130,7 +128,6 @@ export default {
   letter-spacing: -0.02em;
 }
 
-/* ── Descripción ── */
 .section-description {
   font-family: 'DM Sans', sans-serif;
   color: var(--nav-text);
@@ -142,7 +139,6 @@ export default {
   font-weight: 400;
 }
 
-/* ── Subrayado degradado ── */
 .title-underline {
   width: 80px;
   height: 3px;
@@ -151,14 +147,12 @@ export default {
   border-radius: 99px;
 }
 
-/* ── Wrapper del comparador ── */
 .comparator-wrapper {
   max-width: 1100px;
   margin: 2.5rem auto 0;
   padding: 0 1rem 5rem 1rem;
 }
 
-/* ── Responsive ── */
 @media (max-width: 768px) {
   .main-title {
     font-size: 1.85rem;
