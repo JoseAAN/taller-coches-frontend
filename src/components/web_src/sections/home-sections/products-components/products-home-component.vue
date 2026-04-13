@@ -105,7 +105,7 @@ export default {
                     return mainImage.url;
                 }
                 
-                return `/src/assets/img-productos/${mainImage.url}`;
+                return `/img-productos/${mainImage.url}`;
             }
             return 'https://placehold.co/600x700?text=Sin+Imagen';
         },

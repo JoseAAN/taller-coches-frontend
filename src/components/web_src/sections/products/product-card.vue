@@ -152,7 +152,7 @@ export default {
             if (mainImage.url.startsWith('http')) {
                 return mainImage.url;
             }
-            return `/src/assets/img-productos/${mainImage.url}`;
+            return `/img-productos/${mainImage.url}`;
         }
     }
 }

@@ -205,7 +205,7 @@ export default {
         getImageUrl(url) {
             if (!url) return '';
             if (url.startsWith('http')) return url;
-            return `/src/assets/img-productos/${url}`;
+            return `/img-productos/${url}`;
         }
     },
 
