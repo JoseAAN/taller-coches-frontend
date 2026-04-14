@@ -36,8 +36,8 @@
 
 <script>
 import HeroComponent from '../sections/home-sections/hero-component.vue';
-import ServiceComponent from '../sections/home-sections/services-components/service-component.vue';
-import ProductsHomeComponent from '../sections/home-sections/products-components/products-home-component.vue';
+import ServiceComponent from '../sections/home-sections/services-home-components/service-component.vue';
+import ProductsHomeComponent from '../sections/home-sections/products-best-sellers-components/products-home-component.vue';
 import SliderComparator from '../UI/slider-comparator.vue';
 import FooterComponent from '../shared/main-footer.vue';
 import ContactForm from '../shared/ContactForm.vue';

@@ -33,9 +33,10 @@
                         type="range"
                         class="custom-range"
                         min="0"
-                        :max="filters.maxPrice"
+                        max="1000"
                         step="10"
-                        v-model="filters.minPrice"
+                        v-model.number="filters.minPrice"
+                        @input="validatePrices('min')"
                     />
                 </div>
             </div>
@@ -49,10 +50,11 @@
                     <input
                         type="range"
                         class="custom-range"
-                        :min="filters.minPrice"
+                        min="0"
                         max="1000"
                         step="10"
-                        v-model="filters.maxPrice"
+                        v-model.number="filters.maxPrice"
+                        @input="validatePrices('max')"
                     />
                 </div>
             </div>
@@ -99,12 +101,18 @@ export default {
                 .then(response => response.json())
                 .then(data => {
                     this.categories = data;
-                    console.log(this.categories);
                 })
                 .catch(error => {
                     console.error('Error fetching categories:', error);
                 });
         },
+        validatePrices(slider) {
+            if (slider === 'min' && this.filters.minPrice > this.filters.maxPrice) {
+                this.filters.minPrice = this.filters.maxPrice;
+            } else if (slider === 'max' && this.filters.maxPrice < this.filters.minPrice) {
+                this.filters.maxPrice = this.filters.minPrice;
+            }
+        }
     },
     mounted() {
         this.getCategories();

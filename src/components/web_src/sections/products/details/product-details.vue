@@ -48,17 +48,20 @@
         </div>
 
     </div>
+    
+    <RelatedProductsCarousel v-if="product" :productId="product.id" />
 </template>
 
 <script>
 import InputNumber from 'primevue/inputnumber';
 import { cart, ITEM_TYPES } from '@/JS/Cart.js';
 import { useToast } from "vue-toastification";
+import RelatedProductsCarousel from '../related-products-carousel/related-products-carousel-component-component.vue';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default {
     name: "ProductDetails",
-    components: { InputNumber },
+    components: { InputNumber, RelatedProductsCarousel },
     data() {
         return {
             productId: null,
@@ -110,17 +113,13 @@ export default {
             if (mainImage.url.startsWith('http')) {
                 return mainImage.url;
             }
-            try {
-                return new URL(`../../../../../assets/img-productos/${mainImage.url}`, import.meta.url).href;
-            } catch (error) {
-                console.error("Vite no encuentra la imagen:", error);
-                return 'https://placehold.co/600x700?text=Error';
-            }
+            return `/img-productos/${mainImage.url}`;
         }
     },
     mounted() {
         this.productId = this.$route.params.id;
         this.getProduct();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     },
 }
 </script>

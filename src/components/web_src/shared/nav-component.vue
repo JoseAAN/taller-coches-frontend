@@ -346,7 +346,7 @@ export default {
 .logo-container {
   width: 150px;
   height: 100px;
-  background-image: url('@/assets/LogoModoClaro.png');
+  background-image: url('/LogoModoClaro.png');
   background-size: contain;
   background-repeat: no-repeat;
   transition: transform 0.3s ease;

@@ -86,6 +86,7 @@ export default {
             const params = new URLSearchParams();
             if (this.activeFilters.search) params.append('search', this.activeFilters.search);
             if (this.activeFilters.category) params.append('category_id', this.activeFilters.category.id);
+            if (this.activeFilters.minPrice || this.activeFilters.minPrice === 0) params.append('min_price', this.activeFilters.minPrice);
             if (this.activeFilters.maxPrice) params.append('max_price', this.activeFilters.maxPrice);
 
             const finalUrl = url.includes('?') ? `${url}&${params.toString()}` : `${url}?${params.toString()}`;
