@@ -3,9 +3,25 @@
         <div class="row mb-3 justify-content-center">
             <div class="col-12 d-flex justify-content-center gap-2">
                 <input v-model="activeFilters.search" type="text" class="form-control search-input"
-                    placeholder="Buscar producto..." @keyup.enter="handleFilters({ ...activeFilters })" />
+                    placeholder="Buscar producto..." @keyup.enter="handleFilters({})" />
                 <button class="btn btn-primary filter-btn" data-bs-toggle="modal" data-bs-target="#filterModal">
                     <span class="material-symbols-outlined">instant_mix</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mb-3" v-if="hasAnyFilter">
+            <div class="col-md-9 text-center filter-simple-text">
+                <span class="opacity-50"><i class="pi pi-filter me-1" style="font-size: 0.8rem;"></i> Filtrando por:</span>
+                
+                <span v-if="activeFilters.search" class="ms-2">Búsqueda: <strong>"{{ activeFilters.search }}"</strong></span>
+                <span v-if="activeFilters.category" class="ms-2">Categoría: <strong>{{ activeFilters.category.name }}</strong></span>
+                <span v-if="activeFilters.minPrice > 0 || (activeFilters.maxPrice && activeFilters.maxPrice < 1000)" class="ms-2">
+                    Precio: <strong>{{ activeFilters.minPrice || 0 }}€ - {{ activeFilters.maxPrice || 1000 }}€</strong>
+                </span>
+
+                <button class="clear-all-btn ms-3 title-icon" aria-label="Borrar filtros" @click="clearAllFilters">
+                    <i class="bi bi-x-circle fs-6"></i>
                 </button>
             </div>
         </div>
@@ -51,7 +67,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <ProductFilter v-model="activeFilters" @filter-changed="handleFilters" />
+                        <ProductFilter ref="productFilter" v-model="activeFilters" @filter-changed="handleFilters" />
                     </div>
                 </div>
             </div>
@@ -75,9 +91,18 @@ export default {
             activeFilters: {
                 search: '',
                 category: '',
+                minPrice: 0,
                 maxPrice: 1000
             },
             meta: { current_page: 1, last_page: 1, total: 0, path: '' }
+        }
+    },
+    computed: {
+        hasAnyFilter() {
+            return this.activeFilters.search !== '' || 
+                   this.activeFilters.category !== '' || 
+                   this.activeFilters.minPrice > 0 || 
+                   (this.activeFilters.maxPrice !== '' && this.activeFilters.maxPrice < 1000);
         }
     },
     methods: {
@@ -104,8 +129,19 @@ export default {
                 .catch(err => console.error(err));
         },
         handleFilters(filters) {
-            this.activeFilters = filters;
+            this.activeFilters = { ...this.activeFilters, ...filters };
             this.getProducts();
+        },
+        clearAllFilters() {
+            this.activeFilters.search = '';
+            if (this.$refs.productFilter) {
+                this.$refs.productFilter.resetFilters();
+            } else {
+                this.activeFilters.category = '';
+                this.activeFilters.minPrice = 0;
+                this.activeFilters.maxPrice = 1000;
+                this.getProducts();
+            }
         },
         goToPage(page) {
             this.getProducts(`${this.meta.path}?page=${page}`);
@@ -120,7 +156,6 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 
-/* ─── CONTENEDOR ─────────────────────────────────────────── */
 .products-container {
     width: 100%;
     max-width: 1400px;
@@ -129,13 +164,12 @@ export default {
     font-family: 'DM Sans', sans-serif;
 }
 
-/* ─── BUSCADOR ───────────────────────────────────────────── */
 .search-input.form-control {
     max-width: 360px;
     height: 46px;
     padding: 10px 24px;
     border-radius: 100px;
-    border: 1.5px solid var(--nav-border, rgba(0, 0, 0, 0.12));
+    border: 1.5px solid rgba(10, 31, 51, 0.2);
     background: var(--nav-bg, rgba(255, 255, 255, 0.6));
     color: var(--nav-text, #0a1f33);
     font-family: 'DM Sans', sans-serif;
@@ -161,13 +195,12 @@ export default {
     background: var(--nav-bg, #fff);
 }
 
-/* ─── BOTÓN FILTROS ──────────────────────────────────────── */
 .filter-btn.btn.btn-primary {
     width: 46px;
     height: 46px;
     padding: 0;
     border-radius: 100px;
-    border: 1.5px solid var(--nav-border, rgba(0, 0, 0, 0.12));
+    border: 1.5px solid rgba(10, 31, 51, 0.2);
     background: transparent;
     color: var(--nav-text, #0a1f33);
     display: flex;
@@ -200,7 +233,29 @@ export default {
     line-height: 1;
 }
 
-/* ─── CABECERA PRODUCTOS ─────────────────────────────────── */
+.filter-simple-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    color: var(--nav-text, #0a1f33);
+}
+
+.clear-all-btn {
+    background: transparent;
+    border: none;
+    color: #e63946;
+    cursor: pointer;
+    opacity: 0.8;
+    padding: 0;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.clear-all-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
 .products-header {
     display: flex;
     justify-content: space-between;
@@ -215,7 +270,6 @@ export default {
     opacity: 0.45;
 }
 
-/* ─── GRID ───────────────────────────────────────────────── */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -224,7 +278,6 @@ export default {
     overflow: visible;
 }
 
-/* ─── PAGINACIÓN ─────────────────────────────────────────── */
 .pagination {
     display: flex;
     gap: 6px;
@@ -291,7 +344,6 @@ export default {
     box-shadow: none;
 }
 
-/* ─── MODAL ──────────────────────────────────────────────── */
 .modal-content {
     border-radius: 20px;
     border: 1px solid var(--nav-border, rgba(0, 0, 0, 0.08));
@@ -316,7 +368,6 @@ export default {
     padding: 1.5rem;
 }
 
-/* ─── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 1200px) {
     .products-grid {
         grid-template-columns: repeat(3, 1fr);

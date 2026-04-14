@@ -161,11 +161,10 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
 
-/* ─── CARD ───────────────────────────────────────────────── */
 .product-card {
   position: relative;
   background: var(--nav-bg, #fff);
-  border: 1px solid var(--nav-border, rgba(0, 0, 0, 0.08));
+  border: 1px solid rgba(10, 31, 51, 0.12);
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
@@ -200,7 +199,6 @@ export default {
   border-color: #52b155;
 }
 
-/* ─── IMAGE ──────────────────────────────────────────────── */
 .card-image-wrap {
   position: relative;
   width: 100%;
@@ -225,7 +223,6 @@ export default {
   pointer-events: none;
 }
 
-/* ─── BADGE SIN STOCK ────────────────────────────────────── */
 .card-badge-stock {
   position: absolute;
   top: 14px;
@@ -256,7 +253,6 @@ export default {
   box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.3);
 }
 
-/* ─── BODY ───────────────────────────────────────────────── */
 .card-body {
   padding: 18px 18px 16px;
   display: flex;
@@ -293,13 +289,12 @@ export default {
   overflow: hidden;
 }
 
-/* ─── FOOTER ─────────────────────────────────────────────── */
 .card-footer-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-top: 14px;
-  border-top: 1px solid var(--nav-border, rgba(0, 0, 0, 0.07));
+  border-top: 1px solid rgba(10, 31, 51, 0.1);
   margin-top: auto;
 }
 
@@ -319,7 +314,6 @@ export default {
   opacity: 0.85;
 }
 
-/* ─── BUTTONS ────────────────────────────────────────────── */
 .cart-btn,
 .notify-btn {
   display: inline-flex;
@@ -327,7 +321,7 @@ export default {
   gap: 7px;
   padding: 9px 16px;
   border-radius: 100px;
-  border: 1.5px solid var(--nav-border, rgba(0, 0, 0, 0.12));
+  border: 1.5px solid rgba(10, 31, 51, 0.18);
   background: transparent;
   color: var(--nav-text, #0a1f33);
   font-family: 'DM Sans', sans-serif;
@@ -354,7 +348,6 @@ export default {
   color: #52b155;
 }
 
-/* ─── ACCENT LINE ────────────────────────────────────────── */
 .card-accent {
   position: absolute;
   bottom: 0;
@@ -367,7 +360,6 @@ export default {
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* ─── ESTADO SIN STOCK ───────────────────────────────────── */
 .is-empty .card-image-wrap {
   opacity: 0.5;
 }
@@ -394,7 +386,6 @@ export default {
   opacity: 0.65;
 }
 
-/* ─── DARK MODE ──────────────────────────────────────────── */
 [data-theme="dark"] .card-image-wrap {
   background-color: #0f172a;
 }

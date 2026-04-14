@@ -66,7 +66,7 @@
         </div>
 
         <div class="d-flex justify-content-center">
-            <button class="btn-apply-filters" @click="applyFilters">
+            <button class="btn-apply-filters" @click="applyFilters" data-bs-dismiss="modal">
                 Aplicar filtros
             </button>
         </div>
