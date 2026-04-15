@@ -2,7 +2,7 @@
     <div v-if="show" class="modal-overlay" @click.self="$emit('close')">
         <div class="modal-box">
 
-        
+
             <div class="modal-header-custom">
                 <h5 class="modal-title">
                     <span class="material-symbols-outlined icon-title me-2">
@@ -18,17 +18,13 @@
             <div class="modal-body-custom">
                 <div class="mb-3">
                     <label class="form-label-custom">Nombre de la categoría</label>
-                    <input
-                        v-model="form.name"
-                        type="text"
-                        class="input-custom"
-                        placeholder="Ej: Limpieza, Suspension, Frenos..."
-                    />
+                    <input v-model="form.name" type="text" class="input-custom"
+                        placeholder="Ej: Limpieza, Suspension, Frenos..." />
                     <span v-if="errors.name" class="error-text">{{ errors.name }}</span>
                 </div>
             </div>
 
-          
+
             <div class="modal-footer-custom">
                 <button class="btn-cancel" @click="$emit('close')">
                     Cancelar
@@ -68,7 +64,9 @@ export default {
             loading: false,
         };
     },
-
+    mounted() {
+        document.title = "Categoría | Administrar"
+    },
     watch: {
         show(visible) {
             if (visible) {
@@ -120,8 +118,8 @@ export default {
                 }
 
                 //Una vez se complete el fetch actualizamos las categorias y cerramos la modal
-                this.$emit('refresh'); 
-                this.$emit('close');   
+                this.$emit('refresh');
+                this.$emit('close');
 
             } catch (error) {
                 console.error('Error al crear categoría:', error);
@@ -335,7 +333,12 @@ export default {
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 </style>

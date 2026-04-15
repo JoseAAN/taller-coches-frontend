@@ -1,11 +1,7 @@
 <template>
     <div>
         <div class="services-grid">
-            <ServiceCard 
-                v-for="service in services" 
-                :key="service.id" 
-                :service="service" 
-            />
+            <ServiceCard v-for="service in services" :key="service.id" :service="service" />
         </div>
 
         <div class="pagination" v-if="meta.last_page > 1">
@@ -41,19 +37,19 @@ export default {
                     'Accept': 'application/json'
                 }
             })
-            .then(res => {
-                if (!res.ok) throw new Error("Error al recoger los servicios")
-                return res.json()
-            })
-            .then(data => {
-                this.services = data.data
-                this.meta = {
-                    current_page: data.meta?.current_page || 1,
-                    last_page: data.meta?.last_page || 1,
-                    path: data.meta?.path || url
-                }
-            })
-            .catch(err => console.error('Error al cargar servicios:', err))
+                .then(res => {
+                    if (!res.ok) throw new Error("Error al recoger los servicios")
+                    return res.json()
+                })
+                .then(data => {
+                    this.services = data.data
+                    this.meta = {
+                        current_page: data.meta?.current_page || 1,
+                        last_page: data.meta?.last_page || 1,
+                        path: data.meta?.path || url
+                    }
+                })
+                .catch(err => console.error('Error al cargar servicios:', err))
         },
 
         goToPage(page) {
@@ -64,6 +60,7 @@ export default {
 
     mounted() {
         this.getServices()
+        document.title = "Servicios"
     }
 }
 </script>

@@ -64,7 +64,7 @@
                     </tr>
                     <tr v-for="vehicle in filteredVehicles" :key="vehicle.id" style="border-bottom: 1px solid #334155;">
                         <td class="text-white fw-bold"><span class="badge bg-secondary">{{ vehicle.license_plate
-                                }}</span></td>
+                        }}</span></td>
                         <td class="text-white fw-medium">{{ vehicle.brand }} {{ vehicle.model }}</td>
                         <td class="text-white">{{ vehicle.color }}</td>
                         <td class="text-light">{{ vehicle.vehicle_type?.name || vehicle.vehicleType?.name || '---' }}
@@ -307,6 +307,7 @@ export default {
     },
     mounted() {
         this.fetchAllData();
+        document.title = "Vehiculos | Administrar"
     }
 }
 </script>

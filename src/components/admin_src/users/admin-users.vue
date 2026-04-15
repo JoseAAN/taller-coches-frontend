@@ -87,7 +87,7 @@
                         <td>
                             <div class="d-flex align-items-center gap-3">
                                 <div :class="['avatar', { 'avatar-blocked': user.blocked }]">{{ getInitials(user.name)
-                                    }}</div>
+                                }}</div>
                                 <span class="fw-semibold text-white">{{ user.name }}</span>
                             </div>
                         </td>
@@ -113,7 +113,7 @@
                                     :title="user.blocked ? 'Desbloquear usuario' : 'Bloquear usuario'"
                                     @click="confirmToggleBlock(user)">
                                     <span class="material-symbols-outlined">{{ user.blocked ? 'lock_open' : 'lock'
-                                        }}</span>
+                                    }}</span>
                                 </button>
                             </div>
                         </td>
@@ -460,6 +460,7 @@ export default {
     },
     mounted() {
         this.fetchUsers();
+        document.title = "Usuarios | Administrar"
     }
 }
 </script>

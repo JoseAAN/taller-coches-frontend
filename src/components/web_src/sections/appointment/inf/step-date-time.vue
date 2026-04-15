@@ -101,6 +101,9 @@ export default {
       today: new Date().toISOString().split('T')[0] // formato YYYY-MM-DD para el min del input
     }
   },
+  mounted() {
+    document.title = "Cita | Fecha & Hora"
+  },
   computed: {
     groupedSlots() {
       return this.slots.reduce((groups, slot) => {

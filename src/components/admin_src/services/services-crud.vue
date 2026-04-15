@@ -14,6 +14,11 @@
                 </h2>
                 <p class="section-subtitle">Administra los servicios específicos, su precio y duración</p>
             </div>
+            <span class="badge-status ms-2">
+                <span class="material-symbols-outlined"
+                    style="font-size:16px;vertical-align:middle;margin-right:4px;">inventory_2</span>
+                {{ services.length }} servicios
+            </span>
             <button class="btn-create-neon" data-bs-toggle="modal" data-bs-target="#serviceModal" @click="openCreate">
                 <span class="material-symbols-outlined">add</span>
                 <span class="btn-text">Nuevo Servicio</span>
@@ -155,6 +160,8 @@ export default {
 
     mounted() {
         this.fetchServices();
+        document.title = "Servicios | Administrar"
+
     },
 };
 </script>
@@ -288,6 +295,17 @@ export default {
 .row-item:hover .icon-box {
     background: rgba(163, 230, 53, 0.1);
     color: #a3e635;
+}
+
+.badge-status {
+    background: rgba(163, 230, 53, 0.1);
+    color: #a3e635;
+    border: 1px solid rgba(163, 230, 53, 0.3);
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
 }
 
 .badge-type {

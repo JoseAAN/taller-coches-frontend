@@ -42,13 +42,8 @@
 
     <!-- LISTA DE COCHES -->
     <div v-else class="vehicles-grid">
-      <div
-        v-for="vehicle in vehicles"
-        :key="vehicle.id"
-        class="vehicle-card"
-        :class="{ selected: selectedId === vehicle.id }"
-        @click="selectVehicle(vehicle)"
-      >
+      <div v-for="vehicle in vehicles" :key="vehicle.id" class="vehicle-card"
+        :class="{ selected: selectedId === vehicle.id }" @click="selectVehicle(vehicle)">
         <div class="vehicle-card-top">
           <div class="vehicle-icon-wrap" :class="{ 'vehicle-icon-wrap--selected': selectedId === vehicle.id }">
             <span class="material-symbols-outlined">directions_car</span>
@@ -100,6 +95,8 @@ export default {
       return
     }
     await this.fetchVehicles()
+    document.title = "Cita | Vehículo"
+
   },
   methods: {
     async fetchVehicles() {
@@ -222,7 +219,10 @@ export default {
 
   &--selected {
     background-color: #52b155;
-    .material-symbols-outlined { color: #fff; }
+
+    .material-symbols-outlined {
+      color: #fff;
+    }
   }
 }
 
@@ -293,7 +293,9 @@ export default {
   cursor: pointer;
   transition: all 0.2s ease;
 
-  .material-symbols-outlined { font-size: 20px; }
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
 
   &:hover {
     background-color: #469c49;
@@ -324,7 +326,9 @@ export default {
   color: #52b155;
 }
 
-.loading-text { font-weight: 600; }
+.loading-text {
+  font-weight: 600;
+}
 
 .error-state {
   display: flex;
@@ -335,7 +339,9 @@ export default {
   color: #dc3545;
   gap: 1rem;
 
-  .material-symbols-outlined { font-size: 48px; }
+  .material-symbols-outlined {
+    font-size: 48px;
+  }
 }
 
 /* ── ESTADO: REQUIERE LOGIN ── */
@@ -372,7 +378,12 @@ export default {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 576px) {
-  .step-wrapper { padding: 0 1rem; }
-  .vehicles-grid { grid-template-columns: 1fr 1fr; }
+  .step-wrapper {
+    padding: 0 1rem;
+  }
+
+  .vehicles-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 </style>

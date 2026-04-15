@@ -38,6 +38,7 @@ export default {
     if (serviceId) {
       this.data.service_Id = parseInt(serviceId)
     }
+    document.title = "Cita | Vehículo"
   },
   methods: {
     seleccionarVehiculo(vehicle) {

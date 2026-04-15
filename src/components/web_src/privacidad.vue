@@ -131,7 +131,10 @@
 
 <script>
 export default {
-  name: 'PrivacidadPage'
+  name: 'PrivacidadPage',
+  mounted(){
+    document.title = "Política de Privacidad | AutoClean"
+  }
 }
 </script>
 

@@ -3,15 +3,10 @@
     <profileNavComponent @logout="handleLogout" />
 
     <main class="profile-content">
-      <router-view
-        v-if="profileData"
-        :infoUser="profileData.infoUser"
-        :infoVehicles="profileData.infoVehicles"
-        :infoInvoices="profileData.infoInvoices"
-        :infoAppointments="profileData.infoAppointments"
-        @infoUser-update="actualizarDatosUsuario"
-      />
-    
+      <router-view v-if="profileData" :infoUser="profileData.infoUser" :infoVehicles="profileData.infoVehicles"
+        :infoInvoices="profileData.infoInvoices" :infoAppointments="profileData.infoAppointments"
+        @infoUser-update="actualizarDatosUsuario" />
+
       <div v-else class="text-center py-5">
         <span class="material-symbols-outlined" style="font-size: 48px;">hourglass_empty</span>
         <p>Cargando...</p>
@@ -40,6 +35,8 @@ export default {
       console.error("Fallo al inicializar:", error);
       this.$router.push('/');
     }
+    document.title = "Perfil de Usuario"
+
   },
   methods: {
     actualizarDatosUsuario(nuevosDatos) {

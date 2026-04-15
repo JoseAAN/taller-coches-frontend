@@ -105,6 +105,7 @@ import { cart, ITEM_TYPES } from '@/JS/Cart.js'
 import { useToast } from 'vue-toastification'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
+document.title = "Cita | Resumen"
 
 export default {
   props: {
@@ -119,6 +120,9 @@ export default {
       loading: false,
       toast: useToast()
     }
+  },
+  mounted() {
+    document.title = "Cita | Resumen"
   },
   computed: {
     endTime() {
@@ -186,7 +190,7 @@ export default {
           this.$router.push('/cart')
           return
         }
-        
+
         await this.deleteAppointment(token, appointmentId)
         this.toast.error(result.message || 'No se pudo anadir la cita al carrito')
       } catch (e) {
@@ -209,7 +213,7 @@ export default {
             'Authorization': `Bearer ${token}`
           }
         })
-    
+
         if (!response.ok) {
           this.toast.warning('La cita se creo, pero no se pudo revertir automaticamente')
         }
@@ -414,8 +418,13 @@ export default {
   cursor: pointer;
   transition: all 0.2s ease;
 
-  .material-symbols-outlined { font-size: 20px; }
-  &:hover { background-color: var(--nav-border, #f0f0f0); }
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background-color: var(--nav-border, #f0f0f0);
+  }
 }
 
 .btn-confirm {
@@ -432,7 +441,9 @@ export default {
   cursor: pointer;
   transition: all 0.2s ease;
 
-  .material-symbols-outlined { font-size: 20px; }
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
 
   &:hover {
     background-color: #469c49;
@@ -448,8 +459,13 @@ export default {
 
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .rotating {
@@ -458,6 +474,8 @@ export default {
 
 /* RESPONSIVE */
 @media (max-width: 576px) {
-  .step-wrapper { padding: 0 1rem; }
+  .step-wrapper {
+    padding: 0 1rem;
+  }
 }
 </style>

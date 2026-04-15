@@ -89,6 +89,7 @@ export default {
   },
   mounted() {
     this.checkUser();
+    document.title = "Inicio"
   }
 }
 </script>

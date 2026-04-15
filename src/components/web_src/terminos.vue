@@ -110,7 +110,10 @@
 
 <script>
 export default {
-  name: 'TerminosPage'
+  name: 'TerminosPage',
+    mounted(){
+    document.title = "Terminos y condiciones | AutoClean"
+  }
 }
 </script>
 

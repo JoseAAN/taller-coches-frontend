@@ -37,23 +37,17 @@
 
                 <!-- Nombres de los días de la semana -->
                 <div class="cal-weekdays">
-                    <span v-for="dia in ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom']" :key="dia">{{ dia }}</span>
+                    <span v-for="dia in ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']" :key="dia">{{ dia }}</span>
                 </div>
 
                 <!-- Cuadrícula de días -->
                 <div class="cal-grid">
-                    <div
-                        v-for="(celda, i) in celdasDelMes"
-                        :key="i"
-                        class="cal-cell"
-                        :class="{
-                            'cal-cell--vacia':        !celda.dia,
-                            'cal-cell--hoy':          celda.esHoy,
-                            'cal-cell--seleccionado': celda.dia && diaSeleccionado === celda.fecha,
-                            'cal-cell--con-citas':    celda.dia && citasPorDia[celda.fecha]?.length > 0
-                        }"
-                        @click="celda.dia && seleccionarDia(celda.fecha)"
-                    >
+                    <div v-for="(celda, i) in celdasDelMes" :key="i" class="cal-cell" :class="{
+                        'cal-cell--vacia': !celda.dia,
+                        'cal-cell--hoy': celda.esHoy,
+                        'cal-cell--seleccionado': celda.dia && diaSeleccionado === celda.fecha,
+                        'cal-cell--con-citas': celda.dia && citasPorDia[celda.fecha]?.length > 0
+                    }" @click="celda.dia && seleccionarDia(celda.fecha)">
                         <span v-if="celda.dia" class="cal-day-number">{{ celda.dia }}</span>
                         <!-- Bolita verde con el número de citas que tiene ese día -->
                         <span v-if="celda.dia && citasPorDia[celda.fecha]?.length > 0" class="cal-dot-count">
@@ -73,7 +67,8 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h5 class="text-white fw-bold m-0">
-                            <span class="material-symbols-outlined align-middle me-1" style="font-size:20px">calendar_today</span>
+                            <span class="material-symbols-outlined align-middle me-1"
+                                style="font-size:20px">calendar_today</span>
                             {{ diaSeleccionado ? formatearFechaLarga(diaSeleccionado) : 'Selecciona un día' }}
                         </h5>
                         <span class="text-white-50 small" v-if="diaSeleccionado">
@@ -82,11 +77,9 @@
                     </div>
 
                     <!-- Filtro de estado (solo se muestra si hay un día seleccionado) -->
-                    <select
-                        v-if="diaSeleccionado"
+                    <select v-if="diaSeleccionado"
                         class="form-select form-select-sm bg-dark text-white border-secondary w-auto"
-                        v-model="filtroEstado"
-                    >
+                        v-model="filtroEstado">
                         <option value="">Todas</option>
                         <option value="pending">Pendientes</option>
                         <option value="completed">Completadas</option>
@@ -102,27 +95,24 @@
 
                 <!-- ESTADO 2: Ningún día seleccionado todavía -->
                 <div v-else-if="!diaSeleccionado" class="empty-state py-5 text-center">
-                    <span class="material-symbols-outlined text-muted d-block mb-2" style="font-size:48px">touch_app</span>
+                    <span class="material-symbols-outlined text-muted d-block mb-2"
+                        style="font-size:48px">touch_app</span>
                     <p class="text-white-50 mb-0">Haz clic en un día del calendario para ver sus citas</p>
                 </div>
 
                 <!-- ESTADO 3: Día seleccionado pero sin citas -->
                 <div v-else-if="citasDelDia.length === 0" class="empty-state py-5 text-center">
-                    <span class="material-symbols-outlined text-muted d-block mb-2" style="font-size:48px">event_busy</span>
+                    <span class="material-symbols-outlined text-muted d-block mb-2"
+                        style="font-size:48px">event_busy</span>
                     <p class="text-white-50 mb-0">No hay citas para este día</p>
                 </div>
 
                 <!-- ESTADO 4: Lista de citas -->
                 <div v-else class="appointments-list">
-                    <div
-                        v-for="cita in citasDelDia"
-                        :key="cita.id"
-                        class="appointment-card"
-                        :class="{
-                            'appointment-card--completed': cita.status === 'completed',
-                            'appointment-card--cancelled': cita.status === 'cancelled'
-                        }"
-                    >
+                    <div v-for="cita in citasDelDia" :key="cita.id" class="appointment-card" :class="{
+                        'appointment-card--completed': cita.status === 'completed',
+                        'appointment-card--cancelled': cita.status === 'cancelled'
+                    }">
                         <!-- Hora de inicio y fin a la izquierda -->
                         <div class="appt-time-bar">
                             <span class="appt-time-start">{{ formatearHora(cita.appointment_date) }}</span>
@@ -136,11 +126,13 @@
                                 <div>
                                     <div class="fw-bold text-white">{{ cita.service?.name }}</div>
                                     <div class="text-white-50 small mt-1">
-                                        <span class="material-symbols-outlined align-middle" style="font-size:14px">person</span>
+                                        <span class="material-symbols-outlined align-middle"
+                                            style="font-size:14px">person</span>
                                         {{ cita.vehicle?.user?.name || 'Cliente desconocido' }}
                                     </div>
                                     <div class="mt-1">
-                                        <span class="badge bg-secondary small">{{ cita.vehicle?.license_plate || '---' }}</span>
+                                        <span class="badge bg-secondary small">{{ cita.vehicle?.license_plate || '---'
+                                            }}</span>
                                     </div>
                                 </div>
                                 <div class="text-end">
@@ -155,18 +147,26 @@
                             <div class="d-flex gap-2 mt-3 flex-wrap">
                                 <!-- Solo se muestran estos botones si la cita está pendiente -->
                                 <template v-if="cita.status === 'pending'">
-                                    <button @click="cambiarEstado(cita, 'completed')" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1">
-                                        <span class="material-symbols-outlined" style="font-size:16px">check_circle</span> Completar
+                                    <button @click="cambiarEstado(cita, 'completed')"
+                                        class="btn btn-sm btn-outline-success d-flex align-items-center gap-1">
+                                        <span class="material-symbols-outlined"
+                                            style="font-size:16px">check_circle</span> Completar
                                     </button>
-                                    <button @click="cambiarEstado(cita, 'cancelled')" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1">
-                                        <span class="material-symbols-outlined" style="font-size:16px">cancel</span> Cancelar
+                                    <button @click="cambiarEstado(cita, 'cancelled')"
+                                        class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1">
+                                        <span class="material-symbols-outlined" style="font-size:16px">cancel</span>
+                                        Cancelar
                                     </button>
-                                    <button @click="abrirModalReagendar(cita)" class="btn btn-sm btn-outline-info d-flex align-items-center gap-1">
-                                        <span class="material-symbols-outlined" style="font-size:16px">edit_calendar</span> Reagendar
+                                    <button @click="abrirModalReagendar(cita)"
+                                        class="btn btn-sm btn-outline-info d-flex align-items-center gap-1">
+                                        <span class="material-symbols-outlined"
+                                            style="font-size:16px">edit_calendar</span> Reagendar
                                     </button>
                                 </template>
-                                <button @click="eliminarCita(cita)" class="btn btn-sm btn-outline-danger ms-auto d-flex align-items-center gap-1">
-                                    <span class="material-symbols-outlined" style="font-size:16px">delete</span> Eliminar
+                                <button @click="eliminarCita(cita)"
+                                    class="btn btn-sm btn-outline-danger ms-auto d-flex align-items-center gap-1">
+                                    <span class="material-symbols-outlined" style="font-size:16px">delete</span>
+                                    Eliminar
                                 </button>
                             </div>
                         </div>
@@ -187,18 +187,21 @@
             <div class="modal-card">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h4 class="text-white m-0">Reagendar Cita</h4>
-                    <button class="btn btn-sm text-white" @click="mostrarModal = false" style="background:transparent; border:none;">
+                    <button class="btn btn-sm text-white" @click="mostrarModal = false"
+                        style="background:transparent; border:none;">
                         <span class="material-symbols-outlined">close</span>
                     </button>
                 </div>
                 <form @submit.prevent="guardarReagenda">
                     <div class="mb-3">
                         <label class="form-label text-light fw-bold small">Nueva Fecha</label>
-                        <input v-model="formulario.fecha" type="date" class="form-control bg-dark text-white border-secondary" required />
+                        <input v-model="formulario.fecha" type="date"
+                            class="form-control bg-dark text-white border-secondary" required />
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-light fw-bold small">Nueva Hora de Inicio</label>
-                        <input v-model="formulario.hora" type="time" class="form-control bg-dark text-white border-secondary" required />
+                        <input v-model="formulario.hora" type="time"
+                            class="form-control bg-dark text-white border-secondary" required />
                         <div class="text-muted small mt-1">El final se calculará automáticamente.</div>
                     </div>
                     <div class="d-flex justify-content-end gap-2 mt-4">
@@ -243,11 +246,11 @@ export default {
             mostrarModal: false,
             guardando: false,
             formulario: {
-                id:          null,
+                id: null,
                 vehiculo_id: null,
                 servicio_id: null,
-                fecha:       '',
-                hora:        ''
+                fecha: '',
+                hora: ''
             }
         }
     },
@@ -262,11 +265,11 @@ export default {
 
         // Genera las celdas del calendario (días + huecos vacíos al inicio)
         celdasDelMes() {
-            const primerDia       = new Date(this.anio, this.mes, 1).getDay()  // 0=Dom
+            const primerDia = new Date(this.anio, this.mes, 1).getDay()  // 0=Dom
             const huecosIniciales = (primerDia + 6) % 7                        // convertir a Lun=0
-            const diasEnElMes     = new Date(this.anio, this.mes + 1, 0).getDate()
-            const hoyStr          = this.aYMD(new Date())
-            const celdas          = []
+            const diasEnElMes = new Date(this.anio, this.mes + 1, 0).getDate()
+            const hoyStr = this.aYMD(new Date())
+            const celdas = []
 
             // Huecos vacíos antes del día 1
             for (let i = 0; i < huecosIniciales; i++) {
@@ -275,7 +278,7 @@ export default {
 
             // Un objeto por cada día del mes
             for (let d = 1; d <= diasEnElMes; d++) {
-                const fecha = `${this.anio}-${String(this.mes + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
+                const fecha = `${this.anio}-${String(this.mes + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
                 celdas.push({ dia: d, fecha, esHoy: fecha === hoyStr })
             }
 
@@ -311,8 +314,8 @@ export default {
         // Avanza o retrocede el mes. delta = 1 (siguiente) o -1 (anterior)
         cambiarMes(delta) {
             this.mes += delta
-            if (this.mes > 11) { this.mes = 0;  this.anio++ }
-            if (this.mes < 0)  { this.mes = 11; this.anio-- }
+            if (this.mes > 11) { this.mes = 0; this.anio++ }
+            if (this.mes < 0) { this.mes = 11; this.anio-- }
             this.diaSeleccionado = null
             this.cargarCitas()
         },
@@ -320,7 +323,7 @@ export default {
         // Guarda el día en el que hizo clic el usuario
         seleccionarDia(fecha) {
             this.diaSeleccionado = fecha
-            this.filtroEstado    = ''
+            this.filtroEstado = ''
         },
 
         // -----------------------------------------------
@@ -329,11 +332,11 @@ export default {
 
         async cargarCitas() {
             this.cargando = true
-            const token   = localStorage.getItem('user')
-            const mesStr  = `${this.anio}-${String(this.mes + 1).padStart(2, '0')}`
+            const token = localStorage.getItem('user')
+            const mesStr = `${this.anio}-${String(this.mes + 1).padStart(2, '0')}`
 
             try {
-                const res  = await fetch(`${this.$BASE_URL}/v1/appointments/all?month=${mesStr}`, {
+                const res = await fetch(`${this.$BASE_URL}/v1/appointments/all?month=${mesStr}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
                 const data = await res.json()
@@ -353,9 +356,9 @@ export default {
             const token = localStorage.getItem('user')
             try {
                 const res = await fetch(`${this.$BASE_URL}/v1/appointments/${cita.id}/status`, {
-                    method:  'PATCH',
+                    method: 'PATCH',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                    body:    JSON.stringify({ status: nuevoEstado })
+                    body: JSON.stringify({ status: nuevoEstado })
                 })
                 if (res.ok) {
                     cita.status = nuevoEstado   // actualizamos en local sin recargar
@@ -376,7 +379,7 @@ export default {
             const token = localStorage.getItem('user')
             try {
                 const res = await fetch(`${this.$BASE_URL}/v1/appointment/${cita.id}`, {
-                    method:  'DELETE',
+                    method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
                 if (res.ok) {
@@ -399,7 +402,7 @@ export default {
 
         abrirModalReagendar(cita) {
             // Rellenamos el formulario con los datos actuales de la cita
-            this.formulario.id          = cita.id
+            this.formulario.id = cita.id
             this.formulario.vehiculo_id = cita.vehicle_id
             this.formulario.servicio_id = cita.service_id
 
@@ -408,14 +411,14 @@ export default {
             if (typeof fechaStr === 'string' && fechaStr.includes(' ')) {
                 // Formato "YYYY-MM-DD HH:mm:ss"
                 this.formulario.fecha = fechaStr.split(' ')[0]
-                this.formulario.hora  = fechaStr.split(' ')[1].slice(0, 5)
+                this.formulario.hora = fechaStr.split(' ')[1].slice(0, 5)
             } else {
                 // Formato ISO "YYYY-MM-DDTHH:mm:ss"
-                const d      = new Date(fechaStr)
+                const d = new Date(fechaStr)
                 const offset = d.getTimezoneOffset()
-                const local  = new Date(d.getTime() - offset * 60000)
+                const local = new Date(d.getTime() - offset * 60000)
                 this.formulario.fecha = local.toISOString().split('T')[0]
-                this.formulario.hora  = local.toISOString().split('T')[1].slice(0, 5)
+                this.formulario.hora = local.toISOString().split('T')[1].slice(0, 5)
             }
 
             this.mostrarModal = true
@@ -423,16 +426,16 @@ export default {
 
         async guardarReagenda() {
             this.guardando = true
-            const token    = localStorage.getItem('user')
+            const token = localStorage.getItem('user')
 
             try {
-                const res  = await fetch(`${this.$BASE_URL}/v1/appointment/${this.formulario.id}`, {
-                    method:  'PUT',
+                const res = await fetch(`${this.$BASE_URL}/v1/appointment/${this.formulario.id}`, {
+                    method: 'PUT',
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         vehicle_id: this.formulario.vehiculo_id,
                         service_id: this.formulario.servicio_id,
-                        date:       this.formulario.fecha,
+                        date: this.formulario.fecha,
                         start_time: this.formulario.hora
                     })
                 })
@@ -496,11 +499,11 @@ export default {
 
         // Clase CSS del badge según el estado
         claseBadgeEstado(status) {
-            const base   = 'badge px-2 py-1 rounded-pill '
+            const base = 'badge px-2 py-1 rounded-pill '
             const clases = {
                 completed: base + 'bg-success bg-opacity-75',
                 cancelled: base + 'bg-danger bg-opacity-75',
-                pending:   base + 'bg-warning text-dark'
+                pending: base + 'bg-warning text-dark'
             }
             return clases[status] || clases.pending
         }
@@ -509,6 +512,7 @@ export default {
     // Al montar el componente, cargamos las citas del mes actual
     mounted() {
         this.cargarCitas()
+        document.title = "Citas | Administrar"
     }
 }
 </script>
@@ -558,7 +562,8 @@ export default {
     border-radius: 14px;
     padding: 1rem 1.25rem;
     width: 340px;
-    flex-shrink: 0; /* no se encoge aunque haya poco espacio */
+    flex-shrink: 0;
+    /* no se encoge aunque haya poco espacio */
 }
 
 .cal-month-label {
@@ -581,8 +586,15 @@ export default {
     cursor: pointer;
     transition: all 0.15s;
 }
-.cal-nav-btn:hover { background: #334155; color: #f1f5f9; }
-.cal-nav-btn .material-symbols-outlined { font-size: 18px; }
+
+.cal-nav-btn:hover {
+    background: #334155;
+    color: #f1f5f9;
+}
+
+.cal-nav-btn .material-symbols-outlined {
+    font-size: 18px;
+}
 
 /* Fila de "Lun Mar Mié..." */
 .cal-weekdays {
@@ -590,6 +602,7 @@ export default {
     grid-template-columns: repeat(7, 1fr);
     margin-bottom: 0.25rem;
 }
+
 .cal-weekdays span {
     text-align: center;
     font-size: 0.65rem;
@@ -617,13 +630,38 @@ export default {
     border: 1px solid transparent;
     transition: all 0.15s ease;
 }
-.cal-cell--vacia                                        { cursor: default; }
-.cal-cell:not(.cal-cell--vacia):hover                   { background: #334155; border-color: #475569; }
-.cal-cell--hoy                                          { border-color: #3b82f6 !important; background: rgba(59,130,246,0.08); }
-.cal-cell--seleccionado                                 { background: #3b82f6 !important; border-color: #3b82f6 !important; }
-.cal-cell--con-citas:not(.cal-cell--seleccionado)       { background: rgba(34,197,94,0.06); }
-.cal-cell--seleccionado .cal-day-number                 { color: #fff !important; }
-.cal-cell--seleccionado .cal-dot-count                  { background: rgba(255,255,255,0.3) !important; color: #fff !important; }
+
+.cal-cell--vacia {
+    cursor: default;
+}
+
+.cal-cell:not(.cal-cell--vacia):hover {
+    background: #334155;
+    border-color: #475569;
+}
+
+.cal-cell--hoy {
+    border-color: #3b82f6 !important;
+    background: rgba(59, 130, 246, 0.08);
+}
+
+.cal-cell--seleccionado {
+    background: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+}
+
+.cal-cell--con-citas:not(.cal-cell--seleccionado) {
+    background: rgba(34, 197, 94, 0.06);
+}
+
+.cal-cell--seleccionado .cal-day-number {
+    color: #fff !important;
+}
+
+.cal-cell--seleccionado .cal-dot-count {
+    background: rgba(255, 255, 255, 0.3) !important;
+    color: #fff !important;
+}
 
 .cal-day-number {
     font-size: 0.75rem;
@@ -631,7 +669,10 @@ export default {
     color: #e2e8f0;
     line-height: 1;
 }
-.cal-cell--hoy:not(.cal-cell--seleccionado) .cal-day-number { color: #60a5fa; }
+
+.cal-cell--hoy:not(.cal-cell--seleccionado) .cal-day-number {
+    color: #60a5fa;
+}
 
 /* Bolita verde con el número de citas */
 .cal-dot-count {
@@ -653,11 +694,15 @@ export default {
     border: 1px solid #334155;
     border-radius: 14px;
     padding: 1.5rem;
-    flex: 1;       /* ocupa todo el espacio que sobra */
-    min-width: 0;  /* evita que desborde */
+    flex: 1;
+    /* ocupa todo el espacio que sobra */
+    min-width: 0;
+    /* evita que desborde */
 }
 
-.empty-state { opacity: 0.7; }
+.empty-state {
+    opacity: 0.7;
+}
 
 /* Lista de tarjetas de cita */
 .appointments-list {
@@ -675,9 +720,21 @@ export default {
     padding: 1rem 1.25rem;
     transition: border-color 0.2s, transform 0.15s;
 }
-.appointment-card:hover      { border-color: #475569; transform: translateY(-1px); }
-.appointment-card--completed { border-left: 3px solid #22c55e; opacity: 0.85; }
-.appointment-card--cancelled { border-left: 3px solid #ef4444; opacity: 0.55; }
+
+.appointment-card:hover {
+    border-color: #475569;
+    transform: translateY(-1px);
+}
+
+.appointment-card--completed {
+    border-left: 3px solid #22c55e;
+    opacity: 0.85;
+}
+
+.appointment-card--cancelled {
+    border-left: 3px solid #ef4444;
+    opacity: 0.55;
+}
 
 /* Columna de hora a la izquierda de cada tarjeta */
 .appt-time-bar {
@@ -686,12 +743,15 @@ export default {
     align-items: center;
     min-width: 44px;
 }
-.appt-time-start, .appt-time-end {
+
+.appt-time-start,
+.appt-time-end {
     font-size: 0.7rem;
     font-weight: 700;
     color: #94a3b8;
     white-space: nowrap;
 }
+
 .appt-time-line {
     flex: 1;
     width: 2px;
@@ -704,7 +764,8 @@ export default {
 /* ====== MODAL ====== */
 .modal-overlay {
     position: fixed;
-    inset: 0;  /* cubre toda la pantalla */
+    inset: 0;
+    /* cubre toda la pantalla */
     background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(6px);
     z-index: 1050;
@@ -724,7 +785,14 @@ export default {
 }
 
 @keyframes aparecer {
-    from { opacity: 0; transform: scale(0.97); }
-    to   { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 </style>

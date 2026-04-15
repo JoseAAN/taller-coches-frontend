@@ -14,7 +14,7 @@
                 </h2>
                 <p class="section-subtitle">Consulta de solo lectura del histórico de ventas</p>
             </div>
-            
+
             <button class="btn btn-outline-light d-flex align-items-center gap-2" @click="fetchInvoices(1)">
                 <span class="material-symbols-outlined">refresh</span> Actualizar
             </button>
@@ -22,15 +22,12 @@
 
         <!-- Buscador -->
         <div class="d-flex gap-3 mb-4 flex-wrap">
-            <div class="search-wrapper flex-grow-1" style="background: #1e293b; padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid #334155;">
+            <div class="search-wrapper flex-grow-1"
+                style="background: #1e293b; padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid #334155;">
                 <span class="material-symbols-outlined" style="color: #94a3b8;">search</span>
-                <input
-                    v-model="search"
-                    @keyup.enter="fetchInvoices(1)"
-                    type="text"
+                <input v-model="search" @keyup.enter="fetchInvoices(1)" type="text"
                     class="form-control custom-search-input bg-transparent text-white border-0 shadow-none p-0"
-                    placeholder="Buscar por número de factura (Ej: INV-00001)... ENTER para buscar"
-                />
+                    placeholder="Buscar por número de factura (Ej: INV-00001)... ENTER para buscar" />
             </div>
         </div>
 
@@ -54,7 +51,8 @@
                     <tr v-if="invoices.length === 0">
                         <td colspan="6" class="text-center py-5 text-muted">
                             <div class="d-flex flex-column align-items-center">
-                                <span class="material-symbols-outlined mb-2" style="font-size: 2rem; opacity: 0.5;">receipt_long</span>
+                                <span class="material-symbols-outlined mb-2"
+                                    style="font-size: 2rem; opacity: 0.5;">receipt_long</span>
                                 No hay facturas registradas.
                             </div>
                         </td>
@@ -68,12 +66,14 @@
                         <td class="text-success fw-bold">{{ invoice.total }} €</td>
                         <td class="text-light">{{ invoice.created_at || '---' }}</td>
                         <td class="text-light">
-                            <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: middle;">person</span> 
+                            <span class="material-symbols-outlined"
+                                style="font-size: 16px; vertical-align: middle;">person</span>
                             {{ invoice.user_name || 'Usuario #' + invoice.user_id }}
                         </td>
                         <td class="text-end pe-4">
                             <div class="action-buttons justify-content-end">
-                                <button class="btn-action btn-view-neon" @click="viewDetails(invoice.id)" title="Ver Detalles">
+                                <button class="btn-action btn-view-neon" @click="viewDetails(invoice.id)"
+                                    title="Ver Detalles">
                                     <span class="material-symbols-outlined">visibility</span>
                                 </button>
                             </div>
@@ -83,19 +83,19 @@
             </table>
 
             <!-- Paginación -->
-            <div class="d-flex justify-content-center align-items-center gap-3 p-3" v-if="meta && meta.last_page > 1" style="border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                <button class="btn btn-sm btn-outline-secondary text-white" :disabled="meta.current_page === 1" @click="fetchInvoices(meta.current_page - 1)">Anterior</button>
+            <div class="d-flex justify-content-center align-items-center gap-3 p-3" v-if="meta && meta.last_page > 1"
+                style="border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                <button class="btn btn-sm btn-outline-secondary text-white" :disabled="meta.current_page === 1"
+                    @click="fetchInvoices(meta.current_page - 1)">Anterior</button>
                 <span class="text-muted small">Página {{ meta.current_page }} de {{ meta.last_page }}</span>
-                <button class="btn btn-sm btn-outline-secondary text-white" :disabled="meta.current_page === meta.last_page" @click="fetchInvoices(meta.current_page + 1)">Siguiente</button>
+                <button class="btn btn-sm btn-outline-secondary text-white"
+                    :disabled="meta.current_page === meta.last_page"
+                    @click="fetchInvoices(meta.current_page + 1)">Siguiente</button>
             </div>
         </div>
 
-        <InvoiceModal 
-            :show="showModal" 
-            :invoice="selectedInvoice" 
-            @close="showModal = false" 
-        />
-        
+        <InvoiceModal :show="showModal" :invoice="selectedInvoice" @close="showModal = false" />
+
     </div>
 </template>
 
@@ -131,9 +131,9 @@ export default {
                 const res = await fetch(url, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                
+
                 if (!res.ok) throw new Error("Error fetching invoices");
-                
+
                 const data = await res.json();
                 this.invoices = data.data; // InvoiceCollection returns data inside data
                 this.meta = data.meta; // Pagination info
@@ -169,6 +169,8 @@ export default {
     },
     mounted() {
         this.fetchInvoices();
+        document.title = "Facturas | Administrar"
+
     }
 }
 </script>

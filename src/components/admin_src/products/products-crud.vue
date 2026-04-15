@@ -14,6 +14,11 @@
                 </h2>
                 <p class="section-subtitle">Administra tu catálogo de productos, precios y niveles de stock</p>
             </div>
+            <span class="badge-status ms-2">
+                <span class="material-symbols-outlined"
+                    style="font-size:16px;vertical-align:middle;margin-right:4px;">inventory_2</span>
+                {{ totalProducts }} productos
+            </span>
             <button class="btn-create-neon" data-bs-toggle="modal" data-bs-target="#productModal" @click="openCreate">
                 <span class="material-symbols-outlined">add</span>
                 <span class="btn-text">Nuevo Producto</span>
@@ -217,6 +222,7 @@ export default {
 
     mounted() {
         this.fetchProducts();
+        document.title = "Productos | Administrar"
     },
 };
 </script>
@@ -350,6 +356,17 @@ export default {
 .row-item:hover .icon-box {
     background: rgba(249, 115, 22, 0.1);
     color: #f97316;
+}
+
+.badge-status {
+    background: rgba(249, 115, 22, 0.1);
+    color: #f97316;
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
 }
 
 .badge-type {

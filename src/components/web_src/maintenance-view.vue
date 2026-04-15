@@ -260,6 +260,9 @@ export default {
                 }
             ]
         }
+    },
+    mounted() {
+        document.title = "Nosotros"
     }
 }
 </script>

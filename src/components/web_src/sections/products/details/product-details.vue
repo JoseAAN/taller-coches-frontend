@@ -48,7 +48,7 @@
         </div>
 
     </div>
-    
+
     <RelatedProductsCarousel v-if="product" :productId="product.id" />
 </template>
 
@@ -120,6 +120,7 @@ export default {
         this.productId = this.$route.params.id;
         this.getProduct();
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.title = "Productos"
     },
 }
 </script>

@@ -29,7 +29,8 @@
                         <tr v-for="service in activeServices" :key="service.id" class="row-active">
                             <td class="td-service">
                                 <div class="d-flex align-items-center">
-                                    <div class="icon-box active-icon me-3 material-symbols-outlined">local_car_wash</div>
+                                    <div class="icon-box active-icon me-3 material-symbols-outlined">local_car_wash
+                                    </div>
                                     <div>
                                         <div class="fw-bold text-white">{{ service.name }}</div>
                                     </div>
@@ -83,8 +84,7 @@
                                 </div>
                             </td>
                             <td class="td-action text-end">
-                                <button @click="toggleHomeStatus(service)" 
-                                    :disabled="servicesSelected >= 3"
+                                <button @click="toggleHomeStatus(service)" :disabled="servicesSelected >= 3"
                                     class="btn btn-action btn-add">
                                     Mostrar en Home
                                 </button>
@@ -129,7 +129,7 @@ export default {
         },
         toggleHomeStatus(service) {
             const activeShowOnHome = !service.show_on_home;
-            let token = localStorage.getItem('user'); 
+            let token = localStorage.getItem('user');
             fetch(`${this.$BASE_URL}/v1/services/${service.id}/toggle-home`, {
                 method: 'POST',
                 headers: {
@@ -138,18 +138,20 @@ export default {
                 },
                 body: JSON.stringify({ show_on_home: activeShowOnHome })
             })
-            .then(res => {
-                if (!res.ok) throw new Error('Error');
-                return res.json();
-            })
-            .then(() => {
-                service.show_on_home = activeShowOnHome;
-            })
-            .catch(err => console.error(err));
+                .then(res => {
+                    if (!res.ok) throw new Error('Error');
+                    return res.json();
+                })
+                .then(() => {
+                    service.show_on_home = activeShowOnHome;
+                })
+                .catch(err => console.error(err));
         }
     },
     mounted() {
         this.getServicesOnHome();
+        document.title = "Servicios Home | Administrar"
+
     }
 }
 </script>
@@ -174,8 +176,14 @@ export default {
     transition: color 0.2s;
     letter-spacing: 0.2px;
 }
-.btn-back:hover { color: #a3e635; }
-.btn-back .material-symbols-outlined { font-size: 17px; }
+
+.btn-back:hover {
+    color: #a3e635;
+}
+
+.btn-back .material-symbols-outlined {
+    font-size: 17px;
+}
 
 .section-title {
     color: #cbd5e1;
@@ -283,7 +291,7 @@ export default {
 
 @media (max-width: 768px) {
     .table thead {
-        display: none; 
+        display: none;
     }
 
     .table tbody tr {

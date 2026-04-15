@@ -114,6 +114,7 @@ export default {
       const service = this.services.find(s => s.id == this.preselectedId)
       if (service) this.selectService(service)
     }
+      document.title = "Cita | Servicio"
   },
   methods: {
     async fetchServices() {

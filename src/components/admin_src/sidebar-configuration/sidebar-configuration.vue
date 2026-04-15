@@ -75,9 +75,10 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="text-center"><span class="route-badge child-route-color">{{ child.route || '---' }}</span></td>
+                            <td class="text-center"><span class="route-badge child-route-color">{{ child.route || '---'
+                                    }}</span></td>
                             <td class="text-center"><span class="badge-order-highlight sub-order">{{
-                                    child.order}}</span></td>
+                                child.order }}</span></td>
                             <td class="text-center">
                                 <div class="status-container justify-content-center">
                                     <span class="dot-status"
@@ -214,6 +215,7 @@ export default {
     },
     mounted() {
         this.getServices();
+        document.title = "Menú lateral | Administrar"
 
     }
 }
@@ -240,8 +242,14 @@ export default {
     transition: color 0.2s;
     letter-spacing: 0.2px;
 }
-.btn-back:hover { color: #a3e635; }
-.btn-back .material-symbols-outlined { font-size: 17px; }
+
+.btn-back:hover {
+    color: #a3e635;
+}
+
+.btn-back .material-symbols-outlined {
+    font-size: 17px;
+}
 
 .section-title {
     color: #94a3b8;

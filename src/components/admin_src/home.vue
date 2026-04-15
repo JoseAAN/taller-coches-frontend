@@ -423,6 +423,7 @@ export default {
         this.updateTime();
         this.fetchStats();
         this._timer = setInterval(this.updateTime, 60000);
+        document.title = "Panel de administración"
     },
     beforeUnmount() {
         clearInterval(this._timer);

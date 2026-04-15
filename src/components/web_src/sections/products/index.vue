@@ -12,11 +12,15 @@
 
         <div class="row justify-content-center mb-3" v-if="hasAnyFilter">
             <div class="col-md-9 text-center filter-simple-text">
-                <span class="opacity-50"><i class="pi pi-filter me-1" style="font-size: 0.8rem;"></i> Filtrando por:</span>
-                
-                <span v-if="activeFilters.search" class="ms-2">Búsqueda: <strong>"{{ activeFilters.search }}"</strong></span>
-                <span v-if="activeFilters.category" class="ms-2">Categoría: <strong>{{ activeFilters.category.name }}</strong></span>
-                <span v-if="activeFilters.minPrice > 0 || (activeFilters.maxPrice && activeFilters.maxPrice < 1000)" class="ms-2">
+                <span class="opacity-50"><i class="pi pi-filter me-1" style="font-size: 0.8rem;"></i> Filtrando
+                    por:</span>
+
+                <span v-if="activeFilters.search" class="ms-2">Búsqueda: <strong>"{{ activeFilters.search
+                        }}"</strong></span>
+                <span v-if="activeFilters.category" class="ms-2">Categoría: <strong>{{ activeFilters.category.name
+                        }}</strong></span>
+                <span v-if="activeFilters.minPrice > 0 || (activeFilters.maxPrice && activeFilters.maxPrice < 1000)"
+                    class="ms-2">
                     Precio: <strong>{{ activeFilters.minPrice || 0 }}€ - {{ activeFilters.maxPrice || 1000 }}€</strong>
                 </span>
 
@@ -99,10 +103,10 @@ export default {
     },
     computed: {
         hasAnyFilter() {
-            return this.activeFilters.search !== '' || 
-                   this.activeFilters.category !== '' || 
-                   this.activeFilters.minPrice > 0 || 
-                   (this.activeFilters.maxPrice !== '' && this.activeFilters.maxPrice < 1000);
+            return this.activeFilters.search !== '' ||
+                this.activeFilters.category !== '' ||
+                this.activeFilters.minPrice > 0 ||
+                (this.activeFilters.maxPrice !== '' && this.activeFilters.maxPrice < 1000);
         }
     },
     methods: {
@@ -149,6 +153,7 @@ export default {
     },
     mounted() {
         this.getProducts();
+        document.title = "Productos"
     }
 }
 </script>

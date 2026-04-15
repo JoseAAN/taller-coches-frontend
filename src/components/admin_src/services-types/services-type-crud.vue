@@ -8,7 +8,8 @@
                 </h2>
                 <p class="section-subtitle">Aquí se podrán gestionar los tipos de servicio del taller</p>
             </div>
-            <button class="btn-create-neon" data-bs-toggle="modal" data-bs-target="#serviceTypeModal" @click="openCreate">
+            <button class="btn-create-neon" data-bs-toggle="modal" data-bs-target="#serviceTypeModal"
+                @click="openCreate">
                 <span class="material-symbols-outlined">add</span>
                 <span class="btn-text">Nuevo Tipo</span>
             </button>
@@ -27,7 +28,8 @@
                     <tr v-if="serviceTypes.length === 0">
                         <td colspan="3" class="text-center py-5 text-muted">
                             <div class="d-flex flex-column align-items-center">
-                                <span class="material-symbols-outlined mb-2" style="font-size: 2rem; opacity: 0.5;">category</span>
+                                <span class="material-symbols-outlined mb-2"
+                                    style="font-size: 2rem; opacity: 0.5;">category</span>
                                 No hay tipos de servicio registrados.
                             </div>
                         </td>
@@ -44,11 +46,12 @@
                         </td>
                         <td class="text-end pe-4">
                             <div class="action-buttons justify-content-end">
-                                <button class="btn-action btn-edit-neon" data-bs-toggle="modal" data-bs-target="#serviceTypeModal"
-                                    @click="openEdit(type)" title="Editar">
+                                <button class="btn-action btn-edit-neon" data-bs-toggle="modal"
+                                    data-bs-target="#serviceTypeModal" @click="openEdit(type)" title="Editar">
                                     <span class="material-symbols-outlined">edit</span>
                                 </button>
-                                <button class="btn-action btn-delete-neon" @click="deleteType(type.id)" title="Eliminar">
+                                <button class="btn-action btn-delete-neon" @click="deleteType(type.id)"
+                                    title="Eliminar">
                                     <span class="material-symbols-outlined">delete</span>
                                 </button>
                             </div>
@@ -132,6 +135,7 @@ export default {
 
     mounted() {
         this.getTypes();
+        document.title = "Tipo Servicios | Administrar"
     },
 };
 </script>
@@ -305,5 +309,4 @@ export default {
     box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
     transform: translateY(-2px);
 }
-
 </style>

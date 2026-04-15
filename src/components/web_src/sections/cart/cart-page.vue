@@ -283,6 +283,7 @@ export default {
     async mounted() {
         await cart.loadUserCart()
         this.checkStripeRedirect()
+        document.title = "Mi carrito"
     }
 }
 </script>

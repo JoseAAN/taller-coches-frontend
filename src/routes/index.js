@@ -10,7 +10,7 @@ const routes = [
       {
         path: '',
         name: 'Home',
-        component: () => import('../components/web_src/Home/Home.vue')
+        component: () => import('../components/web_src/Home/Home.vue'),
       },
       {
         path: 'services',
@@ -95,7 +95,7 @@ const routes = [
   {
     path: '/admin',
     component: () => import('../components/admin_src/AdminLayout.vue'),
-    meta: { requiresAdmin: true },
+    meta: { requiresAdmin: true, title: 'Panel de Control' },
     children: [
       {
         path: '',

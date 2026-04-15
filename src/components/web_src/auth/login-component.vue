@@ -20,16 +20,11 @@
               :class="['w-100', { 'p-invalid': errors.email }]" @focus="clearError('email')" />
             <label for="email">Email</label>
           </FloatLabel>
-          
+
           <FloatLabel>
-            <Password id="password" 
-            :inputProps="{autocomplete: 'current-password', name: 'password'}" 
-            v-model="form.password" 
-            toggleMask
-            :feedback="false"
-            :class="['w-100', { 'p-invalid': errors.password }]"
-            @focus="clearError('password')" 
-            />
+            <Password id="password" :inputProps="{ autocomplete: 'current-password', name: 'password' }"
+              v-model="form.password" toggleMask :feedback="false" :class="['w-100', { 'p-invalid': errors.password }]"
+              @focus="clearError('password')" />
             <label for="password">Contraseña</label>
           </FloatLabel>
           <small class="p-error" v-if="errors.email">{{ errors.email[0] }}</small>
@@ -44,20 +39,24 @@
 
           <!-- Bloqueado por admin -->
           <div v-if="blockedMessage" class="custom-error-alert alert-blocked">
-            <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-right:6px">block</span>
+            <span class="material-symbols-outlined"
+              style="font-size:18px;vertical-align:middle;margin-right:6px">block</span>
             {{ blockedMessage }}
           </div>
 
           <!-- Bloqueo temporal por intentos -->
           <div v-if="lockedMessage" class="custom-error-alert alert-locked">
-            <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-right:6px">timer</span>
+            <span class="material-symbols-outlined"
+              style="font-size:18px;vertical-align:middle;margin-right:6px">timer</span>
             {{ lockedMessage }}
           </div>
 
           <Button :label="loading ? 'Iniciando...' : 'Iniciar Sesión'" :disabled="loading || !captchaResolved"
             class="btn-register w-100 fw-bold py-3 mt-2" @click.prevent="iniciarSesion" />
           <div class="text-center ">
-            <router-link to="/" class="d-inline-block text-secondary text-decoration-none fw-semibold border border-2 border-secondary rounded-pill px-8 py-2" style="transition: color 0.3s ease;">
+            <router-link to="/"
+              class="d-inline-block text-secondary text-decoration-none fw-semibold border border-2 border-secondary rounded-pill px-8 py-2"
+              style="transition: color 0.3s ease;">
               Quizás más tarde
             </router-link>
           </div>
@@ -70,9 +69,11 @@
               <span class="mx-3 text-secondary" style="font-size: 0.85rem">o</span>
               <div class="flex-grow-1 border-top border-secondary opacity-25"></div>
             </div>
-            
-            <a :href="`${$BASE_URL}/google-auth/redirect`" class="btn-google d-flex align-items-center justify-content-center w-100 text-decoration-none">
-              <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" class="google-icon" />
+
+            <a :href="`${$BASE_URL}/google-auth/redirect`"
+              class="btn-google d-flex align-items-center justify-content-center w-100 text-decoration-none">
+              <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo"
+                class="google-icon" />
               <span>Continuar con Google</span>
             </a>
 
@@ -144,7 +145,7 @@ export default {
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(this.form)
       })
-        .then(async response => { 
+        .then(async response => {
           const data = await response.json();
           if (response.status === 422) {
             this.errors = data.errors;
@@ -158,14 +159,14 @@ export default {
             window.grecaptcha.reset();
             this.captchaResolved = false;
             await fetchUserData();
-            
+
             // Sincroniza posibles carritos de invitado y luego carga el carrito real internamente
-            await cart.syncGuestCart(); 
+            await cart.syncGuestCart();
             // Si el guest cart estaba vacio, syncGuestCart hace return, así que nos aseguramos de cargarlo.
-            if(cart.items.length === 0 && !cart.id) {
-               await cart.loadUserCart();
+            if (cart.items.length === 0 && !cart.id) {
+              await cart.loadUserCart();
             }
-            
+
             if (data.user.role.name === 'admin') {
               this.$router.push('/admin');
             } else {
@@ -207,7 +208,7 @@ export default {
     },
   },
 
- async mounted() {
+  async mounted() {
     const oauthErrors = {
       google_auth_failed: 'No se pudo completar la autenticación con Google. Inténtalo de nuevo.',
       google_invalid_state: 'La autenticación con Google ha caducado o no es válida. Vuelve a intentarlo.',
@@ -226,35 +227,37 @@ export default {
       this.loading = true;
       try {
         await fetchUserData();
-        await cart.syncGuestCart(); 
+        await cart.syncGuestCart();
         if (cart.items.length === 0 && !cart.id) {
-           await cart.loadUserCart();
+          await cart.loadUserCart();
         }
-        
+
         if (authState.user && authState.user.role.name === 'admin') {
           this.$router.push('/admin');
         } else {
           this.$router.push('/');
         }
       } catch (error) {
-         console.error("Error validando el logueo de Google", error);
-         this.errors = { general: 'No se pudo completar el login con Google.' };
+        console.error("Error validando el logueo de Google", error);
+        this.errors = { general: 'No se pudo completar el login con Google.' };
       } finally {
         this.loading = false;
       }
-      return; 
+      return;
     }
     const renderRecaptcha = setInterval(() => {
       if (window.grecaptcha && window.grecaptcha.render) {
         clearInterval(renderRecaptcha);
         this.$refs.recaptcha.innerHTML = '';
-        window.grecaptcha.render(this.$refs.recaptcha, { 
+        window.grecaptcha.render(this.$refs.recaptcha, {
           sitekey: '6LcA8mIsAAAAAL1hrZC4H9GamA3rqF_PFZQbjaME',
           callback: () => { this.captchaResolved = true; },
           'expired-callback': () => { this.captchaResolved = false; }
         });
       }
     }, 100);
+    document.title = "Inicio de Sesión"
+
   },
 }
 </script>

@@ -14,29 +14,31 @@
         <p class="text-muted mb-4">Ingresa tus datos para registrarte</p>
 
         <form class="d-flex flex-column gap-4">
-          
+
           <FloatLabel>
-            <InputText id="name" v-model="form.name" :class="['w-100', { 'p-invalid': errors.name }]" @focus="clearError('name')"/>
+            <InputText id="name" v-model="form.name" :class="['w-100', { 'p-invalid': errors.name }]"
+              @focus="clearError('name')" />
             <label for="name">Nombre Completo</label>
           </FloatLabel>
           <small class="p-error" v-if="errors.name">{{ errors.name[0] }}</small>
 
           <FloatLabel>
-            <InputText id="email" v-model="form.email" type="email" :class="['w-100', { 'p-invalid': errors.email }]" @focus="clearError('email')"/>
+            <InputText id="email" v-model="form.email" type="email" :class="['w-100', { 'p-invalid': errors.email }]"
+              @focus="clearError('email')" />
             <label for="email">Email</label>
           </FloatLabel>
           <small class="p-error" v-if="errors.email">{{ errors.email[0] }}</small>
 
           <FloatLabel>
             <Password id="password" v-model="form.password" toggleMask
-              :class="['w-100', { 'p-invalid': errors.password }]" @focus="clearError('password')"/>
+              :class="['w-100', { 'p-invalid': errors.password }]" @focus="clearError('password')" />
             <label for="password">Contraseña</label>
           </FloatLabel>
           <small class="p-error" v-if="errors.password">{{ errors.password[0] }}</small>
 
           <FloatLabel>
             <Password id="password_confirmation" v-model="form.password_confirmation" toggleMask :feedback="false"
-              class="w-100" @focus="clearError('password_confirmation')"/>
+              class="w-100" @focus="clearError('password_confirmation')" />
             <label for="password_confirmation">Confirmar Contraseña</label>
           </FloatLabel>
 
@@ -64,13 +66,13 @@ import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
-import {loaderState} from '@/loaderState';
+import { loaderState } from '@/loaderState';
 import { cart } from '@/JS/Cart.js';
 import { fetchUserData } from '@/JS/Auth.js';
 
 export default {
   name: 'RegisterComponent',
-  components: { FloatLabel, InputText, Password, Button, Message},
+  components: { FloatLabel, InputText, Password, Button, Message },
   data() {
     return {
       form: { name: '', email: '', password: '', password_confirmation: '' },
@@ -85,13 +87,15 @@ export default {
       if (window.grecaptcha && window.grecaptcha.render) {
         clearInterval(renderRecaptcha);
         this.$refs.recaptcha.innerHTML = '';
-        window.grecaptcha.render(this.$refs.recaptcha, { 
+        window.grecaptcha.render(this.$refs.recaptcha, {
           sitekey: '6LcA8mIsAAAAAL1hrZC4H9GamA3rqF_PFZQbjaME',
           callback: () => { this.captchaResolved = true; },
           'expired-callback': () => { this.captchaResolved = false; }
         });
       }
     }, 100);
+    document.title = "Crear Cuenta"
+
   },
   methods: {
     clearError(campo) {
@@ -110,7 +114,7 @@ export default {
       } else if (!emailRegex.test(this.form.email)) {
         checkErrors.email = ['El formato del email no es válido'];
       }
-      
+
       if (this.form.password.length < 8) {
         checkErrors.password = ['La contraseña debe tener al menos 8 caracteres'];
       }
@@ -128,7 +132,7 @@ export default {
       this.success = false;
 
       const checkErrors = this.validateForm();
-      
+
       const token = window.grecaptcha.getResponse();
       if (!token) {
         checkErrors.captcha = ['Completa el captcha'];
@@ -152,42 +156,42 @@ export default {
         },
         body: JSON.stringify(this.form)
       })
-      .then(async response => {
-        const data = await response.json();
-        if (response.status === 422) {
-          this.errors = data.errors;
-        } else if (response.ok) {
-          
-          this.success = true;
-          this.form = { name: '', email: '', password: '', password_confirmation: '' };
-          
-          window.grecaptcha.reset();
-          this.captchaResolved = false;
-          
-          await fetchUserData(); // Asegurarnos de que el estado global de Vue reactive la sesión
-          
-          await cart.syncGuestCart();
-          if(cart.items.length === 0 && !cart.id) {
-             await cart.loadUserCart();
-          }
+        .then(async response => {
+          const data = await response.json();
+          if (response.status === 422) {
+            this.errors = data.errors;
+          } else if (response.ok) {
 
-          if (data.user?.role?.name === 'admin') {
-            this.$router.push('/admin');
+            this.success = true;
+            this.form = { name: '', email: '', password: '', password_confirmation: '' };
+
+            window.grecaptcha.reset();
+            this.captchaResolved = false;
+
+            await fetchUserData(); // Asegurarnos de que el estado global de Vue reactive la sesión
+
+            await cart.syncGuestCart();
+            if (cart.items.length === 0 && !cart.id) {
+              await cart.loadUserCart();
+            }
+
+            if (data.user?.role?.name === 'admin') {
+              this.$router.push('/admin');
+            } else {
+              this.$router.push('/');
+            }
           } else {
-            this.$router.push('/');
+            throw new Error('Error de servidor');
           }
-        } else {
-          throw new Error('Error de servidor');
-        }
-      })
-      .catch(error => {
-        this.errors = { general: 'No se pudo conectar con el servidor.' };
-        console.error(error);
-      })
-      .finally(() => {
-        this.loading = false;
-        loaderState.hide();
-      });
+        })
+        .catch(error => {
+          this.errors = { general: 'No se pudo conectar con el servidor.' };
+          console.error(error);
+        })
+        .finally(() => {
+          this.loading = false;
+          loaderState.hide();
+        });
     }
   }
 }
@@ -195,7 +199,7 @@ export default {
 
 <style scoped>
 .split-container {
-  display: flex; 
+  display: flex;
   min-height: 100vh;
   width: 100%;
 }
