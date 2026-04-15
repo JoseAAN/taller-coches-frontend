@@ -95,14 +95,14 @@
 
                 <!-- ESTADO 2: Ningún día seleccionado todavía -->
                 <div v-else-if="!diaSeleccionado" class="empty-state py-5 text-center">
-                    <span class="material-symbols-outlined text-muted d-block mb-2"
+                    <span class="material-symbols-outlined text-white-50 d-block mb-2"
                         style="font-size:48px">touch_app</span>
                     <p class="text-white-50 mb-0">Haz clic en un día del calendario para ver sus citas</p>
                 </div>
 
                 <!-- ESTADO 3: Día seleccionado pero sin citas -->
                 <div v-else-if="citasDelDia.length === 0" class="empty-state py-5 text-center">
-                    <span class="material-symbols-outlined text-muted d-block mb-2"
+                    <span class="material-symbols-outlined text-white-50 d-block mb-2"
                         style="font-size:48px">event_busy</span>
                     <p class="text-white-50 mb-0">No hay citas para este día</p>
                 </div>

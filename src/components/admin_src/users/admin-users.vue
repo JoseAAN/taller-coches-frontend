@@ -91,7 +91,7 @@
                                 <span class="fw-semibold text-white">{{ user.name }}</span>
                             </div>
                         </td>
-                        <td class="text-muted">{{ user.email }}</td>
+                        <td class="text">{{ user.email }}</td>
                         <td class="text-center">
                             <span :class="getRoleBadgeClass(user.role)">
                                 {{ user.role ? user.role.name : 'Sin rol' }}
