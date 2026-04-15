@@ -13,8 +13,11 @@
         <div v-if="cart.items.length === 0" class="empty-state">
             <span class="material-symbols-outlined empty-icon">remove_shopping_cart</span>
             <p class="empty-title">Tu carrito está vacío</p>
-            <p class="empty-subtitle">Explora nuestros productos y servicios y añade lo que necesites</p>
-            <router-link to="/products" class="btn-action">Ver Catálogo</router-link>
+            <p class="empty-subtitle">Explora nuestros productos y servicios</p>
+            <div class="cart-items">
+                <router-link to="/products" class="btn-action">Ver Productos</router-link>
+                <router-link to="/services" class="btn-action">Ver Servicios</router-link>
+            </div>
         </div>
 
         <!-- CONTENIDO DEL CARRITO -->
@@ -165,16 +168,16 @@ export default {
                 this.isProcessing = true;
 
                 this.toast.info('Redirigiendo a pasarela segura de Stripe...', { timeout: 1500 });
-                
+
                 const stripeRes = await fetch(`${this.$BASE_URL}/v1/checkout/stripe`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({ cart_id: cart.id })
                 });
-                
+
                 const stripeData = await stripeRes.json();
-                
+
                 if (stripeData.url) {
                     window.location.href = stripeData.url; //redirige al checkout mediante Stripe
                 } else {
@@ -192,11 +195,11 @@ export default {
         async checkStripeRedirect() {
             //usamos URLSearchParams para obtener los parámetros de la URL
             const params = new URLSearchParams(window.location.search);
-            
+
             if (params.get('stripe_success') === 'true') {
                 this.toast.success('Pago autorizado por Stripe. Generando tu comprobante...');
                 this.isProcessing = true;
-                
+
                 window.history.replaceState({}, document.title, window.location.pathname);
 
                 try {
@@ -232,8 +235,8 @@ export default {
                     this.isProcessing = false;
                 }
             } else if (params.get('stripe_cancel') === 'true') {
-                 this.toast.info('Se canceló el pago. Tu carrito sigue guardado y puedes intentarlo de nuevo.');
-                 window.history.replaceState({}, document.title, window.location.pathname);
+                this.toast.info('Se canceló el pago. Tu carrito sigue guardado y puedes intentarlo de nuevo.');
+                window.history.replaceState({}, document.title, window.location.pathname);
             }
         },
 
@@ -779,6 +782,8 @@ export default {
 }
 
 @keyframes spin {
-    100% { transform: rotate(360deg); }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

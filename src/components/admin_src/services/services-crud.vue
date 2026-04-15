@@ -1,5 +1,11 @@
 <template>
     <div class="admin-container p-4">
+        <div class="mb-4">
+            <button class="btn-back" @click="$router.push('/admin')">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Panel de administración
+            </button>
+        </div>
         <div class="header-section mb-4">
             <div>
                 <h2 class="section-title d-flex align-items-center gap-2">
@@ -51,14 +57,16 @@
                             <span class="badge-type">{{ service.type?.name || '---' }}</span>
                         </td>
                         <td class="text-neon-green fw-bold">{{ service.price }} €</td>
-                        <td class="text-white opacity-75">{{ service.average_duration_mins ? service.average_duration_mins + ' min' : 'N/A' }}</td>
+                        <td class="text-white opacity-75">{{ service.average_duration_mins ?
+                            service.average_duration_mins + ' min' : 'N/A' }}</td>
                         <td class="text-end pe-4">
                             <div class="action-buttons justify-content-end">
-                                <button class="btn-action btn-edit-neon" data-bs-toggle="modal" data-bs-target="#serviceModal"
-                                    @click="openEdit(service)" title="Editar">
+                                <button class="btn-action btn-edit-neon" data-bs-toggle="modal"
+                                    data-bs-target="#serviceModal" @click="openEdit(service)" title="Editar">
                                     <span class="material-symbols-outlined">edit</span>
                                 </button>
-                                <button class="btn-action btn-delete-neon" @click="deleteService(service.id)" title="Eliminar">
+                                <button class="btn-action btn-delete-neon" @click="deleteService(service.id)"
+                                    title="Eliminar">
                                     <span class="material-symbols-outlined">delete</span>
                                 </button>
                             </div>
@@ -95,16 +103,16 @@ export default {
             fetch(`${this.$BASE_URL}/v1/services`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
-            .then(res => res.json())
-            .then(data => {
-                this.services = data.data || [];
-            })
-            .catch(err => {
-                console.error(err);
-            })
-            .finally(() => {
-                loaderState.hide();
-            });
+                .then(res => res.json())
+                .then(data => {
+                    this.services = data.data || [];
+                })
+                .catch(err => {
+                    console.error(err);
+                })
+                .finally(() => {
+                    loaderState.hide();
+                });
         },
 
         openCreate() {
@@ -130,18 +138,18 @@ export default {
                     Authorization: `Bearer ${token}`,
                 },
             })
-            .then(res => {
-                if (!res.ok) {
-                    return res.json().then(err => { throw err; });
-                }
-                this.fetchServices();
-            })
-            .catch(err => {
-                console.error(err);
-            })
-            .finally(() => {
-                loaderState.hide();
-            });
+                .then(res => {
+                    if (!res.ok) {
+                        return res.json().then(err => { throw err; });
+                    }
+                    this.fetchServices();
+                })
+                .catch(err => {
+                    console.error(err);
+                })
+                .finally(() => {
+                    loaderState.hide();
+                });
         },
     },
 
@@ -152,23 +160,28 @@ export default {
 </script>
 
 <style scoped>
-.col-id { 
-    width: 10%; 
+.col-id {
+    width: 10%;
 }
-.col-name { 
-    width: 25%; 
+
+.col-name {
+    width: 25%;
 }
-.col-type { 
-    width: 20%; 
+
+.col-type {
+    width: 20%;
 }
-.col-price { 
-    width: 15%; 
+
+.col-price {
+    width: 15%;
 }
-.col-duration { 
-    width: 15%; 
+
+.col-duration {
+    width: 15%;
 }
-.col-actions { 
-    width: 15%; 
+
+.col-actions {
+    width: 15%;
 }
 
 .empty-icon {
@@ -319,6 +332,29 @@ export default {
     font-size: 1.1rem;
 }
 
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+    letter-spacing: 0.2px;
+}
+
+.btn-back:hover {
+    color: #a3e635;
+}
+
+.btn-back .material-symbols-outlined {
+    font-size: 17px;
+}
+
 .btn-create-neon {
     background: linear-gradient(135deg, rgba(163, 230, 53, 0.2), rgba(163, 230, 53, 0.05));
     color: #a3e635;
@@ -358,7 +394,8 @@ export default {
     border: 1px solid rgba(250, 204, 21, 0.2);
 }
 
-.btn-star-neon:hover, .btn-star-neon.active {
+.btn-star-neon:hover,
+.btn-star-neon.active {
     background: #facc15;
     color: #0f172a;
     box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
@@ -381,5 +418,4 @@ export default {
 .text-neon-green {
     color: #a3e635;
 }
-
 </style>

@@ -522,18 +522,27 @@ export default {
 
 /* Botón "volver" sin estilo de botón */
 .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     background: transparent;
     border: none;
-    color: #94a3b8;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0;
-    font-size: 0.9rem;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 600;
     cursor: pointer;
+    padding: 0;
     transition: color 0.2s;
+    letter-spacing: 0.2px;
 }
-.btn-back:hover { color: #f1f5f9; }
+
+.btn-back:hover {
+    color: #a3e635;
+}
+
+.btn-back .material-symbols-outlined {
+    font-size: 17px;
+}
 
 /* Contenedor principal: pone el calendario y el panel uno al lado del otro */
 .main-layout {

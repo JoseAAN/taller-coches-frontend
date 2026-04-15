@@ -1,5 +1,11 @@
 <template>
     <div class="admin-container p-4">
+        <div class="mb-4">
+            <button class="btn-back" @click="$router.push('/admin')">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Panel de administración
+            </button>
+        </div>
         <div class="header-section mb-4">
             <div>
                 <h2 class="section-title d-flex align-items-center gap-2">
@@ -373,6 +379,29 @@ export default {
 
 .btn-action .material-symbols-outlined {
     font-size: 1.1rem;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+    letter-spacing: 0.2px;
+}
+
+.btn-back:hover {
+    color: #a3e635;
+}
+
+.btn-back .material-symbols-outlined {
+    font-size: 17px;
 }
 
 .btn-create-neon {

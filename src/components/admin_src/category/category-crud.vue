@@ -1,10 +1,12 @@
 <template>
     <div class="admin-container p-4">
 
-        <button class="btn-back mb-3" @click="$router.push('/admin')">
-            <span class="material-symbols-outlined">arrow_back</span>
-            Panel de administración
-        </button>
+        <div class="mb-4">
+            <button class="btn-back" @click="$router.push('/admin')">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Panel de administración
+            </button>
+        </div>
 
         <div class="header-section mb-4">
             <div>
@@ -34,7 +36,8 @@
                     <tr v-if="categories.length === 0">
                         <td colspan="3" class="text-center py-5 text-muted">
                             <div class="d-flex flex-column align-items-center">
-                                <span class="material-symbols-outlined mb-2" style="font-size: 2rem; opacity: 0.5;">label_off</span>
+                                <span class="material-symbols-outlined mb-2"
+                                    style="font-size: 2rem; opacity: 0.5;">label_off</span>
                                 No hay categorías registradas.
                             </div>
                         </td>
@@ -55,7 +58,8 @@
                                 <button class="btn-action btn-edit-neon" @click="openEdit(category)" title="Editar">
                                     <span class="material-symbols-outlined">edit</span>
                                 </button>
-                                <button class="btn-action btn-delete-neon" @click="deleteCategory(category.id, category.name)" title="Eliminar">
+                                <button class="btn-action btn-delete-neon"
+                                    @click="deleteCategory(category.id, category.name)" title="Eliminar">
                                     <span class="material-symbols-outlined">delete</span>
                                 </button>
                             </div>
@@ -65,14 +69,9 @@
             </table>
         </div>
 
-    
-        <CategoryModal
-            :category="selectedCategory"
-            :isEdit="isEdit"
-            :show="showModal"
-            @refresh="getCategories"
-            @close="showModal = false"
-        />
+
+        <CategoryModal :category="selectedCategory" :isEdit="isEdit" :show="showModal" @refresh="getCategories"
+            @close="showModal = false" />
     </div>
 </template>
 
@@ -95,7 +94,7 @@ export default {
     },
 
     methods: {
-        
+
         async getCategories() {
             try {
                 loaderState.show();
@@ -121,8 +120,8 @@ export default {
             this.showModal = true;
         },
 
-        async deleteCategory(id,name) {
-            if (!confirm('¿Seguro que quieres eliminar la categoría de ' +  name + '?')) return;
+        async deleteCategory(id, name) {
+            if (!confirm('¿Seguro que quieres eliminar la categoría de ' + name + '?')) return;
 
             const token = localStorage.getItem('user');
 
@@ -178,6 +177,7 @@ export default {
     cursor: pointer;
     transition: color 0.2s;
 }
+
 .btn-back:hover {
     color: #f1f5f9;
 }
@@ -295,6 +295,29 @@ export default {
 
 .btn-action .material-symbols-outlined {
     font-size: 1.1rem;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+    letter-spacing: 0.2px;
+}
+
+.btn-back:hover {
+    color: #a3e635;
+}
+
+.btn-back .material-symbols-outlined {
+    font-size: 17px;
 }
 
 .btn-create-neon {

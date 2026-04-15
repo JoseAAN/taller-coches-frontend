@@ -2,18 +2,20 @@
     <div class="admin-container p-4">
 
         <div class="mb-4 d-flex justify-content-between align-items-end">
+            <button class="btn-back mb-3" @click="$router.push('/admin')">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Panel de administración
+            </button>
             <div>
-                <button class="btn-back mb-3" @click="$router.push('/admin')">
-                    <span class="material-symbols-outlined">arrow_back</span>
-                    Panel de administración
-                </button>
                 <div class="d-flex align-items-center gap-3">
                     <div>
                         <h2 class="text-white fw-bold h4 m-0">Gestión de Usuarios</h2>
-                        <p class="text-white small mb-0 mt-1">Listado completo de usuarios registrados en la plataforma</p>
+                        <p class="text-white small mb-0 mt-1">Listado completo de usuarios registrados en la plataforma
+                        </p>
                     </div>
                     <span class="badge-status ms-2">
-                        <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">group</span>
+                        <span class="material-symbols-outlined"
+                            style="font-size:16px;vertical-align:middle;margin-right:4px;">group</span>
                         {{ users.length }} usuarios
                     </span>
                 </div>
@@ -27,12 +29,7 @@
         <!-- Buscador -->
         <div class="search-wrapper mb-4">
             <span class="material-symbols-outlined search-icon">search</span>
-            <input
-                v-model="search"
-                type="text"
-                class="search-input"
-                placeholder="Buscar por nombre, email o rol..."
-            />
+            <input v-model="search" type="text" class="search-input" placeholder="Buscar por nombre, email o rol..." />
         </div>
 
         <!-- Skeleton loading -->
@@ -48,10 +45,18 @@
                 </thead>
                 <tbody>
                     <tr v-for="i in 5" :key="i">
-                        <td><div class="skeleton-line" style="width:160px"></div></td>
-                        <td><div class="skeleton-line" style="width:200px"></div></td>
-                        <td class="text-center"><div class="skeleton-line mx-auto" style="width:70px;height:24px;border-radius:20px"></div></td>
-                        <td class="text-end"><div class="skeleton-line ms-auto" style="width:80px;height:30px;border-radius:8px"></div></td>
+                        <td>
+                            <div class="skeleton-line" style="width:160px"></div>
+                        </td>
+                        <td>
+                            <div class="skeleton-line" style="width:200px"></div>
+                        </td>
+                        <td class="text-center">
+                            <div class="skeleton-line mx-auto" style="width:70px;height:24px;border-radius:20px"></div>
+                        </td>
+                        <td class="text-end">
+                            <div class="skeleton-line ms-auto" style="width:80px;height:30px;border-radius:8px"></div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -72,14 +77,17 @@
                 <tbody>
                     <tr v-if="filteredUsers.length === 0">
                         <td colspan="5" class="text-center text-muted py-5">
-                            <span class="material-symbols-outlined d-block mb-2" style="font-size:40px;opacity:0.3">manage_search</span>
+                            <span class="material-symbols-outlined d-block mb-2"
+                                style="font-size:40px;opacity:0.3">manage_search</span>
                             No se encontraron usuarios
                         </td>
                     </tr>
-                    <tr v-for="user in filteredUsers" :key="user.id" :class="['user-row', { 'user-blocked': user.blocked }]">
+                    <tr v-for="user in filteredUsers" :key="user.id"
+                        :class="['user-row', { 'user-blocked': user.blocked }]">
                         <td>
                             <div class="d-flex align-items-center gap-3">
-                                <div :class="['avatar', { 'avatar-blocked': user.blocked }]">{{ getInitials(user.name) }}</div>
+                                <div :class="['avatar', { 'avatar-blocked': user.blocked }]">{{ getInitials(user.name)
+                                    }}</div>
                                 <span class="fw-semibold text-white">{{ user.name }}</span>
                             </div>
                         </td>
@@ -97,20 +105,15 @@
                         </td>
                         <td class="text-end">
                             <div class="d-flex justify-content-end gap-2">
-                                <button
-                                    class="btn-icon btn-view"
-                                    title="Ver detalles"
-                                    @click="openDetail(user)"
-                                >
+                                <button class="btn-icon btn-view" title="Ver detalles" @click="openDetail(user)">
                                     <span class="material-symbols-outlined">visibility</span>
                                 </button>
-                                <button
-                                    v-if="canBlockUser(user)"
+                                <button v-if="canBlockUser(user)"
                                     :class="['btn-icon', user.blocked ? 'btn-unblock' : 'btn-block']"
                                     :title="user.blocked ? 'Desbloquear usuario' : 'Bloquear usuario'"
-                                    @click="confirmToggleBlock(user)"
-                                >
-                                    <span class="material-symbols-outlined">{{ user.blocked ? 'lock_open' : 'lock' }}</span>
+                                    @click="confirmToggleBlock(user)">
+                                    <span class="material-symbols-outlined">{{ user.blocked ? 'lock_open' : 'lock'
+                                        }}</span>
                                 </button>
                             </div>
                         </td>
@@ -160,7 +163,8 @@
                         <span class="detail-label">
                             <span class="material-symbols-outlined detail-icon">security</span>Estado
                         </span>
-                        <span :class="selectedUser.blocked ? 'status-badge status-blocked' : 'status-badge status-active'">
+                        <span
+                            :class="selectedUser.blocked ? 'status-badge status-blocked' : 'status-badge status-active'">
                             <span class="dot-status"></span>
                             {{ selectedUser.blocked ? 'Bloqueado' : 'Activo' }}
                         </span>
@@ -168,12 +172,11 @@
                 </div>
 
                 <div class="modal-footer-custom">
-                    <button
-                        v-if="canBlockUser(selectedUser)"
+                    <button v-if="canBlockUser(selectedUser)"
                         :class="['btn', selectedUser.blocked ? 'btn-success-outline' : 'btn-danger-outline']"
-                        @click="confirmToggleBlock(selectedUser); closeDetail()"
-                    >
-                        <span class="material-symbols-outlined" style="font-size:16px">{{ selectedUser.blocked ? 'lock_open' : 'lock' }}</span>
+                        @click="confirmToggleBlock(selectedUser); closeDetail()">
+                        <span class="material-symbols-outlined" style="font-size:16px">{{ selectedUser.blocked ?
+                            'lock_open' : 'lock' }}</span>
                         {{ selectedUser.blocked ? 'Desbloquear usuario' : 'Bloquear usuario' }}
                     </button>
                     <button class="btn btn-secondary-outline" @click="closeDetail">
@@ -206,11 +209,8 @@
                 </div>
                 <div class="modal-footer-custom">
                     <button class="btn btn-secondary-outline" @click="cancelToggle">Cancelar</button>
-                    <button
-                        :class="['btn', userToToggle.is_blocked ? 'btn-success-solid' : 'btn-danger-solid']"
-                        @click="doToggleBlock"
-                        :disabled="toggling"
-                    >
+                    <button :class="['btn', userToToggle.is_blocked ? 'btn-success-solid' : 'btn-danger-solid']"
+                        @click="doToggleBlock" :disabled="toggling">
                         <span v-if="toggling" class="spinner-border spinner-border-sm me-1"></span>
                         {{ userToToggle.is_blocked ? 'Desbloquear' : 'Bloquear' }}
                     </button>
@@ -234,26 +234,34 @@
                     <div class="modal-body-custom">
                         <div class="form-group">
                             <label class="text-white small mb-1">Nombre Completo</label>
-                            <input v-model="newUser.name" type="text" class="form-control bg-dark text-white border-secondary shadow-none" required placeholder="Ej: Administrador Principal" />
+                            <input v-model="newUser.name" type="text"
+                                class="form-control bg-dark text-white border-secondary shadow-none" required
+                                placeholder="Ej: Administrador Principal" />
                         </div>
                         <div class="form-group">
                             <label class="text-white small mb-1">Correo Electrónico</label>
-                            <input v-model="newUser.email" type="email" class="form-control bg-dark text-white border-secondary shadow-none" required placeholder="admin@email.com" />
+                            <input v-model="newUser.email" type="email"
+                                class="form-control bg-dark text-white border-secondary shadow-none" required
+                                placeholder="admin@email.com" />
                         </div>
                         <div class="form-group">
                             <label class="text-white small mb-1">Contraseña</label>
-                            <input v-model="newUser.password" type="password" class="form-control bg-dark text-white border-secondary shadow-none" required placeholder="Mínimo 8 caracteres" minlength="8" />
+                            <input v-model="newUser.password" type="password"
+                                class="form-control bg-dark text-white border-secondary shadow-none" required
+                                placeholder="Mínimo 8 caracteres" minlength="8" />
                         </div>
                         <div class="form-group">
                             <label class="text-white small mb-1">Rol en el Sistema</label>
-                            <select v-model="newUser.role_id" class="form-select bg-dark text-white border-secondary shadow-none" required>
+                            <select v-model="newUser.role_id"
+                                class="form-select bg-dark text-white border-secondary shadow-none" required>
                                 <option :value="1">Administrador (Acceso total)</option>
                                 <option :value="2">Cliente (Solo panel web)</option>
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer-custom">
-                        <button type="button" class="btn btn-secondary-outline" @click="closeCreateModal">Cancelar</button>
+                        <button type="button" class="btn btn-secondary-outline"
+                            @click="closeCreateModal">Cancelar</button>
                         <button type="submit" class="btn btn-success-solid" :disabled="creating">
                             <span v-if="creating" class="spinner-border spinner-border-sm me-1"></span>
                             Crear Cuenta
@@ -345,25 +353,25 @@ export default {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             })
-            .then(res => {
-                if (!res.ok) throw new Error('Error al cambiar estado');
-                return res.json();
-            })
-            .then(res => {
-                const updated = res.data;
-                const idx = this.users.findIndex(u => u.id === updated.id);
-                if (idx !== -1) this.users[idx] = updated;
-                const accion = updated.blocked ? 'bloqueado' : 'desbloqueado';
-                this.showToast(`Usuario "${updated.name}" ${accion} correctamente`, 'success');
-                this.userToToggle = null;
-            })
-            .catch(err => {
-                console.error(err);
-                this.showToast('No se pudo cambiar el estado del usuario', 'error');
-            })
-            .finally(() => {
-                this.toggling = false;
-            });
+                .then(res => {
+                    if (!res.ok) throw new Error('Error al cambiar estado');
+                    return res.json();
+                })
+                .then(res => {
+                    const updated = res.data;
+                    const idx = this.users.findIndex(u => u.id === updated.id);
+                    if (idx !== -1) this.users[idx] = updated;
+                    const accion = updated.blocked ? 'bloqueado' : 'desbloqueado';
+                    this.showToast(`Usuario "${updated.name}" ${accion} correctamente`, 'success');
+                    this.userToToggle = null;
+                })
+                .catch(err => {
+                    console.error(err);
+                    this.showToast('No se pudo cambiar el estado del usuario', 'error');
+                })
+                .finally(() => {
+                    this.toggling = false;
+                });
         },
 
         async doCreateUser() {
@@ -372,18 +380,18 @@ export default {
                 const token = localStorage.getItem('user');
                 const res = await fetch(`${BASE_URL}/v1/admin-users`, {
                     method: 'POST',
-                    headers: { 
+                    headers: {
                         'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json' 
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(this.newUser)
                 });
-                
+
                 if (!res.ok) {
-                   const errData = await res.json();
-                   throw new Error(errData.message || 'Error al crear el usuario');
+                    const errData = await res.json();
+                    throw new Error(errData.message || 'Error al crear el usuario');
                 }
-                
+
                 const created = await res.json();
                 this.showToast('Usuario creado correctamente', 'success');
                 this.users.unshift(created.user);
@@ -408,7 +416,7 @@ export default {
 
         canBlockUser(targetUser) {
             if (!targetUser) return false;
-            
+
             // Obtener al usuario que está logueado actualmente de LocalStorage
             let currentUser = { id: -1 };
             try {
@@ -416,7 +424,7 @@ export default {
                 if (storedUser) {
                     currentUser = JSON.parse(storedUser);
                 }
-            } catch (e) {}
+            } catch (e) { }
 
             // Nadie puede bloquear la cuenta original ID_1
             if (targetUser.id === 1) return false;
@@ -477,8 +485,14 @@ export default {
     transition: color 0.2s;
     letter-spacing: 0.2px;
 }
-.btn-back:hover { color: #a3e635; }
-.btn-back .material-symbols-outlined { font-size: 17px; }
+
+.btn-back:hover {
+    color: #a3e635;
+}
+
+.btn-back .material-symbols-outlined {
+    font-size: 17px;
+}
 
 /* Search */
 .search-wrapper {
@@ -507,8 +521,13 @@ export default {
     outline: none;
 }
 
-.search-input::placeholder { color: #475569; }
-.search-input:focus { border-color: rgba(163, 230, 53, 0.4); }
+.search-input::placeholder {
+    color: #475569;
+}
+
+.search-input:focus {
+    border-color: rgba(163, 230, 53, 0.4);
+}
 
 /* Badge cabecera */
 .badge-status {
@@ -531,12 +550,15 @@ export default {
 .user-row {
     transition: background 0.15s;
 }
+
 .user-row:hover {
     background: rgba(163, 230, 53, 0.04) !important;
 }
+
 .user-blocked {
     opacity: 0.55;
 }
+
 .user-blocked:hover {
     background: rgba(239, 68, 68, 0.04) !important;
     opacity: 0.75;
@@ -586,6 +608,7 @@ export default {
     color: #a3e635;
     border: 1px solid rgba(163, 230, 53, 0.25);
 }
+
 .status-active .dot-status {
     background: #a3e635;
 }
@@ -595,6 +618,7 @@ export default {
     color: #f87171;
     border: 1px solid rgba(239, 68, 68, 0.25);
 }
+
 .status-blocked .dot-status {
     background: #f87171;
 }
@@ -622,7 +646,10 @@ export default {
     gap: 6px;
     transition: all 0.2s;
 }
-.btn-success-outline:hover { background: rgba(163, 230, 53, 0.18); }
+
+.btn-success-outline:hover {
+    background: rgba(163, 230, 53, 0.18);
+}
 
 .btn-success-solid {
     background: #a3e635;
@@ -638,8 +665,15 @@ export default {
     gap: 6px;
     transition: all 0.2s;
 }
-.btn-success-solid:hover:not(:disabled) { background: #bef264; }
-.btn-success-solid:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-success-solid:hover:not(:disabled) {
+    background: #bef264;
+}
+
+.btn-success-solid:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 /* Role badges */
 .role-badge {
@@ -683,13 +717,16 @@ export default {
     transition: all 0.2s ease;
 }
 
-.btn-icon .material-symbols-outlined { font-size: 18px; }
+.btn-icon .material-symbols-outlined {
+    font-size: 18px;
+}
 
 .btn-view {
     background: rgba(99, 179, 237, 0.1);
     color: #63b3ed;
     border: 1px solid rgba(99, 179, 237, 0.25);
 }
+
 .btn-view:hover {
     background: rgba(99, 179, 237, 0.25);
 }
@@ -699,6 +736,7 @@ export default {
     color: #f87171;
     border: 1px solid rgba(239, 68, 68, 0.25);
 }
+
 .btn-block:hover {
     background: rgba(239, 68, 68, 0.25);
 }
@@ -708,6 +746,7 @@ export default {
     color: #a3e635;
     border: 1px solid rgba(163, 230, 53, 0.25);
 }
+
 .btn-unblock:hover {
     background: rgba(163, 230, 53, 0.25);
 }
@@ -720,15 +759,21 @@ export default {
     position: relative;
     overflow: hidden;
 }
+
 .skeleton-line::after {
     content: "";
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background-image: linear-gradient(90deg, rgba(255,255,255,0) 0, rgba(255,255,255,0.04) 20%, rgba(255,255,255,0.07) 60%, rgba(255,255,255,0));
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0.04) 20%, rgba(255, 255, 255, 0.07) 60%, rgba(255, 255, 255, 0));
     animation: shimmer 2s infinite;
 }
-@keyframes shimmer { 100% { transform: translateX(100%); } }
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
 
 /* Modal overlay */
 .modal-overlay {
@@ -753,11 +798,20 @@ export default {
     animation: slideUp 0.25s ease;
 }
 
-.modal-sm { max-width: 380px; }
+.modal-sm {
+    max-width: 380px;
+}
 
 @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .modal-header-custom {
@@ -765,7 +819,7 @@ export default {
     align-items: center;
     justify-content: space-between;
     padding: 1.4rem 1.5rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .modal-body-custom {
@@ -780,7 +834,7 @@ export default {
     justify-content: flex-end;
     gap: 0.75rem;
     padding: 1rem 1.5rem 1.4rem;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .btn-close-modal {
@@ -793,7 +847,10 @@ export default {
     display: flex;
     transition: color 0.2s;
 }
-.btn-close-modal:hover { color: #f1f5f9; }
+
+.btn-close-modal:hover {
+    color: #f1f5f9;
+}
 
 /* Detail rows */
 .detail-row {
@@ -802,6 +859,7 @@ export default {
     justify-content: space-between;
     gap: 1rem;
 }
+
 .detail-label {
     display: flex;
     align-items: center;
@@ -810,13 +868,20 @@ export default {
     font-size: 0.875rem;
     white-space: nowrap;
 }
-.detail-icon { font-size: 16px; }
-.detail-value { color: #cbd5e1; font-size: 0.9rem; }
+
+.detail-icon {
+    font-size: 16px;
+}
+
+.detail-value {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+}
 
 /* Buttons inside modal */
 .btn-secondary-outline {
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     color: #94a3b8;
     padding: 0.5rem 1.2rem;
     border-radius: 8px;
@@ -824,7 +889,11 @@ export default {
     cursor: pointer;
     transition: all 0.2s;
 }
-.btn-secondary-outline:hover { border-color: rgba(255,255,255,0.25); color: #f1f5f9; }
+
+.btn-secondary-outline:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #f1f5f9;
+}
 
 .btn-danger-outline {
     background: rgba(239, 68, 68, 0.08);
@@ -839,7 +908,10 @@ export default {
     gap: 6px;
     transition: all 0.2s;
 }
-.btn-danger-outline:hover { background: rgba(239, 68, 68, 0.18); }
+
+.btn-danger-outline:hover {
+    background: rgba(239, 68, 68, 0.18);
+}
 
 .btn-danger-solid {
     background: #ef4444;
@@ -855,8 +927,15 @@ export default {
     gap: 6px;
     transition: all 0.2s;
 }
-.btn-danger-solid:hover:not(:disabled) { background: #dc2626; }
-.btn-danger-solid:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-danger-solid:hover:not(:disabled) {
+    background: #dc2626;
+}
+
+.btn-danger-solid:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 /* Toast */
 .toast-msg {
@@ -871,13 +950,15 @@ export default {
     display: flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
+
 .toast-msg.success {
     background: rgba(163, 230, 53, 0.12);
     border: 1px solid rgba(163, 230, 53, 0.3);
     color: #a3e635;
 }
+
 .toast-msg.error {
     background: rgba(239, 68, 68, 0.12);
     border: 1px solid rgba(239, 68, 68, 0.3);
@@ -885,7 +966,13 @@ export default {
 }
 
 .toast-fade-enter-active,
-.toast-fade-leave-active { transition: all 0.35s ease; }
+.toast-fade-leave-active {
+    transition: all 0.35s ease;
+}
+
 .toast-fade-enter-from,
-.toast-fade-leave-to { opacity: 0; transform: translateY(12px); }
+.toast-fade-leave-to {
+    opacity: 0;
+    transform: translateY(12px);
+}
 </style>

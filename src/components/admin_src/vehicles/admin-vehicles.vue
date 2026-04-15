@@ -12,7 +12,8 @@
                     <h2 class="text-white fw-bold h4 m-0">Gestión de Vehículos</h2>
                     <p class="text-white small mb-0 mt-1">Directorio de los vehículos de todos los usuarios.</p>
                 </div>
-                <button class="btn btn-success" @click="openCreateModal" style="display:flex; align-items:center; gap:5px;">
+                <button class="btn btn-success" @click="openCreateModal"
+                    style="display:flex; align-items:center; gap:5px;">
                     <span class="material-symbols-outlined">add</span> Añadir Vehículo
                 </button>
             </div>
@@ -20,18 +21,17 @@
 
         <!-- Filtros -->
         <div class="d-flex gap-3 mb-4 flex-wrap">
-            <div class="search-wrapper flex-grow-1" style="background: #1e293b; padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid #334155;">
+            <div class="search-wrapper flex-grow-1"
+                style="background: #1e293b; padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid #334155;">
                 <span class="material-symbols-outlined" style="color: #94a3b8;">search</span>
-                <input
-                    v-model="search"
-                    type="text"
+                <input v-model="search" type="text"
                     class="form-control custom-search-input bg-transparent text-white border-0 shadow-none p-0"
-                    placeholder="Buscar por matrícula, marca, modelo o dueño..."
-                />
+                    placeholder="Buscar por matrícula, marca, modelo o dueño..." />
             </div>
 
             <div style="min-width: 250px;">
-                <select v-model="filterType" class="form-select h-100 shadow-none" style="background: #1e293b; color: #f8fafc; border: 1px solid #334155;">
+                <select v-model="filterType" class="form-select h-100 shadow-none"
+                    style="background: #1e293b; color: #f8fafc; border: 1px solid #334155;">
                     <option value="">Todos los tipos</option>
                     <option v-for="t in vehicleTypes" :key="t.id" :value="t.id">{{ t.name }}</option>
                 </select>
@@ -63,16 +63,20 @@
                         </td>
                     </tr>
                     <tr v-for="vehicle in filteredVehicles" :key="vehicle.id" style="border-bottom: 1px solid #334155;">
-                        <td class="text-white fw-bold"><span class="badge bg-secondary">{{ vehicle.license_plate }}</span></td>
+                        <td class="text-white fw-bold"><span class="badge bg-secondary">{{ vehicle.license_plate
+                                }}</span></td>
                         <td class="text-white fw-medium">{{ vehicle.brand }} {{ vehicle.model }}</td>
                         <td class="text-white">{{ vehicle.color }}</td>
-                        <td class="text-light">{{ vehicle.vehicle_type?.name || vehicle.vehicleType?.name || '---' }}</td>
+                        <td class="text-light">{{ vehicle.vehicle_type?.name || vehicle.vehicleType?.name || '---' }}
+                        </td>
                         <td class="text-light">{{ vehicle.user?.name || 'Varios/Ninguno' }}</td>
                         <td class="text-end">
-                            <button class="btn btn-sm btn-outline-light me-2" @click="openEditModal(vehicle)" title="Editar">
+                            <button class="btn btn-sm btn-outline-light me-2" @click="openEditModal(vehicle)"
+                                title="Editar">
                                 <span class="material-symbols-outlined" style="font-size: 18px">edit</span>
                             </button>
-                            <button class="btn btn-sm btn-outline-danger" @click="confirmDelete(vehicle)" title="Eliminar">
+                            <button class="btn btn-sm btn-outline-danger" @click="confirmDelete(vehicle)"
+                                title="Eliminar">
                                 <span class="material-symbols-outlined" style="font-size: 18px">delete</span>
                             </button>
                         </td>
@@ -83,42 +87,49 @@
 
         <!-- Modal Crear/Editar -->
         <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
-            <div class="modal-card" style="background: #0f172a; padding: 2rem; border-radius: 12px; width: 100%; max-width: 500px; border: 1px solid #334155;">
+            <div class="modal-card"
+                style="background: #0f172a; padding: 2rem; border-radius: 12px; width: 100%; max-width: 500px; border: 1px solid #334155;">
                 <h4 class="text-white mb-4">{{ isEditing ? 'Editar Vehículo' : 'Nuevo Vehículo' }}</h4>
                 <form @submit.prevent="saveVehicle">
-                    
+
                     <div class="mb-3">
                         <label class="form-label text-light">A nombre de (Cliente)</label>
                         <select v-model="form.user_id" class="form-select bg-dark text-white border-secondary">
                             <option value="">Seleccione el propietario...</option>
-                            <option v-for="u in usersList" :key="u.id" :value="u.id">{{ u.name }} ({{ u.email }})</option>
+                            <option v-for="u in usersList" :key="u.id" :value="u.id">{{ u.name }} ({{ u.email }})
+                            </option>
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label text-light">Matrícula</label>
-                        <input v-model="form.license_plate" type="text" class="form-control bg-dark text-white border-secondary" required />
+                        <input v-model="form.license_plate" type="text"
+                            class="form-control bg-dark text-white border-secondary" required />
                     </div>
 
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label class="form-label text-light">Marca</label>
-                            <input v-model="form.brand" type="text" class="form-control bg-dark text-white border-secondary" required />
+                            <input v-model="form.brand" type="text"
+                                class="form-control bg-dark text-white border-secondary" required />
                         </div>
                         <div class="col-6 mb-3">
                             <label class="form-label text-light">Modelo</label>
-                            <input v-model="form.model" type="text" class="form-control bg-dark text-white border-secondary" required />
+                            <input v-model="form.model" type="text"
+                                class="form-control bg-dark text-white border-secondary" required />
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-6 mb-3">
                             <label class="form-label text-light">Color</label>
-                            <input v-model="form.color" type="text" class="form-control bg-dark text-white border-secondary" required />
+                            <input v-model="form.color" type="text"
+                                class="form-control bg-dark text-white border-secondary" required />
                         </div>
                         <div class="col-6 mb-3">
                             <label class="form-label text-light">Tipo de Vehículo</label>
-                            <select v-model="form.vehicle_type_id" class="form-select bg-dark text-white border-secondary" required>
+                            <select v-model="form.vehicle_type_id"
+                                class="form-select bg-dark text-white border-secondary" required>
                                 <option value="" disabled>Seleccione...</option>
                                 <option v-for="t in vehicleTypes" :key="t.id" :value="t.id">{{ t.name }}</option>
                             </select>
@@ -152,7 +163,7 @@ export default {
             saving: false,
             search: '',
             filterType: '',
-            
+
             showModal: false,
             isEditing: false,
             currentId: null,
@@ -176,7 +187,7 @@ export default {
 
             const q = this.search.toLowerCase().trim();
             if (q) {
-                result = result.filter(v => 
+                result = result.filter(v =>
                     v.license_plate?.toLowerCase().includes(q) ||
                     v.brand?.toLowerCase().includes(q) ||
                     v.model?.toLowerCase().includes(q) ||
@@ -196,17 +207,17 @@ export default {
                 // Fetch vehicles
                 const resV = await fetch(`${this.$BASE_URL}/v1/vehicles`, { headers });
                 const dataV = await resV.json();
-                if(dataV.data) this.vehicles = dataV.data;
+                if (dataV.data) this.vehicles = dataV.data;
 
                 // Fetch users public endpoint (but with auth header just in case)
                 const resU = await fetch(`${this.$BASE_URL}/v1/users`, { headers });
                 const dataU = await resU.json();
-                if(dataU.data) this.usersList = dataU.data;
+                if (dataU.data) this.usersList = dataU.data;
 
                 // Fetch vehicle types
                 const resT = await fetch(`${this.$BASE_URL}/v1/vehicleType`, { headers });
                 const dataT = await resT.json();
-                if(dataT && dataT.vehiclesTypes) this.vehicleTypes = dataT.vehiclesTypes;
+                if (dataT && dataT.vehiclesTypes) this.vehicleTypes = dataT.vehiclesTypes;
 
             } catch (err) {
                 console.error("Error al obtener datos:", err);
@@ -240,10 +251,10 @@ export default {
         async saveVehicle() {
             this.saving = true;
             const token = localStorage.getItem('user');
-            const url = this.isEditing 
+            const url = this.isEditing
                 ? `${this.$BASE_URL}/v1/vehicles/${this.currentId}`
                 : `${this.$BASE_URL}/v1/vehicles`;
-            
+
             const method = this.isEditing ? 'PUT' : 'POST';
 
             try {
@@ -257,7 +268,7 @@ export default {
                     body: JSON.stringify(this.form)
                 });
 
-                if(!res.ok) {
+                if (!res.ok) {
                     const errorData = await res.json();
                     this.toast.error("Error: " + (errorData.message || JSON.stringify(errorData)));
                     return;
@@ -275,15 +286,15 @@ export default {
             }
         },
         async confirmDelete(vehicle) {
-            if(!confirm(`¿Seguro que quieres eliminar el vehículo ${vehicle.license_plate}?`)) return;
-            
+            if (!confirm(`¿Seguro que quieres eliminar el vehículo ${vehicle.license_plate}?`)) return;
+
             const token = localStorage.getItem('user');
             try {
                 const res = await fetch(`${this.$BASE_URL}/v1/vehicles/${vehicle.id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                if(!res.ok) this.toast.error("Error eliminando vehículo");
+                if (!res.ok) this.toast.error("Error eliminando vehículo");
                 else {
                     this.vehicles = this.vehicles.filter(v => v.id !== vehicle.id);
                     this.toast.success("Vehículo eliminado");
@@ -305,30 +316,43 @@ export default {
     background-color: #0f172a;
     min-height: 100vh;
 }
+
 .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     background: transparent;
     border: none;
-    color: #94a3b8;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0;
-    font-size: 0.9rem;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 600;
     cursor: pointer;
+    padding: 0;
     transition: color 0.2s;
+    letter-spacing: 0.2px;
 }
+
 .btn-back:hover {
-    color: #f1f5f9;
+    color: #a3e635;
 }
+
+.btn-back .material-symbols-outlined {
+    font-size: 17px;
+}
+
 .modal-overlay {
     position: fixed;
-    top: 0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.7);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
     z-index: 1050;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 .custom-search-input::placeholder {
     color: #94a3b8 !important;
     opacity: 0.8;
