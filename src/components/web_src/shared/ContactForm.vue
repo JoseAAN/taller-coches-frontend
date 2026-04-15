@@ -99,6 +99,7 @@ export default {
 
 /* === SECTION === */
 .contact-section {
+  padding-top: 3rem;
   padding-bottom: 5rem;
   background: linear-gradient(160deg, #071A2E 0%, #0a1f33 55%, #0d2a3e 100%);
   font-family: 'DM Sans', sans-serif;
