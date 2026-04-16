@@ -98,7 +98,12 @@
                         <BasePrice :amount="String(cart.total)" size="lg" />
                     </div>
 
-                    <button class="btn-checkout" @click="checkout" :disabled="cart.items.length === 0 || isProcessing">
+                    <button v-if="isLoggedIn && !isEmailVerified" class="btn-checkout btn-verify-required" @click="goToVerifyEmail">
+                        <span class="material-symbols-outlined">mark_email_unread</span>
+                        Verificar email para comprar
+                    </button>
+
+                    <button v-else class="btn-checkout" @click="checkout" :disabled="cart.items.length === 0 || isProcessing">
                         <span class="material-symbols-outlined" v-if="!isProcessing">lock</span>
                         <span v-else class="material-symbols-outlined loader-spin">sync</span>
                         {{ isProcessing ? 'Procesando...' : 'Pagar de forma segura' }}
@@ -120,6 +125,7 @@
 import { cart } from '@/JS/Cart.js'
 import BasePrice from '../../UI/global-price.vue'
 import { useToast } from 'vue-toastification'
+import { resendVerificationEmail } from '@/JS/Auth.js'
 
 export default {
     name: 'CartPage',
@@ -136,6 +142,13 @@ export default {
     computed: {
         isLoggedIn() {
             return !!localStorage.getItem('user')
+        },
+        currentUser() {
+            const userStr = localStorage.getItem('user');
+            return userStr ? JSON.parse(userStr) : null;
+        },
+        isEmailVerified() {
+            return this.currentUser && this.currentUser.email_verified_at !== null;
         }
     },
 
@@ -157,11 +170,29 @@ export default {
             await cart.updateQuantity(item.id, currentQty - 1)
         },
 
+        async goToVerifyEmail() {
+            if (this.currentUser) {
+                this.toast.info('Solicitando nuevo código de verificación...', { timeout: 2500 });
+                await resendVerificationEmail(this.currentUser.email);
+                this.$router.push({ path: '/verify-email', query: { email: this.currentUser.email } });
+            }
+        },
+
         async checkout() {
             if (!this.isLoggedIn) {
                 this.toast.warning('Inicia sesión o regístrate para finalizar tu compra.');
                 this.$router.push('/login');
                 return;
+            }
+
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                if (!user.email_verified_at) {
+                    this.toast.warning('⚠️ Necesitas verificar tu correo electrónico para procesar pagos. Por favor, revisa tu bandeja de entrada o verifica tu cuenta.', { timeout: 5000 });
+                    this.$router.push({ path: '/verify-email', query: { email: user.email } });
+                    return;
+                }
             }
 
             try {
@@ -692,6 +723,20 @@ export default {
 .btn-checkout:active:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(82, 177, 85, 0.3);
+}
+
+.btn-verify-required {
+    background: #e67e22;
+    box-shadow: 0 4px 12px rgba(230, 126, 34, 0.25);
+}
+
+.btn-verify-required:hover:not(:disabled) {
+    background: #d35400;
+    box-shadow: 0 12px 32px rgba(230, 126, 34, 0.4);
+}
+
+.btn-verify-required:active:not(:disabled) {
+    box-shadow: 0 6px 16px rgba(230, 126, 34, 0.3);
 }
 
 .btn-checkout:disabled {

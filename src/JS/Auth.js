@@ -54,3 +54,42 @@ export const logout = () => {
             console.error("Error al cerrar sesión:", error);
         });
 };
+
+export const verifyUserEmail = async (email, code) => {
+    try {
+        const response = await fetch(`${BASE_URL}/v1/verify-email`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+            body: JSON.stringify({ email, code }),
+        });
+        const data = await response.json();
+        return { ok: response.ok, data };
+    } catch (error) {
+        console.error("Error validando email:", error);
+        return { ok: false, data: { message: "Error de conexión." } };
+    }
+};
+
+export const resendVerificationEmail = async (email) => {
+    try {
+        const response = await fetch(`${BASE_URL}/v1/resend-verification`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
+        if (response.ok) return { ok: true };
+        const data = await response.json();
+        return { ok: false, message: data.message || "No se pudo reenviar el código." };
+    } catch (error) {
+        console.error("Error reenviando email:", error);
+        return { ok: false, message: "Error de conexión." };
+    }
+};

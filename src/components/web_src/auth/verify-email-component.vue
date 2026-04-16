@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { fetchUserData } from '@/JS/Auth.js';
+import { fetchUserData, verifyUserEmail, resendVerificationEmail } from '@/JS/Auth.js';
 import { cart } from '@/JS/Cart.js';
 import { loaderState } from '@/loaderState';
 
@@ -85,6 +85,18 @@ export default {
     this.userEmail = this.$route.query.email || '';
 
     if (!this.userEmail) {
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const userObj = JSON.parse(userStr);
+          this.userEmail = userObj.email || '';
+        } catch (e) {
+          console.error("No se encontro el email", e);
+        }
+      }
+    }
+
+    if (!this.userEmail) {
       this.$router.push('/register');
       return;
     }
@@ -96,91 +108,49 @@ export default {
     if (this.resendTimer) clearInterval(this.resendTimer);
   },
   methods: {
-    verifyCode() {
+    async verifyCode() {
       this.loading = true;
       this.hasError = false;
       loaderState.show();
 
-      //peti para verificar que el código es el mismo que en la base de datos
-      fetch(`${this.$BASE_URL}/v1/verify-email`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          email: this.userEmail,
-          code: this.code
-        })
-      })
-        .then(response => response.json().then(data => ({ ok: response.ok, data })))
-        .then(({ ok, data }) => {
-          if (ok) {
-            this.success = true;
+      const { ok, data } = await verifyUserEmail(this.userEmail, this.code);
 
-            fetchUserData()
-              .then(() => cart.syncGuestCart())
-              .then(() => {
-                if (cart.items.length === 0 && !cart.id) cart.loadUserCart();
-              })
-              .then(() => {
-                setTimeout(() => {
-                  //si es admin redirijo al admin, si no al home
-                  if (data.user?.role?.name === 'admin') {
-                    this.$router.push('/admin');
-                  } else {
-                    this.$router.push('/');
-                  }
-                }, 1500);
-              });
+      this.loading = false;
+      loaderState.hide();
 
+      if (ok) {
+        this.success = true;
+        await fetchUserData();
+        await cart.syncGuestCart();
+        if (cart.items.length === 0 && !cart.id) {
+          await cart.loadUserCart();
+        }
+        setTimeout(() => {
+          if (data.user?.role?.name === 'admin') {
+            this.$router.push('/admin');
           } else {
-            this.hasError = true;
-            this.errorMessage = data.message || 'Código incorrecto.';
-            this.code = '';
+            this.$router.push('/');
           }
-        })
-        .catch(err => {
-          this.hasError = true;
-          this.errorMessage = 'Error de conexión. Inténtalo de nuevo.';
-          console.error(err);
-        })
-        .finally(() => {
-          this.loading = false;
-          loaderState.hide();
-        });
+        }, 1500);
+      } else {
+        this.hasError = true;
+        this.errorMessage = data?.message || 'Código incorrecto.';
+        this.code = '';
+      }
     },
-    resendCode() {
-      //esto es para que no se pueda reenviar hasta que pasen los segundo
+    async resendCode() {
       if (this.resendCooldown > 0) return;
 
-      //petición para que vuelva a enviar el code
-      fetch(`${this.$BASE_URL}/v1/resend-verification`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ email: this.userEmail })
-      })
-        .then(response => {
-          if (response.ok) {
-            this.startResendCooldown();
-            this.hasError = false;
-            this.code = '';
-          } else {
-            return response.json().then(data => {
-              this.hasError = true;
-              this.errorMessage = data.message || 'No se pudo reenviar el código.';
-            });
-          }
-        })
-        .catch(() => {
-          this.hasError = true;
-          this.errorMessage = 'Error de conexión al reenviar.';
-        });
+      const response = await resendVerificationEmail(this.userEmail);
+      
+      if (response.ok) {
+        this.startResendCooldown();
+        this.hasError = false;
+        this.code = '';
+      } else {
+        this.hasError = true;
+        this.errorMessage = response.message || 'Error al reenviar el código.';
+      }
     },
     startResendCooldown() {
       this.resendCooldown = 60;
