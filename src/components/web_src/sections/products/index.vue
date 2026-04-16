@@ -142,7 +142,7 @@ export default {
             }
         },
         goToPage(page) {
-            this.getProducts(`${this.meta.path}?page=${page}`);
+            this.getProducts(`${this.$BASE_URL}/v1/products?page=${page}`);
         }
     },
     mounted() {
