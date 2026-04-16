@@ -64,9 +64,9 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="custom-link d-flex flex-column align-items-center" to="/about">
-              <span class="material-symbols-outlined">groups</span>
-              <span>Nosotros</span>
+            <router-link class="custom-link d-flex flex-column align-items-center" to="/appointments">
+              <span class="material-symbols-outlined">calendar_month</span>
+              <span>Agendar Cita</span>
             </router-link>
           </li>
           <li class="nav-item">
@@ -76,9 +76,9 @@
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="custom-link d-flex flex-column align-items-center" to="/appointments">
-              <span class="material-symbols-outlined">calendar_month</span>
-              <span>Agendar Cita</span>
+            <router-link class="custom-link d-flex flex-column align-items-center" to="/about">
+              <span class="material-symbols-outlined">groups</span>
+              <span>Nosotros</span>
             </router-link>
           </li>
         </ul>
@@ -90,7 +90,8 @@
             class="btn btn-icon-action position-relative d-flex align-items-center justify-content-center p-2 rounded-circle"
             title="Carrito">
             <span class="material-symbols-outlined">shopping_cart</span>
-            <span v-if="this.user" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            <span v-if="this.user"
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
               style="font-size: 0.65rem; padding: 0.35em 0.5em;">
               {{ cart.quantity }}
             </span>
