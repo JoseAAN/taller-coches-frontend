@@ -43,6 +43,13 @@
             {{ loading ? 'Verificando...' : 'Verificar' }}
           </button>
 
+          <button
+            class="btn-later w-100 fw-bold py-3"
+            @click="skipVerification"
+          >
+            Intentarlo más tarde
+          </button>
+
           <p class="text-muted text-center resend-text">
             ¿No recibiste el código?
             <a
@@ -159,6 +166,9 @@ export default {
         this.resendCooldown--;
         if (this.resendCooldown <= 0) clearInterval(this.resendTimer);
       }, 1000);
+    },
+    skipVerification() {
+      this.$router.push('/');
     }
   }
 }
@@ -281,6 +291,23 @@ export default {
 .btn-verify:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn-later {
+  background-color: #f5f5f5;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  color: #666666;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+
+.btn-later:hover {
+  background-color: #e8e8e8;
+  border-color: #999999;
+  color: #333333;
 }
 
 .resend-text {
