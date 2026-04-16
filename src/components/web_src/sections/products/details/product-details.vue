@@ -10,8 +10,8 @@
         <div class="product-right">
 
             <div class="product-categories">
-                <span v-for="category in product.categories" :key="category" class="category-pill">
-                    {{ category }}
+                <span v-for="category in product.categories" :key="category.id" class="category-pill">
+                    {{ category.name }}
                 </span>
             </div>
 

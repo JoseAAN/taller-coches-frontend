@@ -146,7 +146,7 @@
                         :key="cIndex"
                         class="product-category"
                       >
-                        {{ cat }}
+                        {{ cat.name }}
                       </span>
                     </div>
                     <p class="product-qty">{{ product.price }} € × {{ product.quantity }} uds.</p>
@@ -289,11 +289,15 @@ export default {
     },
 
     getProductImage(filename) {
-      return new URL(`../../../../../assets/img-productos/${filename}`, import.meta.url).href
+      if (!filename) return '';
+      if (filename.startsWith('http')) return filename;
+      return `/img-productos/${filename}`;
     },
 
     getServiceImage(filename) {
-      return new URL(`../../../../../assets/img-servicios/${filename}`, import.meta.url).href
+      if (!filename) return '';
+      if (filename.startsWith('http')) return filename;
+      return new URL(`../../../../../assets/img-servicios/${filename}`, import.meta.url).href;
     },
 
     onImgError(e) {

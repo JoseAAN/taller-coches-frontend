@@ -12,7 +12,7 @@
             <div class="select-wrapper">
                 <select v-model="filters.category" class="custom-select">
                     <option value="">Todas las categorías</option>
-                    <option v-for="cat in categories" :key="cat" :value="cat">
+                    <option v-for="cat in categories" :key="cat.id" :value="cat">
                         {{ cat.name }}
                     </option>
                 </select>

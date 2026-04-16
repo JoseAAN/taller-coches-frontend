@@ -139,7 +139,7 @@ export default {
                         price: newVal.price,
                         stock: newVal.stock != null ? newVal.stock : "",
                         description: newVal.description || "",
-                        category_id: newVal.category?.id || newVal.category_id || "",
+                        category_id: newVal.categories && newVal.categories.length > 0 ? newVal.categories[0].id : "",
                         // Extraemos la URL de la primera imagen si existe
                         image_url: newVal.images && newVal.images.length > 0 ? newVal.images[0].url : ""
                     };
@@ -181,7 +181,7 @@ export default {
                 name: this.form.name,
                 price: parseFloat(this.form.price),
                 stock: parseInt(this.form.stock),
-                category_id: this.form.category_id,
+                categories: [this.form.category_id],
             };
 
             if (this.form.description) payload.description = this.form.description;

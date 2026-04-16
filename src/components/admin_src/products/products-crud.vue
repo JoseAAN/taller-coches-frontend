@@ -61,7 +61,7 @@
                             </div>
                         </td>
                         <td class="text-white opacity-75">
-                            <span class="badge-type">{{ product.category?.name || 'Sin Categoría' }}</span>
+                            <span class="badge-type">{{ product.categories && product.categories.length ? product.categories[0].name : 'Sin Categoría' }}</span>
                         </td>
                         <td class="text-neon-green fw-bold">{{ product.price }} €</td>
                         <td class="text-white">
