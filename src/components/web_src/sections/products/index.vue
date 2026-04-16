@@ -143,6 +143,7 @@ export default {
         },
         goToPage(page) {
             this.getProducts(`${this.$BASE_URL}/v1/products?page=${page}`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     },
     mounted() {
