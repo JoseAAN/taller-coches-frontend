@@ -1,10 +1,10 @@
 <template>
-  <div class="product-card" :class="{ 'is-empty': isOutOfStock }" @click="goToDetails(product.id)">
+  <div class="product-card" :class="{ 'is-empty': product.stock <= 0 }" @click="goToDetails(product.id)">
 
     <div class="card-image-wrap">
       <img :src="getMainImage(product.images)" :alt="product.name" class="card-img" />
       <div class="card-img-overlay"></div>
-      <div v-if="isOutOfStock" class="card-badge-stock">
+      <div v-if="product.stock <= 0" class="card-badge-stock">
         <span class="badge-dot"></span>
         Sin stock
       </div>
@@ -22,9 +22,10 @@
         </div>
 
         <button
-          v-if="!isOutOfStock"
+          v-if="product.stock > 0"
           class="cart-btn"
           @click.stop="addToCart"
+          :disabled="isOutOfStock"
           title="Añadir al carrito"
         >
           <span class="material-symbols-outlined btn-icon">shopping_cart</span>
@@ -51,7 +52,7 @@
         <div class="filter-box modal-content" @click.stop>
           <div class="d-flex align-items-center justify-content-between mb-4">
             <h3 class="filter-title m-0">
-              <span class="material-symbols-outlined me-2" style="color: #f1c40f;">notifications_active</span>
+              <span class="material-symbols-outlined me-2" style="color: #52b155;">notifications_active</span>
               Aviso de Stock
             </h3>
             <button class="text-reset-link" @click="closeModal" title="Cerrar">
@@ -265,11 +266,6 @@ export default {
   box-shadow: 0 6px 16px rgba(82, 177, 85, 0.3);
 }
 
-.notify-btn:hover {
-  background: linear-gradient(135deg, #f1c40f, #f39c12);
-  box-shadow: 0 6px 16px rgba(241, 196, 15, 0.4);
-}
-
 .card-image-wrap {
   position: relative;
   width: 100%;
@@ -415,8 +411,8 @@ export default {
 }
 
 .notify-btn {
-  border-color: rgba(241, 196, 15, 0.4);
-  color: #f1c40f;
+  border-color: rgba(82, 177, 85, 0.3);
+  color: #52b155;
 }
 
 .card-accent {
@@ -481,11 +477,6 @@ export default {
   background: linear-gradient(135deg, #5ce261, #48b44c);
   border-color: transparent;
   box-shadow: 0 6px 18px rgba(82, 177, 85, 0.3);
-}
-
-[data-theme="dark"] .product-card:hover .notify-btn {
-  background: linear-gradient(135deg, #f1c40f, #f39c12);
-  box-shadow: 0 6px 18px rgba(241, 196, 15, 0.4);
 }
 
 .restock-modal-overlay {
@@ -570,12 +561,12 @@ export default {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 .custom-select:focus {
-    border-color: #f1c40f;
-    box-shadow: 0 0 0 4px rgba(241, 196, 15, 0.2);
+    border-color: #52b155;
+    box-shadow: 0 0 0 4px rgba(82, 177, 85, 0.12);
 }
 .btn-apply-filters {
     width: 100%;
-    background: #f1c40f;
+    background: #52b155;
     color: #fff;
     border: none;
     padding: 14px;
@@ -587,9 +578,9 @@ export default {
     transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
 }
 .btn-apply-filters:hover:not(:disabled) {
-    background: #f39c12;
+    background: #3d9640;
     transform: translateY(-2px);
-    box-shadow: 0 12px 24px rgba(241, 196, 15, 0.4);
+    box-shadow: 0 12px 24px rgba(82, 177, 85, 0.3);
 }
 .btn-apply-filters:disabled {
     opacity: 0.6;
@@ -610,14 +601,14 @@ export default {
     background: rgba(255,255,255,0.05);
 }
 [data-theme='dark'] .custom-select:focus {
-    border-color: #f1c40f;
-    box-shadow: 0 0 0 4px rgba(241, 196, 15, 0.3);
+    border-color: #5ce261;
+    box-shadow: 0 0 0 4px rgba(92, 226, 97, 0.2);
 }
 [data-theme='dark'] .btn-apply-filters {
-    background: linear-gradient(135deg, #f1c40f, #f39c12);
-    box-shadow: 0 6px 20px rgba(241, 196, 15, 0.4);
+    background: linear-gradient(135deg, #5ce261, #48b44c);
+    box-shadow: 0 6px 20px rgba(82, 177, 85, 0.3);
 }
 [data-theme='dark'] .btn-apply-filters:hover:not(:disabled) {
-    box-shadow: 0 8px 28px rgba(241, 196, 15, 0.5);
+    box-shadow: 0 8px 28px rgba(82, 177, 85, 0.5);
 }
 </style>
