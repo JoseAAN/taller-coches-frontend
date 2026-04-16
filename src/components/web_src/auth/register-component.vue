@@ -163,23 +163,14 @@ export default {
           } else if (response.ok) {
 
             this.success = true;
+            const registeredEmail = this.form.email;
             this.form = { name: '', email: '', password: '', password_confirmation: '' };
 
             window.grecaptcha.reset();
             this.captchaResolved = false;
 
-            await fetchUserData(); // Asegurarnos de que el estado global de Vue reactive la sesión
-
-            await cart.syncGuestCart();
-            if (cart.items.length === 0 && !cart.id) {
-              await cart.loadUserCart();
-            }
-
-            if (data.user?.role?.name === 'admin') {
-              this.$router.push('/admin');
-            } else {
-              this.$router.push('/');
-            }
+            //redireccion a la página de verificación de email
+            this.$router.push({ path: '/verify-email', query: { email: registeredEmail } });
           } else {
             throw new Error('Error de servidor');
           }

@@ -165,6 +165,11 @@ const routes = [
     component: () => import('../components/web_src/auth/login-component.vue')
   },
   {
+    path: '/verify-email',
+    name: 'verify-email',
+    component: () => import('../components/web_src/auth/verify-email-component.vue')
+  },
+  {
     path: '/privacidad',
     name: 'Privacidad',
     component: () => import('../components/web_src/privacidad.vue')
