@@ -11,7 +11,7 @@
         </div>
 
         <div class="row justify-content-center mb-3" v-if="hasAnyFilter">
-            <div class="col-md-9 text-center filter-simple-text">
+            <div class="col-11 col-xl-10 text-center filter-simple-text">
                 <span class="opacity-50"><i class="pi pi-filter me-1" style="font-size: 0.8rem;"></i> Filtrando
                     por:</span>
 
@@ -31,7 +31,7 @@
         </div>
 
         <div class="row justify-content-center">
-            <div class="col-md-9">
+            <div class="col-10 col-xl-10">
                 <div class="products-header">
                     <div class="products-count">{{ meta.total }} productos encontrados</div>
                     <div class="products-page">Página {{ meta.current_page }} de {{ meta.last_page }}</div>
@@ -66,13 +66,7 @@
         <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="filterModalLabel">Filtros</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
                         <ProductFilter ref="productFilter" v-model="activeFilters" @filter-changed="handleFilters" />
-                    </div>
                 </div>
             </div>
         </div>

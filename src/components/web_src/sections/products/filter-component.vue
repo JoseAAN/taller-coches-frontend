@@ -123,7 +123,6 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 
-/* ─── CONTENEDOR ─────────────────────────────────────────── */
 .filter-box {
     background: var(--nav-bg, #fff);
     padding: 1.8rem;
@@ -135,7 +134,6 @@ export default {
     transition: background 0.3s ease, border-color 0.3s ease;
 }
 
-/* ─── TÍTULO ─────────────────────────────────────────────── */
 .filter-title {
     font-family: 'Syne', sans-serif;
     font-size: 1.1rem;
@@ -147,7 +145,6 @@ export default {
     gap: 0.4rem;
 }
 
-/* ─── BOTÓN LIMPIAR ──────────────────────────────────────── */
 .text-reset-link {
     background: none;
     border: none;
@@ -169,12 +166,10 @@ export default {
     background: rgba(230, 57, 70, 0.07);
 }
 
-/* ─── GRUPOS ─────────────────────────────────────────────── */
 .filter-group {
     margin-bottom: 1.6rem;
 }
 
-/* ─── LABELS ─────────────────────────────────────────────── */
 .filter-label {
     display: block;
     font-family: 'DM Sans', sans-serif;
@@ -187,7 +182,6 @@ export default {
     margin-bottom: 0.75rem;
 }
 
-/* ─── SELECT ─────────────────────────────────────────────── */
 .select-wrapper {
     position: relative;
     display: flex;
@@ -212,8 +206,8 @@ export default {
 }
 
 .custom-select:focus {
-    border-color: #52b155;
-    box-shadow: 0 0 0 4px rgba(82, 177, 85, 0.12);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
 }
 
 .select-icon {
@@ -225,30 +219,17 @@ export default {
     opacity: 0.45;
 }
 
-[data-theme='dark'] .custom-select option {
-    background-color: var(--nav-bg);
-    color: var(--nav-text);
-}
-
-/* ─── SLIDER CONTAINER ───────────────────────────────────── */
 .price-slider-container {
-    /* Contraste claro: gris neutro muy visible sobre el fondo del modal */
     background: rgba(0, 0, 0, 0.04);
     padding: 16px 18px;
     border-radius: 14px;
     border: 1.5px solid rgba(0, 0, 0, 0.09);
-    transition: border-color 0.3s ease, background 0.3s ease;
-}
-
-/* Contraste dark: ligeramente más claro que el fondo oscuro */
-[data-theme='dark'] .price-slider-container {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.09);
+    transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .price-slider-container:focus-within {
-    border-color: rgba(82, 177, 85, 0.4);
-    background: rgba(82, 177, 85, 0.04);
+    border-color: rgba(59, 130, 246, 0.4);
+    background: rgba(59, 130, 246, 0.04);
 }
 
 .range-type {
@@ -259,14 +240,12 @@ export default {
     opacity: 0.6;
 }
 
-/* ─── PRICE BADGE ────────────────────────────────────────── */
 .price-badge {
     font-family: 'Syne', sans-serif;
     font-size: 0.82rem;
     font-weight: 700;
-    /* Fondo verde sólido + texto blanco: contraste máximo dentro de la paleta */
     color: #fff;
-    background: #52b155;
+    background: #3b82f6;
     padding: 3px 14px;
     border-radius: 100px;
     letter-spacing: 0.01em;
@@ -274,16 +253,13 @@ export default {
     text-align: center;
 }
 
-/* ─── RANGE TRACK WRAPPER ────────────────────────────────── */
-/* Wrapper con altura fija para que el thumb siempre quede centrado */
 .range-track-wrap {
     display: flex;
     align-items: center;
-    height: 24px;       /* altura igual al thumb → centrado perfecto */
+    height: 24px;
     width: 100%;
 }
 
-/* ─── RANGE SLIDER ───────────────────────────────────────── */
 .custom-range {
     -webkit-appearance: none;
     appearance: none;
@@ -294,31 +270,25 @@ export default {
     outline: none;
     cursor: pointer;
     display: block;
-    margin: 0;          /* sin márgenes extra — el wrapper ya centra */
+    margin: 0;
 }
 
-[data-theme='dark'] .custom-range {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-/* WebKit track */
 .custom-range::-webkit-slider-runnable-track {
     height: 4px;
     border-radius: 100px;
 }
 
-/* WebKit thumb — margin-top centra el thumb (⌀24px) sobre el track (4px) */
 .custom-range::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 22px;
     height: 22px;
-    margin-top: -9px;   /* (4px track - 22px thumb) / 2 = -9px */
-    background: #52b155;
+    margin-top: -9px;
+    background: #3b82f6;
     border: 3px solid var(--nav-bg, #fff);
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(82, 177, 85, 0.4);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
     transition:
         transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
         box-shadow 0.25s ease;
@@ -326,15 +296,14 @@ export default {
 
 .custom-range::-webkit-slider-thumb:hover {
     transform: scale(1.2);
-    box-shadow: 0 0 0 7px rgba(82, 177, 85, 0.15), 0 2px 8px rgba(82, 177, 85, 0.4);
+    box-shadow: 0 0 0 7px rgba(59, 130, 246, 0.15), 0 2px 8px rgba(59, 130, 246, 0.4);
 }
 
 .custom-range:active::-webkit-slider-thumb {
     transform: scale(1.3);
-    box-shadow: 0 0 0 10px rgba(82, 177, 85, 0.1), 0 2px 8px rgba(82, 177, 85, 0.4);
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0.1), 0 2px 8px rgba(59, 130, 246, 0.4);
 }
 
-/* Firefox */
 .custom-range::-moz-range-track {
     height: 4px;
     border-radius: 100px;
@@ -344,11 +313,11 @@ export default {
 .custom-range::-moz-range-thumb {
     width: 22px;
     height: 22px;
-    background: #52b155;
+    background: #3b82f6;
     border: 3px solid var(--nav-bg, #fff);
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(82, 177, 85, 0.4);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
     transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -356,7 +325,6 @@ export default {
     transform: scale(1.2);
 }
 
-/* ─── LÍMITES ────────────────────────────────────────────── */
 .range-limits {
     display: flex;
     justify-content: space-between;
@@ -368,10 +336,9 @@ export default {
     padding: 0 2px;
 }
 
-/* ─── BOTÓN APLICAR ──────────────────────────────────────── */
 .btn-apply-filters {
     width: 100%;
-    background: #52b155;
+    background: #3b82f6;
     color: #fff;
     border: none;
     padding: 13px 28px;
@@ -388,13 +355,94 @@ export default {
 }
 
 .btn-apply-filters:hover {
-    background: #3d9640;
+    background: #2563eb;
     transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(82, 177, 85, 0.4);
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.4);
 }
 
 .btn-apply-filters:active {
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(82, 177, 85, 0.3);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+}
+
+[data-theme='dark'] .filter-box {
+    background: linear-gradient(145deg, rgba(30, 36, 48, 0.95), rgba(20, 24, 32, 0.98));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .custom-select {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: var(--nav-text);
+}
+
+[data-theme='dark'] .custom-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .custom-select option {
+    background-color: #1a1e29;
+    color: var(--nav-text);
+}
+
+[data-theme='dark'] .price-slider-container {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .price-slider-container:focus-within {
+    border-color: rgba(59, 130, 246, 0.4);
+    background: linear-gradient(145deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.03));
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 15px rgba(59, 130, 246, 0.15);
+}
+
+[data-theme='dark'] .price-badge {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .custom-range {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme='dark'] .custom-range::-webkit-slider-thumb {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    border-color: #1e2430;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+}
+
+[data-theme='dark'] .custom-range:hover::-webkit-slider-thumb {
+    box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.25), 0 0 15px rgba(59, 130, 246, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+}
+
+[data-theme='dark'] .custom-range::-moz-range-thumb {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    border-color: #1e2430;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+}
+
+[data-theme='dark'] .text-reset-link:hover {
+    background: rgba(255, 59, 48, 0.12);
+    color: #ff5247;
+    box-shadow: 0 0 12px rgba(255, 59, 48, 0.2);
+    opacity: 1;
+}
+
+[data-theme='dark'] .btn-apply-filters {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .btn-apply-filters:hover {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    box-shadow: 0 8px 28px rgba(59, 130, 246, 0.5), 0 0 15px rgba(59, 130, 246, 0.4);
 }
 </style>
