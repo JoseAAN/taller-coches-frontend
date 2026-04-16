@@ -47,6 +47,43 @@
 
     <div class="card-accent"></div>
 
+    <teleport to="body">
+      <div v-if="showRestockModal" class="restock-modal-overlay" @click.stop="closeModal">
+        <div class="filter-box modal-content" @click.stop>
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <h3 class="filter-title m-0">
+              <span class="material-symbols-outlined me-2" style="color: #52b155;">notifications_active</span>
+              Aviso de Stock
+            </h3>
+            <button class="text-reset-link" @click="closeModal" title="Cerrar">
+               <i class="pi pi-times"></i>
+            </button>
+          </div>
+
+          <template v-if="!currentUserEmail">
+            <p class="filter-label" style="text-transform: none; font-size: 0.85rem; margin-bottom: 1rem; opacity: 0.8;">
+              Déjanos tu correo y te avisaremos en cuanto el producto <strong>{{ product.name }}</strong> vuelva a estar disponible.
+            </p>
+            <div class="filter-group mb-4">
+              <label class="filter-label" style="margin-bottom: 0.5rem;">Correo electrónico</label>
+              <input type="email" v-model="restockEmail" class="custom-select" placeholder="tu@email.com" @keyup.enter="submitRestock" />
+            </div>
+          </template>
+          <template v-else>
+            <p class="filter-label" style="text-transform: none; font-size: 0.9rem; margin-bottom: 1.5rem; opacity: 0.8; line-height: 1.5;">
+              ¿Deseas suscribirte para recibir un aviso a <strong>{{ currentUserEmail }}</strong> cuando repongamos el producto <strong>{{ product.name }}</strong>?
+            </p>
+          </template>
+
+          <div class="d-flex justify-content-center">
+              <button class="btn-apply-filters" @click="submitRestock" :disabled="isSubmitting">
+                  {{ isSubmitting ? 'Procesando...' : 'Avísame' }}
+              </button>
+          </div>
+        </div>
+      </div>
+    </teleport>
+
   </div>
 </template>
 
@@ -59,6 +96,14 @@ import { useToast } from "vue-toastification"
 export default {
     name: 'ProductCard',
     components: { BasePrice },
+
+    data() {
+        return {
+            showRestockModal: false,
+            restockEmail: '',
+            isSubmitting: false,
+        }
+    },
 
     props: {
         product: {
@@ -90,6 +135,16 @@ export default {
             const itemInCart = cart.items.find(i => i.type === 'PRODUCT' && i.details.id === this.product.id);
             const inCart = itemInCart ? itemInCart.quantity : 0;
             return this.product.stock <= inCart;
+        },
+        currentUserEmail() {
+            const userString = localStorage.getItem('user');
+            if (userString) {
+                try {
+                    const userObj = JSON.parse(userString);
+                    return userObj.email || '';
+                } catch(e) {}
+            }
+            return '';
         }
     },
 
@@ -102,22 +157,29 @@ export default {
             }
         },
 
-        async promptRestock() {
-            const userString = localStorage.getItem('user');
-            const toast = useToast();
-            let email = '';
-            
-            if (userString) {
-                const userObj = JSON.parse(userString);
-                email = userObj.email;
+        promptRestock() {
+            this.showRestockModal = true;
+            if (this.currentUserEmail) {
+                this.restockEmail = this.currentUserEmail;
             } else {
-                email = window.prompt("Introduce tu correo electrónico para avisarte cuando repongamos stock:");
+                this.restockEmail = '';
             }
+        },
+
+        closeModal() {
+            this.showRestockModal = false;
+        },
+
+        async submitRestock() {
+            const toast = useToast();
+            let email = this.restockEmail.trim();
             
             if (!email || !email.includes('@')) {
-                if(email !== null) toast.error("Correo electrónico no válido.");
+                toast.error("Por favor, introduce un correo electrónico válido.");
                 return;
             }
+
+            this.isSubmitting = true;
 
             try {
                 const res = await fetch(`${this.$BASE_URL}/v1/products/${this.product.id}/restock-subscribe`, {
@@ -130,13 +192,16 @@ export default {
                 });
 
                 if (res.ok) {
-                    toast.success("¡Perfecto! Te avisaremos por correo.");
+                    toast.success("¡Perfecto! Te avisaremos por correo cuando haya stock.");
+                    this.closeModal();
                 } else {
                     toast.error("Hubo un problema al suscribirte. Inténtalo de nuevo.");
                 }
             } catch (err) {
                 console.error(err);
                 toast.error("Error de conexión externa.");
+            } finally {
+                this.isSubmitting = false;
             }
         },
 
@@ -163,8 +228,9 @@ export default {
 
 .product-card {
   position: relative;
-  background: var(--nav-bg, #fff);
-  border: 1px solid rgba(10, 31, 51, 0.12);
+  background-color: var(--nav-bg, #fff);
+  background-image: linear-gradient(160deg, transparent 0%, rgba(82, 177, 85, 0.04) 100%);
+  border: 1px solid rgba(10, 31, 51, 0.07);
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
@@ -180,8 +246,8 @@ export default {
 
 .product-card:hover {
   transform: translateY(-7px);
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.13);
-  border-color: rgba(82, 177, 85, 0.3);
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.08), 0 12px 24px rgba(82, 177, 85, 0.08);
+  border-color: rgba(82, 177, 85, 0.4);
 }
 
 .product-card:hover .card-img {
@@ -194,15 +260,16 @@ export default {
 
 .product-card:hover .cart-btn:not(:disabled),
 .product-card:hover .notify-btn {
-  background: #52b155;
+  background: linear-gradient(135deg, #5ce261, #48b44c);
   color: #fff;
-  border-color: #52b155;
+  border-color: transparent;
+  box-shadow: 0 6px 16px rgba(82, 177, 85, 0.3);
 }
 
 .card-image-wrap {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 230px;
   overflow: hidden;
   flex-shrink: 0;
   background: #e8edf2;
@@ -354,9 +421,9 @@ export default {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #52b155, #7dd87f);
+  background: linear-gradient(90deg, transparent, #5ce261, #48b44c, transparent);
   transform: scaleX(0);
-  transform-origin: left center;
+  transform-origin: center;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -387,10 +454,161 @@ export default {
 }
 
 [data-theme="dark"] .card-image-wrap {
-  background-color: #0f172a;
+  background-color: #0d1117;
+}
+
+[data-theme="dark"] .product-card {
+  background-image: linear-gradient(160deg, transparent 0%, rgba(82, 177, 85, 0.05) 100%);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="dark"] .cart-btn {
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="dark"] .product-card:hover {
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5), 0 10px 30px rgba(82, 177, 85, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border-color: rgba(82, 177, 85, 0.35);
+}
+
+[data-theme="dark"] .product-card:hover .cart-btn:not(:disabled),
+[data-theme="dark"] .product-card:hover .notify-btn {
+  background: linear-gradient(135deg, #5ce261, #48b44c);
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(82, 177, 85, 0.3);
+}
+
+.restock-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 440px;
+  animation: modal-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-sizing: border-box;
+}
+
+@keyframes modal-pop {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.filter-box {
+    background: var(--nav-bg, #fff);
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid var(--nav-border, rgba(0, 0, 0, 0.08));
+    color: var(--nav-text, #0a1f33);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    font-family: 'DM Sans', sans-serif;
+}
+.filter-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--nav-text, #0a1f33);
+    display: flex;
+    align-items: center;
+}
+.text-reset-link {
+    background: rgba(0,0,0,0.04);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--nav-text, #0a1f33);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.text-reset-link:hover { 
+    background: rgba(230, 57, 70, 0.1); 
+    color: #e63946; 
+}
+.filter-label {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--nav-text, #0a1f33);
+}
+.custom-select {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 1.5px solid var(--nav-border, rgba(0, 0, 0, 0.11));
+    background: var(--nav-bg, #f8fafc);
+    color: var(--nav-text, #0a1f33);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.custom-select:focus {
+    border-color: #52b155;
+    box-shadow: 0 0 0 4px rgba(82, 177, 85, 0.12);
+}
+.btn-apply-filters {
+    width: 100%;
+    background: #52b155;
+    color: #fff;
+    border: none;
+    padding: 14px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+}
+.btn-apply-filters:hover:not(:disabled) {
+    background: #3d9640;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(82, 177, 85, 0.3);
+}
+.btn-apply-filters:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+[data-theme='dark'] .filter-box {
+    background: linear-gradient(145deg, rgba(30, 36, 48, 0.98), rgba(20, 24, 32, 1));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 42px rgba(0, 0, 0, 0.6);
+}
+[data-theme='dark'] .custom-select {
+    background: rgba(0,0,0,0.2);
+    border-color: rgba(255,255,255,0.1);
+    color: #fff;
+}
+[data-theme='dark'] .text-reset-link {
+    background: rgba(255,255,255,0.05);
+}
+[data-theme='dark'] .custom-select:focus {
+    border-color: #5ce261;
+    box-shadow: 0 0 0 4px rgba(92, 226, 97, 0.2);
+}
+[data-theme='dark'] .btn-apply-filters {
+    background: linear-gradient(135deg, #5ce261, #48b44c);
+    box-shadow: 0 6px 20px rgba(82, 177, 85, 0.3);
+}
+[data-theme='dark'] .btn-apply-filters:hover:not(:disabled) {
+    box-shadow: 0 8px 28px rgba(82, 177, 85, 0.5);
 }
 </style>
