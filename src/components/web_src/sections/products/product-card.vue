@@ -611,4 +611,80 @@ export default {
 [data-theme='dark'] .btn-apply-filters:hover:not(:disabled) {
     box-shadow: 0 8px 28px rgba(82, 177, 85, 0.5);
 }
+
+@media (max-width: 768px) {
+    .card-image-wrap {
+        height: 180px;
+    }
+
+    .card-body {
+        padding: 14px 14px 12px;
+    }
+
+    .card-title {
+        font-size: 0.9rem;
+    }
+
+    .card-desc {
+        font-size: 0.75rem;
+        margin-bottom: 12px;
+    }
+
+    .card-footer-row {
+        padding-top: 10px;
+    }
+
+    .cart-btn,
+    .notify-btn {
+        padding: 8px 12px;
+        font-size: 0.7rem;
+    }
+
+    .btn-icon {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-image-wrap {
+        height: 140px;
+    }
+
+    .card-body {
+        padding: 10px 10px 8px;
+    }
+
+    .card-title {
+        font-size: 0.85rem;
+    }
+
+    .card-desc {
+        font-size: 0.65rem;
+        margin-bottom: 6px;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+    }
+
+    .card-footer-row {
+        flex-direction: column;
+        gap: 6px;
+        align-items: stretch;
+        padding-top: 8px;
+    }
+
+    .card-price-block {
+        align-items: center;
+    }
+
+    .price-from {
+        font-size: 0.6rem;
+    }
+
+    .cart-btn,
+    .notify-btn {
+        justify-content: center;
+        width: 100%;
+        padding: 7px 10px;
+    }
+}
 </style>

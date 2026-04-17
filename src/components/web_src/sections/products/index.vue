@@ -387,7 +387,8 @@ export default {
 
 @media (max-width: 480px) {
     .products-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
     }
 
     .page-item .page-link {
