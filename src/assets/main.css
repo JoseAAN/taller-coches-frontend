@@ -23,4 +23,6 @@ html, body, #app {
     box-sizing: border-box;
     background-color: var(--bg-color);
     color: var(--text-color);
+    overflow-x: hidden;
+    width: 100%;
 }

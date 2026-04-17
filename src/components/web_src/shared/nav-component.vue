@@ -59,28 +59,28 @@
       <div class="collapse navbar-collapse w-100" id="navbarTaller">
         <ul class="navbar-nav gap-lg-4 my-3 my-lg-0">
           <li class="nav-item">
-            <router-link class="custom-link d-flex flex-column align-items-center" to="/services">
+            <router-link class="custom-link d-flex flex-row flex-lg-column align-items-center gap-2 gap-lg-1 justify-content-center" to="/services">
               <span class="material-symbols-outlined">local_car_wash</span>
               <span>Servicios</span>
             </router-link>
           </li>
 
           <li class="nav-item">
-            <router-link class="custom-link d-flex flex-column align-items-center" to="/appointments">
+            <router-link class="custom-link d-flex flex-row flex-lg-column align-items-center gap-2 gap-lg-1 justify-content-center" to="/appointments">
               <span class="material-symbols-outlined">calendar_month</span>
               <span>Agendar Cita</span>
             </router-link>
           </li>
 
           <li class="nav-item">
-            <router-link class="custom-link d-flex flex-column align-items-center" to="/products">
+            <router-link class="custom-link d-flex flex-row flex-lg-column align-items-center gap-2 gap-lg-1 justify-content-center" to="/products">
               <span class="material-symbols-outlined">fragrance</span>
               <span>Productos</span>
             </router-link>
           </li>
 
           <li class="nav-item">
-            <router-link class="custom-link d-flex flex-column align-items-center" to="/about">
+            <router-link class="custom-link d-flex flex-row flex-lg-column align-items-center gap-2 gap-lg-1 justify-content-center" to="/about">
               <span class="material-symbols-outlined">groups</span>
               <span>Nosotros</span>
             </router-link>
@@ -336,8 +336,9 @@ export default {
   }
 
   .custom-link {
-    display: inline-block;
+    display: flex;
     margin: 5px 0;
+    width: 100%;
   }
 
   .custom-dropdown.position-absolute {
