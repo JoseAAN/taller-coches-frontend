@@ -155,11 +155,14 @@ export default {
   letter-spacing: -0.03em;
   color: #fff;
   margin: 0 0 16px;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .section-title em {
   font-style: italic;
   color: #52b155;
+  display: inline-block;
 }
 
 .section-desc {
@@ -394,7 +397,7 @@ export default {
     gap: 1.25rem;
   }
   .section-title {
-    font-size: 1.8rem;
+    font-size: clamp(1.4rem, 8vw, 1.8rem);
   }
 }
 </style>
